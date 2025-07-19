@@ -437,12 +437,17 @@ const App = () => {
       setShowAchievement({ name: 'Century Club', desc: '100 questions answered!', icon: '💯' });
     }
     
-    if (newStats.accuracy >= 90 && !currentBadges.includes('Accuracy Master')) {
-      newAchievements.push('Accuracy Master');
-      setShowAchievement({ name: 'Accuracy Master', desc: '90% accuracy achieved!', icon: '🎯' });
+    // Accuracy Master: Need at least 10 questions with 90%+ accuracy
+    if (newStats.accuracy >= 90 && newStats.totalQuestions >= 10 && !currentBadges.includes('Accuracy Master')) {
+      // Additional check: must have answered at least 9 questions correctly out of 10+ total
+      const correctAnswers = Math.round((newStats.accuracy / 100) * newStats.totalQuestions);
+      if (correctAnswers >= 9) {
+        newAchievements.push('Accuracy Master');
+        setShowAchievement({ name: 'Accuracy Master', desc: '90% accuracy achieved!', icon: '🎯' });
+      }
     }
     
-    if (newStats.streak >= 7 && !currentBadges.includes('Week Warrior')) {
+    if (newStats.streak >= 7 && newStats.totalQuestions >= 5 && !currentBadges.includes('Week Warrior')) {
       newAchievements.push('Week Warrior');
       setShowAchievement({ name: 'Week Warrior', desc: '7 day streak!', icon: '🔥' });
     }
