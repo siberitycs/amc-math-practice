@@ -626,63 +626,92 @@ const App = () => {
     };
   };
 
-  // Year-appropriate question generation based on user's grade level
+  // Enhanced AMC-style question generation with year-appropriate content
   const generateAMCQuestion = (topic, difficulty, year) => {
     const rand = Math.random();
     
-    // Determine appropriate year range for questions
-    const yearRange = year <= 4 ? 'year3-4' : 'year5-6';
+    // Year-appropriate difficulty mapping
+    const yearLevel = year <= 4 ? 'junior' : 'senior';
     
-    // Year 3-4 questions (for Bella)
-    if (yearRange === 'year3-4') {
-      // Number and Place Value (Topic 1) - Year 3-4 level
-      if (topic.id === 1) {
+    // Number and Place Value (Topic 1)
+    if (topic.id === 1) {
+      if (yearLevel === 'junior') {
+        // Year 3-4: Basic number sense and place value
         if (difficulty === 'easy') {
-          // Simple counting and number recognition
           const num = Math.floor(Math.random() * 50) + 10;
-          const next = num + 1;
-          const wrong1 = num - 1;
-          const wrong2 = num + 2;
-          const wrong3 = num;
+          const nextNum = num + 1;
+          const prevNum = num - 1;
           
           return createShuffledQuestion(
             `What number comes after ${num}?`,
-            [String(wrong1), String(next), String(wrong2), String(wrong3)],
+            [String(prevNum), String(nextNum), String(num + 2), String(num - 2)],
             1,
-            `When counting, we go: ${num}, ${next}... So ${next} comes after ${num}!`,
+            `When counting, we go: ${prevNum}, ${num}, ${nextNum}, ${num + 2}...\nSo ${nextNum} comes after ${num}!`,
             1,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          // Simple patterns for Year 3-4
-          const start = Math.floor(Math.random() * 10) + 1;
-          const pattern = Math.floor(Math.random() * 3) + 2;
-          const sequence = [start, start + pattern, start + pattern * 2];
-          const next = start + pattern * 3;
+          const tens = Math.floor(Math.random() * 9) + 1;
+          const ones = Math.floor(Math.random() * 9) + 1;
+          const num = tens * 10 + ones;
+          const reversed = ones * 10 + tens;
+          
+          return createShuffledQuestion(
+            `A two-digit number has ${tens} in the tens place and ${ones} in the ones place. What is the number?`,
+            [String(reversed), String(num), String(num + 10), String(num - 10)],
+            1,
+            `Tens place: ${tens} × 10 = ${tens * 10}\nOnes place: ${ones}\nTotal: ${tens * 10} + ${ones} = ${num}`,
+            1,
+            'medium'
+          );
+        }
+      } else {
+        // Year 5-6: Advanced number sense and patterns
+        if (difficulty === 'easy') {
+          const start = Math.floor(Math.random() * 20) + 1;
+          const pattern = Math.floor(Math.random() * 5) + 2;
+          const sequence = [start, start + pattern, start + pattern * 2, start + pattern * 3];
+          const next = start + pattern * 4;
           
           return createShuffledQuestion(
             `Find the next number: ${sequence.join(', ')}`,
-            [String(next - pattern), String(next), String(next + pattern), String(next + 1)],
+            [String(next - pattern), String(next), String(next + pattern), String(start + pattern * 5)],
             1,
-            `The pattern adds ${pattern} each time.\n${sequence.join(' → ')} → ${next}`,
+            `The pattern adds ${pattern} each time:\n${start} + ${pattern} = ${start + pattern}\n${start + pattern} + ${pattern} = ${start + pattern * 2}\n${start + pattern * 3} + ${pattern} = ${next}`,
+            1,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const num1 = Math.floor(Math.random() * 50) + 20;
+          const num2 = Math.floor(Math.random() * 30) + 10;
+          const sum = num1 + num2;
+          const diff = Math.abs(num1 - num2);
+          
+          return createShuffledQuestion(
+            `Two numbers have a sum of ${sum} and a difference of ${diff}. What is the larger number?`,
+            [String(Math.max(num1, num2) - 1), String(Math.max(num1, num2)), String(Math.max(num1, num2) + 1), String(sum)],
+            1,
+            `Let's solve this step by step:\nIf the numbers are x and y:\nx + y = ${sum}\nx - y = ${diff}\nAdding: 2x = ${sum + diff}\nx = ${(sum + diff) / 2}\nThe larger number is ${Math.max(num1, num2)}`,
             1,
             'medium'
           );
         }
       }
-      
-      // Addition & Subtraction (Topic 2) - Year 3-4 level
-      if (topic.id === 2) {
+    }
+    
+    // Addition & Subtraction (Topic 2)
+    if (topic.id === 2) {
+      if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 10) + 5;
-          const b = Math.floor(Math.random() * 8) + 3;
-          const answer = a + b;
+          const a = Math.floor(Math.random() * 10) + 1;
+          const b = Math.floor(Math.random() * 10) + 1;
+          const sum = a + b;
           
           return createShuffledQuestion(
             `What is ${a} + ${b}?`,
-            [String(answer - 1), String(answer), String(answer + 1), String(a + b + 2)],
+            [String(sum - 1), String(sum), String(sum + 1), String(a + b + 2)],
             1,
-            `${a} + ${b} = ${answer}\nYou can count: ${a}... ${a + 1}, ${a + 2}, ..., ${answer}!`,
+            `${a} + ${b} = ${sum}\nYou can count: ${a}... ${a + 1}, ${a + 2}, ..., ${sum}!`,
             2,
             'easy'
           );
@@ -692,193 +721,442 @@ const App = () => {
           const remaining = total - spent;
           
           return createShuffledQuestion(
-            `Tom has $${total}. He spends $${spent}. How much does he have left?`,
+            `Tom has $${total}. He spends $${spent} on lunch. How much money does he have left?`,
             [String(remaining - 1), String(remaining), String(remaining + 1), String(total + spent)],
             1,
-            `Tom starts with $${total}.\nHe spends $${spent}.\nRemaining: $${total} - $${spent} = $${remaining}`,
+            `Starting amount: $${total}\nSpent: $${spent}\nRemaining: $${total} - $${spent} = $${remaining}`,
             2,
             'medium'
           );
         }
-      }
-      
-      // Multiplication & Division (Topic 3) - Year 3-4 level (basic)
-      if (topic.id === 3) {
+      } else {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 5) + 2;
-          const b = Math.floor(Math.random() * 5) + 2;
-          const answer = a * b;
+          const a = Math.floor(Math.random() * 50) + 20;
+          const b = Math.floor(Math.random() * 30) + 15;
+          const c = Math.floor(Math.random() * 20) + 10;
+          const result = a + b - c;
           
           return createShuffledQuestion(
-            `What is ${a} × ${b}?`,
-            [String(answer - 1), String(answer), String(answer + 1), String(a + b)],
+            `What is ${a} + ${b} - ${c}?`,
+            [String(result - 1), String(result), String(result + 1), String(a + b + c)],
             1,
-            `${a} × ${b} = ${answer}\nThink of it as ${a} groups of ${b}: ${b} + ${b} + ${b}${a > 3 ? ' + ' + b : ''} = ${answer}`,
-            3,
+            `Step 1: ${a} + ${b} = ${a + b}\nStep 2: ${a + b} - ${c} = ${result}`,
+            2,
             'easy'
           );
-        }
-      }
-      
-      // Patterns (Topic 7) - Year 3-4 level
-      if (topic.id === 7) {
-        if (difficulty === 'easy') {
-          const start = Math.floor(Math.random() * 5) + 1;
-          const sequence = [start, start + 2, start + 4, start + 6];
-          const next = start + 8;
+        } else if (difficulty === 'medium') {
+          const students = Math.floor(Math.random() * 30) + 20;
+          const boys = Math.floor(Math.random() * (students - 10)) + 5;
+          const girls = students - boys;
+          const newStudents = Math.floor(Math.random() * 10) + 5;
+          const newTotal = students + newStudents;
           
           return createShuffledQuestion(
-            `What comes next: ${sequence.join(', ')}?`,
-            [String(next - 2), String(next), String(next + 2), String(next + 4)],
+            `A class has ${students} students. ${boys} are boys and ${girls} are girls. If ${newStudents} more students join the class, how many students will there be?`,
+            [String(newTotal - 1), String(newTotal), String(newTotal + 1), String(students + newStudents + 1)],
             1,
-            `The pattern adds 2 each time.\n${sequence.join(' → ')} → ${next}`,
-            7,
-            'easy'
+            `Current students: ${students}\nNew students joining: ${newStudents}\nTotal: ${students} + ${newStudents} = ${newTotal}`,
+            2,
+            'medium'
           );
         }
       }
     }
     
-    // Year 5-6 questions (for Annie)
-    if (yearRange === 'year5-6') {
-      // Number and Place Value (Topic 1) - Year 5-6 level
-      if (topic.id === 1) {
+    // Multiplication & Division (Topic 3)
+    if (topic.id === 3) {
+      if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          // Larger numbers and place value
-          const num = Math.floor(Math.random() * 900) + 100;
-          const next = num + 10;
+          const rows = Math.floor(Math.random() * 5) + 3;
+          const cols = Math.floor(Math.random() * 4) + 2;
+          const total = rows * cols;
           
           return createShuffledQuestion(
-            `What is ${num} + 10?`,
-            [String(next - 5), String(next), String(next + 5), String(num + 100)],
+            `How many dots are in this array?\n${'●'.repeat(cols)}\n`.repeat(rows).trim(),
+            [String(total - 2), String(total), String(total + 2), String(rows + cols)],
             1,
-            `${num} + 10 = ${next}\nAdd 10 to the tens place: ${Math.floor(num/10)}0 → ${Math.floor(next/10)}0`,
-            1,
+            `The array has ${rows} rows and ${cols} columns.\n${rows} × ${cols} = ${total} dots`,
+            3,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          // Advanced patterns for Year 5-6
-          const sequence = [2, 6, 12, 20, 30];
-          const next = 42; // Pattern: +4, +6, +8, +10, +12
+          const total = Math.floor(Math.random() * 50) + 20;
+          const divisor = Math.floor(Math.random() * 8) + 3;
+          const quotient = Math.floor(total / divisor);
+          const remainder = total % divisor;
           
           return createShuffledQuestion(
-            `What comes next: ${sequence.join(', ')}?`,
-            [String(40), String(next), String(44), String(46)],
+            `If ${total} students are divided into groups of ${divisor}, how many complete groups can be made?`,
+            [String(quotient - 1), String(quotient), String(quotient + 1), String(Math.ceil(total / divisor))],
             1,
-            `Pattern: +4, +6, +8, +10, +12\nEach difference increases by 2.\nSo 30 + 12 = 42`,
-            1,
-            'medium'
-          );
-        } else if (difficulty === 'hard') {
-          // Logic problems for Year 5-6
-          const questions = [
-            {
-              question: "A number is multiplied by 3, then 5 is added, then divided by 2. The result is 13. What was the original number?",
-              options: ["6", "7", "8", "9"],
-              correct: 1,
-              explanation: "Work backwards:\nStep 1: 13 × 2 = 26\nStep 2: 26 - 5 = 21\nStep 3: 21 ÷ 3 = 7\nAnswer: 7"
-            }
-          ];
-          return questions[Math.floor(Math.random() * questions.length)];
-        }
-      }
-      
-      // Addition & Subtraction (Topic 2) - Year 5-6 level
-      if (topic.id === 2) {
-        if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 50) + 20;
-          const b = Math.floor(Math.random() * 30) + 15;
-          const answer = a + b;
-          
-          return createShuffledQuestion(
-            `What is ${a} + ${b}?`,
-            [String(answer - 5), String(answer), String(answer + 5), String(a + b + 10)],
-            1,
-            `${a} + ${b} = ${answer}\nBreak it down: ${a} + ${b} = ${Math.floor(a/10)*10} + ${a%10} + ${Math.floor(b/10)*10} + ${b%10} = ${answer}`,
-            2,
-            'easy'
-          );
-        } else if (difficulty === 'medium') {
-          // Multi-step problems for Year 5-6
-          const start = Math.floor(Math.random() * 100) + 50;
-          const add1 = Math.floor(Math.random() * 25) + 10;
-          const subtract = Math.floor(Math.random() * 15) + 5;
-          const add2 = Math.floor(Math.random() * 20) + 8;
-          const result = start + add1 - subtract + add2;
-          
-          return createShuffledQuestion(
-            `Tom starts with ${start} marbles. He wins ${add1} more, then loses ${subtract}, then wins ${add2} more. How many marbles does he have now?`,
-            [String(result - 5), String(result), String(result + 5), String(start + add1 + add2)],
-            1,
-            `Step by step:\nStart: ${start}\n+ ${add1}: ${start + add1}\n- ${subtract}: ${start + add1 - subtract}\n+ ${add2}: ${result}`,
-            2,
+            `${total} ÷ ${divisor} = ${quotient} remainder ${remainder}\nSo ${quotient} complete groups can be made, with ${remainder} students left over.`,
+            3,
             'medium'
           );
         }
-      }
-      
-      // Multiplication & Division (Topic 3) - Year 5-6 level
-      if (topic.id === 3) {
+      } else {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 12) + 6;
-          const b = Math.floor(Math.random() * 12) + 6;
-          const answer = a * b;
+          const a = Math.floor(Math.random() * 12) + 2;
+          const b = Math.floor(Math.random() * 12) + 2;
+          const product = a * b;
           
           return createShuffledQuestion(
             `What is ${a} × ${b}?`,
-            [String(answer - 5), String(answer), String(answer + 5), String(a + b)],
+            [String(product - a), String(product), String(product + a), String(a + b)],
             1,
-            `${a} × ${b} = ${answer}\nUse the distributive property: ${a} × ${b} = ${a} × (${Math.floor(b/2)} + ${b%2 === 0 ? b/2 : Math.ceil(b/2)})`,
+            `${a} × ${b} = ${product}\nThink of it as ${a} groups of ${b}: ${b} + ${b} + ... (${a} times) = ${product}`,
             3,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const dividend = Math.floor(Math.random() * 100) + 50;
-          const divisor = Math.floor(Math.random() * 10) + 5;
-          const answer = Math.floor(dividend / divisor);
+          const total = Math.floor(Math.random() * 100) + 50;
+          const groups = Math.floor(Math.random() * 6) + 3;
+          const studentsPerGroup = Math.floor(total / groups);
+          const remainder = total % groups;
           
           return createShuffledQuestion(
-            `What is ${dividend} ÷ ${divisor}?`,
-            [String(answer - 1), String(answer), String(answer + 1), String(Math.ceil(dividend / divisor))],
+            `There are ${total} students. They are divided into ${groups} equal groups. How many students are in each group?`,
+            [String(studentsPerGroup - 1), String(studentsPerGroup), String(studentsPerGroup + 1), String(Math.ceil(total / groups))],
             1,
-            `${dividend} ÷ ${divisor} = ${answer}\nYou can think: ${divisor} × ${answer} = ${divisor * answer}`,
+            `${total} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
             3,
             'medium'
           );
         }
       }
-      
-      // Fractions (Topic 4) - Year 5-6 level
-      if (topic.id === 4) {
+    }
+    
+    // Fractions (Topic 4)
+    if (topic.id === 4) {
+      if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const num = Math.floor(Math.random() * 8) + 2;
-          const den = num + Math.floor(Math.random() * 4) + 2;
+          const numerator = Math.floor(Math.random() * 3) + 1;
+          const denominator = Math.floor(Math.random() * 4) + 2;
+          const fraction = `${numerator}/${denominator}`;
           
           return createShuffledQuestion(
-            `What fraction of the circle is shaded if ${num} out of ${den} parts are colored?`,
-            [`${num}/${den}`, `${den}/${num}`, `${num}/${num}`, `${den}/${den}`],
-            0,
-            `If ${num} out of ${den} parts are shaded, the fraction is ${num}/${den}`,
+            `What fraction of the circle is shaded?\n${'🔴'.repeat(numerator)}${'⚪'.repeat(denominator - numerator)}`,
+            [`${numerator - 1}/${denominator}`, fraction, `${numerator + 1}/${denominator}`, `${numerator}/${denominator + 1}`],
+            1,
+            `There are ${numerator} red circles out of ${denominator} total circles.\nSo ${fraction} of the circle is shaded.`,
             4,
             'easy'
           );
-        }
-      }
-      
-      // Problem Solving (Topic 8) - Year 5-6 level
-      if (topic.id === 8) {
-        if (difficulty === 'medium') {
-          const items = Math.floor(Math.random() * 5) + 3;
-          const price = Math.floor(Math.random() * 8) + 3;
-          const total = items * price;
-          const discount = Math.floor(total * 0.2);
-          const finalPrice = total - discount;
+        } else if (difficulty === 'medium') {
+          const num1 = Math.floor(Math.random() * 3) + 1;
+          const den1 = Math.floor(Math.random() * 4) + 2;
+          const num2 = Math.floor(Math.random() * 2) + 1;
+          const den2 = den1; // Same denominator for easier addition
+          const resultNum = num1 + num2;
+          const result = `${resultNum}/${den1}`;
           
           return createShuffledQuestion(
-            `${items} books cost $${price} each. If there's a 20% discount, how much do they cost in total?`,
-            [String(total), String(finalPrice), String(total + discount), String(discount)],
+            `What is ${num1}/${den1} + ${num2}/${den1}?`,
+            [`${resultNum - 1}/${den1}`, result, `${resultNum + 1}/${den1}`, `${num1 + num2}/${den1 + den1}`],
             1,
-            `Original cost: ${items} × $${price} = $${total}\nDiscount: 20% of $${total} = $${discount}\nFinal price: $${total} - $${discount} = $${finalPrice}`,
+            `When denominators are the same, add the numerators:\n${num1}/${den1} + ${num2}/${den1} = ${resultNum}/${den1}`,
+            4,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const num = Math.floor(Math.random() * 8) + 2;
+          const den = Math.floor(Math.random() * 8) + 2;
+          const fraction = `${num}/${den}`;
+          const simplified = num % 2 === 0 && den % 2 === 0 ? `${num/2}/${den/2}` : fraction;
+          
+          return createShuffledQuestion(
+            `Simplify the fraction ${fraction}.`,
+            [fraction, simplified, `${num + 1}/${den}`, `${num}/${den + 1}`],
+            1,
+            `${fraction} can be simplified by dividing numerator and denominator by their greatest common factor.`,
+            4,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const num1 = Math.floor(Math.random() * 5) + 1;
+          const den1 = Math.floor(Math.random() * 6) + 2;
+          const num2 = Math.floor(Math.random() * 4) + 1;
+          const den2 = Math.floor(Math.random() * 6) + 2;
+          const lcm = den1 * den2;
+          const newNum1 = num1 * den2;
+          const newNum2 = num2 * den1;
+          const resultNum = newNum1 + newNum2;
+          const result = `${resultNum}/${lcm}`;
+          
+          return createShuffledQuestion(
+            `What is ${num1}/${den1} + ${num2}/${den2}?`,
+            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2}/${den1 + den2}`],
+            1,
+            `Find common denominator: ${den1} × ${den2} = ${lcm}\nConvert: ${num1}/${den1} = ${newNum1}/${lcm}, ${num2}/${den2} = ${newNum2}/${lcm}\nAdd: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${result}`,
+            4,
+            'medium'
+          );
+        }
+      }
+    }
+    
+    // Geometry (Topic 5)
+    if (topic.id === 5) {
+      if (yearLevel === 'junior') {
+        if (difficulty === 'easy') {
+          const sides = Math.floor(Math.random() * 3) + 3; // 3, 4, or 5 sides
+          const shapes = {3: 'triangle', 4: 'square', 5: 'pentagon'};
+          const shape = shapes[sides];
+          
+          return createShuffledQuestion(
+            `How many sides does a ${shape} have?`,
+            [String(sides - 1), String(sides), String(sides + 1), String(sides + 2)],
+            1,
+            `A ${shape} has ${sides} sides. You can count them: 1, 2, 3${sides > 3 ? ', 4' : ''}${sides > 4 ? ', 5' : ''}!`,
+            5,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const length = Math.floor(Math.random() * 8) + 3;
+          const width = Math.floor(Math.random() * 6) + 2;
+          const perimeter = 2 * (length + width);
+          
+          return createShuffledQuestion(
+            `A rectangle has length ${length}cm and width ${width}cm. What is its perimeter?`,
+            [String(perimeter - 4), String(perimeter), String(perimeter + 4), String(length * width)],
+            1,
+            `Perimeter = 2 × (length + width)\n= 2 × (${length} + ${width})\n= 2 × ${length + width}\n= ${perimeter}cm`,
+            5,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const base = Math.floor(Math.random() * 8) + 4;
+          const height = Math.floor(Math.random() * 6) + 3;
+          const area = Math.floor((base * height) / 2);
+          
+          return createShuffledQuestion(
+            `A triangle has base ${base}cm and height ${height}cm. What is its area?`,
+            [String(area - 2), String(area), String(area + 2), String(base * height)],
+            1,
+            `Area of triangle = ½ × base × height\n= ½ × ${base} × ${height}\n= ½ × ${base * height}\n= ${area}cm²`,
+            5,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const radius = Math.floor(Math.random() * 5) + 2;
+          const diameter = radius * 2;
+          const circumference = Math.round(2 * Math.PI * radius);
+          
+          return createShuffledQuestion(
+            `A circle has radius ${radius}cm. What is its circumference? (Use π ≈ 3.14)`,
+            [String(circumference - 2), String(circumference), String(circumference + 2), String(diameter)],
+            1,
+            `Circumference = 2 × π × radius\n= 2 × 3.14 × ${radius}\n= 6.28 × ${radius}\n≈ ${circumference}cm`,
+            5,
+            'medium'
+          );
+        }
+      }
+    }
+    
+    // Measurement (Topic 6)
+    if (topic.id === 6) {
+      if (yearLevel === 'junior') {
+        if (difficulty === 'easy') {
+          const startHour = Math.floor(Math.random() * 12) + 1;
+          const startMin = Math.floor(Math.random() * 4) * 15;
+          const addHours = Math.floor(Math.random() * 3) + 1;
+          const addMins = Math.floor(Math.random() * 3) * 15;
+          
+          let endHour = startHour + addHours;
+          let endMin = startMin + addMins;
+          if (endMin >= 60) {
+            endHour += 1;
+            endMin -= 60;
+          }
+          if (endHour > 12) endHour -= 12;
+          
+          const startTime = `${startHour}:${startMin.toString().padStart(2, '0')}`;
+          const endTime = `${endHour}:${endMin.toString().padStart(2, '0')}`;
+          
+          return createShuffledQuestion(
+            `What time will it be ${addHours} hours and ${addMins} minutes after ${startTime}?`,
+            [`${endHour}:${(endMin - 15).toString().padStart(2, '0')}`, endTime, `${endHour}:${(endMin + 15).toString().padStart(2, '0')}`, `${startHour + addHours}:${startMin}`],
+            1,
+            `Starting at ${startTime}\n+ ${addHours} hours = ${startHour + addHours}:${startMin.toString().padStart(2, '0')}\n+ ${addMins} minutes = ${endTime}`,
+            6,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const dollars = Math.floor(Math.random() * 10) + 1;
+          const cents = Math.floor(Math.random() * 4) * 25;
+          const total = dollars * 100 + cents;
+          const spent = Math.floor(Math.random() * 5) * 25 + 25;
+          const remaining = total - spent;
+          
+          return createShuffledQuestion(
+            `Tom has $${dollars}.${cents.toString().padStart(2, '0')}. He spends $${(spent/100).toFixed(2)}. How much does he have left?`,
+            [`$${(remaining/100 - 0.25).toFixed(2)}`, `$${(remaining/100).toFixed(2)}`, `$${(remaining/100 + 0.25).toFixed(2)}`, `$${(total/100).toFixed(2)}`],
+            1,
+            `Starting: $${(total/100).toFixed(2)}\nSpent: $${(spent/100).toFixed(2)}\nRemaining: $${(remaining/100).toFixed(2)}`,
+            6,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const length = Math.floor(Math.random() * 10) + 5;
+          const width = Math.floor(Math.random() * 8) + 3;
+          const area = length * width;
+          const perimeter = 2 * (length + width);
+          
+          return createShuffledQuestion(
+            `A rectangle has length ${length}m and width ${width}m. What is its area?`,
+            [String(area - width), String(area), String(area + width), String(perimeter)],
+            1,
+            `Area = length × width\n= ${length} × ${width}\n= ${area}m²`,
+            6,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const distance = Math.floor(Math.random() * 50) + 20;
+          const speed = Math.floor(Math.random() * 10) + 5;
+          const time = Math.round(distance / speed);
+          
+          return createShuffledQuestion(
+            `A car travels ${distance}km at ${speed}km/h. How many hours does the trip take?`,
+            [String(time - 1), String(time), String(time + 1), String(distance + speed)],
+            1,
+            `Time = Distance ÷ Speed\n= ${distance} ÷ ${speed}\n= ${time} hours`,
+            6,
+            'medium'
+          );
+        }
+      }
+    }
+    
+    // Patterns (Topic 7)
+    if (topic.id === 7) {
+      if (yearLevel === 'junior') {
+        if (difficulty === 'easy') {
+          const shapes = ['🔴', '🔵', '🟡', '🟢'];
+          const pattern = shapes.slice(0, Math.floor(Math.random() * 3) + 2);
+          const sequence = [...pattern, ...pattern, ...pattern.slice(0, 2)];
+          const next = pattern[2] || pattern[0];
+          
+          return createShuffledQuestion(
+            `What comes next in this pattern?\n${sequence.join(' ')}`,
+            [pattern[pattern.length - 1], next, shapes[Math.floor(Math.random() * shapes.length)], pattern[0]],
+            1,
+            `The pattern repeats: ${pattern.join(' ')}\nAfter ${sequence.join(' ')}, the next shape is ${next}`,
+            7,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const start = Math.floor(Math.random() * 10) + 1;
+          const addend = Math.floor(Math.random() * 5) + 2;
+          const sequence = [start, start + addend, start + addend * 2, start + addend * 3];
+          const next = start + addend * 4;
+          
+          return createShuffledQuestion(
+            `Find the next number: ${sequence.join(', ')}`,
+            [String(next - addend), String(next), String(next + addend), String(start + addend * 5)],
+            1,
+            `Each number adds ${addend}:\n${start} + ${addend} = ${start + addend}\n${start + addend} + ${addend} = ${start + addend * 2}\n${start + addend * 3} + ${addend} = ${next}`,
+            7,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const start = Math.floor(Math.random() * 10) + 1;
+          const multiplier = Math.floor(Math.random() * 3) + 2;
+          const sequence = [start, start * multiplier, start * multiplier * multiplier];
+          const next = start * multiplier * multiplier * multiplier;
+          
+          return createShuffledQuestion(
+            `Find the next number: ${sequence.join(', ')}`,
+            [String(next - multiplier), String(next), String(next + multiplier), String(start * multiplier * multiplier)],
+            1,
+            `Each number is multiplied by ${multiplier}:\n${start} × ${multiplier} = ${start * multiplier}\n${start * multiplier} × ${multiplier} = ${start * multiplier * multiplier}\n${start * multiplier * multiplier} × ${multiplier} = ${next}`,
+            7,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const start = Math.floor(Math.random() * 5) + 1;
+          const sequence = [start, start * 2, start * 2 + 1, (start * 2 + 1) * 2];
+          const next = (start * 2 + 1) * 2 + 1;
+          
+          return createShuffledQuestion(
+            `Find the next number: ${sequence.join(', ')}`,
+            [String(next - 1), String(next), String(next + 1), String(next * 2)],
+            1,
+            `Pattern: multiply by 2, then add 1, repeat\n${start} × 2 = ${start * 2}\n${start * 2} + 1 = ${start * 2 + 1}\n${start * 2 + 1} × 2 = ${(start * 2 + 1) * 2}\n${(start * 2 + 1) * 2} + 1 = ${next}`,
+            7,
+            'medium'
+          );
+        }
+      }
+    }
+    
+    // Problem Solving (Topic 8)
+    if (topic.id === 8) {
+      if (yearLevel === 'junior') {
+        if (difficulty === 'easy') {
+          const num1 = Math.floor(Math.random() * 5) + 1;
+          const num2 = Math.floor(Math.random() * 5) + 1;
+          const sum = num1 + num2;
+          const product = num1 * num2;
+          
+          return createShuffledQuestion(
+            `Two numbers add to ${sum} and multiply to ${product}. What is the larger number?`,
+            [String(Math.max(num1, num2) - 1), String(Math.max(num1, num2)), String(Math.max(num1, num2) + 1), String(sum)],
+            1,
+            `The numbers are ${num1} and ${num2}.\n${num1} + ${num2} = ${sum} ✓\n${num1} × ${num2} = ${product} ✓\nThe larger number is ${Math.max(num1, num2)}.`,
+            8,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const students = Math.floor(Math.random() * 20) + 10;
+          const groups = Math.floor(Math.random() * 4) + 2;
+          const studentsPerGroup = Math.floor(students / groups);
+          const remainder = students % groups;
+          
+          return createShuffledQuestion(
+            `There are ${students} students. They are divided into ${groups} equal groups. How many students are in each group?`,
+            [String(studentsPerGroup - 1), String(studentsPerGroup), String(studentsPerGroup + 1), String(Math.ceil(students / groups))],
+            1,
+            `${students} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
+            8,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const age1 = Math.floor(Math.random() * 10) + 8;
+          const age2 = Math.floor(Math.random() * 10) + 8;
+          const sum = age1 + age2;
+          const diff = Math.abs(age1 - age2);
+          
+          return createShuffledQuestion(
+            `Two friends have ages that add to ${sum} and have a difference of ${diff}. What is the older friend's age?`,
+            [String(Math.max(age1, age2) - 1), String(Math.max(age1, age2)), String(Math.max(age1, age2) + 1), String(sum)],
+            1,
+            `Let's solve:\nIf ages are x and y:\nx + y = ${sum}\nx - y = ${diff}\nAdding: 2x = ${sum + diff}\nx = ${(sum + diff) / 2}\nThe older friend is ${Math.max(age1, age2)} years old.`,
+            8,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const total = Math.floor(Math.random() * 100) + 50;
+          const ratio1 = Math.floor(Math.random() * 3) + 2;
+          const ratio2 = Math.floor(Math.random() * 3) + 2;
+          const part1 = Math.floor((total * ratio1) / (ratio1 + ratio2));
+          const part2 = total - part1;
+          
+          return createShuffledQuestion(
+            `A sum of $${total} is divided in the ratio ${ratio1}:${ratio2}. What is the larger part?`,
+            [String(part1 - 1), String(Math.max(part1, part2)), String(Math.max(part1, part2) + 1), String(total)],
+            1,
+            `Total parts: ${ratio1} + ${ratio2} = ${ratio1 + ratio2}\nPart 1: ${total} × ${ratio1}/${ratio1 + ratio2} = $${part1}\nPart 2: ${total} × ${ratio2}/${ratio1 + ratio2} = $${part2}\nThe larger part is $${Math.max(part1, part2)}.`,
             8,
             'medium'
           );
@@ -886,278 +1164,136 @@ const App = () => {
       }
     }
     
-    // Fallback: Generate generic questions for topics not covered above
-    // This ensures all topics have questions even if not year-specific yet
-    
-    // Probability (Topic 9) - Generic for both year levels
+    // Probability (Topic 9)
     if (topic.id === 9) {
-      if (difficulty === 'easy') {
-        const redMarbles = Math.floor(Math.random() * 4) + 2;
-        const blueMarbles = Math.floor(Math.random() * 4) + 3;
-        const total = redMarbles + blueMarbles;
-        
-        return createShuffledQuestion(
-          `A bag has ${redMarbles} red marbles and ${blueMarbles} blue marbles. What's the probability of drawing a red marble?`,
-          [`${redMarbles}/${total}`, `${redMarbles}/${blueMarbles}`, `${blueMarbles}/${total}`, `${total}/${redMarbles}`],
-          0,
-          `Total marbles = ${redMarbles} + ${blueMarbles} = ${total}\nRed marbles = ${redMarbles}\nProbability = ${redMarbles}/${total}`,
-          9,
-          'easy'
-        );
-      }
-    }
-    
-    // Logic (Topic 10) - Generic for both year levels
-    if (topic.id === 10) {
-      if (difficulty === 'easy') {
-        return createShuffledQuestion(
-          "If today is Monday, what day was it 3 days ago?",
-          ["Thursday", "Friday", "Saturday", "Sunday"],
-          1,
-          "Working backwards:\nMonday → Sunday → Saturday → Friday\nSo 3 days ago was Friday",
-          10,
-          'easy'
-        );
-      }
-    }
-    
-    // Geometry (Topic 5) - Generic for both year levels
-    if (topic.id === 5) {
-      if (difficulty === 'easy') {
-        const sides = Math.floor(Math.random() * 3) + 3; // 3, 4, or 5 sides
-        const shapeNames = { 3: 'triangle', 4: 'square', 5: 'pentagon' };
-        
-        return createShuffledQuestion(
-          `How many sides does a ${shapeNames[sides]} have?`,
-          [String(sides - 1), String(sides), String(sides + 1), String(sides + 2)],
-          1,
-          `A ${shapeNames[sides]} has ${sides} sides.`,
-          5,
-          'easy'
-        );
-      }
-    }
-    
-    // Measurement (Topic 6) - Generic for both year levels
-    if (topic.id === 6) {
-      if (difficulty === 'easy') {
-        const hours = Math.floor(Math.random() * 6) + 1;
-        const minutes = Math.floor(Math.random() * 30) + 15;
-        const time = `${hours}:${minutes.toString().padStart(2, '0')}`;
-        const nextHour = `${hours + 1}:${minutes.toString().padStart(2, '0')}`;
-        
-        return createShuffledQuestion(
-          `What time will it be 1 hour after ${time}?`,
-          [`${hours}:${(minutes + 30).toString().padStart(2, '0')}`, nextHour, `${hours + 2}:${minutes.toString().padStart(2, '0')}`, `${hours}:${(minutes + 60).toString().padStart(2, '0')}`],
-          1,
-          `Starting at ${time}\n+1 hour = ${nextHour}`,
-          6,
-          'easy'
-        );
-      }
-    }
-    
-    // Multiplication & Division (Topic 3)
-    if (topic.id === 3) {
-      if (difficulty === 'easy') {
-        // Arrays and groups
-        const rows = Math.floor(Math.random() * 5) + 3;
-        const cols = Math.floor(Math.random() * 4) + 2;
-        const total = rows * cols;
-        
-        return createShuffledQuestion(
-          `How many dots are in this array?\n${'●'.repeat(cols)}\n`.repeat(rows).trim(),
-          [String(total - 2), String(total), String(total + 2), String(rows + cols)],
-          1, // correct answer is at index 1
-          `The array has ${rows} rows and ${cols} columns.\n${rows} × ${cols} = ${total} dots`,
-          3,
-          'easy'
-        );
-      } else if (difficulty === 'medium') {
-        // Division with remainders
-        const total = Math.floor(Math.random() * 50) + 20;
-        const divisor = Math.floor(Math.random() * 8) + 3;
-        const quotient = Math.floor(total / divisor);
-        const remainder = total % divisor;
-        
-        return createShuffledQuestion(
-          `If ${total} students are divided into groups of ${divisor}, how many complete groups can be made?`,
-          [String(quotient - 1), String(quotient), String(quotient + 1), String(Math.ceil(total / divisor))],
-          1, // correct answer is at index 1
-          `${total} ÷ ${divisor} = ${quotient} remainder ${remainder}\nSo ${quotient} complete groups can be made, with ${remainder} students left over.`,
-          3,
-          'medium'
-        );
-      }
-    }
-    
-    // Fractions (Topic 4)
-    if (topic.id === 4) {
-      if (difficulty === 'easy') {
-        // Visual fractions
-        const numerator = Math.floor(Math.random() * 3) + 1;
-        const denominator = Math.floor(Math.random() * 4) + 2;
-        const fraction = `${numerator}/${denominator}`;
-        
-        return createShuffledQuestion(
-          `What fraction of the circle is shaded?\n${'🔴'.repeat(numerator)}${'⚪'.repeat(denominator - numerator)}`,
-          [`${numerator - 1}/${denominator}`, fraction, `${numerator + 1}/${denominator}`, `${numerator}/${denominator + 1}`],
-          1, // correct answer is at index 1
-          `There are ${numerator} red circles out of ${denominator} total circles.\nSo ${fraction} of the circle is shaded.`,
-          4,
-          'easy'
-        );
-      } else if (difficulty === 'medium') {
-        // Fraction addition
-        const num1 = Math.floor(Math.random() * 3) + 1;
-        const den1 = Math.floor(Math.random() * 4) + 2;
-        const num2 = Math.floor(Math.random() * 2) + 1;
-        const den2 = den1; // Same denominator for easier addition
-        const resultNum = num1 + num2;
-        const result = `${resultNum}/${den1}`;
-        
-        return createShuffledQuestion(
-          `What is ${num1}/${den1} + ${num2}/${den1}?`,
-          [`${resultNum - 1}/${den1}`, result, `${resultNum + 1}/${den1}`, `${num1 + num2}/${den1 + den1}`],
-          1, // correct answer is at index 1
-          `When denominators are the same, add the numerators:\n${num1}/${den1} + ${num2}/${den1} = ${resultNum}/${den1}`,
-          4,
-          'medium'
-        );
-      }
-    }
-    
-    // Geometry (Topic 5)
-    if (topic.id === 5) {
-      if (difficulty === 'easy') {
-        // Perimeter problems
-        const length = Math.floor(Math.random() * 8) + 3;
-        const width = Math.floor(Math.random() * 6) + 2;
-        const perimeter = 2 * (length + width);
-        
-        return createShuffledQuestion(
-          `A rectangle has length ${length}cm and width ${width}cm. What is its perimeter?`,
-          [String(perimeter - 4), String(perimeter), String(perimeter + 4), String(length * width)],
-          1, // correct answer is at index 1
-          `Perimeter = 2 × (length + width)\n= 2 × (${length} + ${width})\n= 2 × ${length + width}\n= ${perimeter}cm`,
-          5,
-          'easy'
-        );
-      } else if (difficulty === 'medium') {
-        // Area problems
-        const base = Math.floor(Math.random() * 8) + 4;
-        const height = Math.floor(Math.random() * 6) + 3;
-        const area = Math.floor((base * height) / 2);
-        
-        return createShuffledQuestion(
-          `A triangle has base ${base}cm and height ${height}cm. What is its area?`,
-          [String(area - 2), String(area), String(area + 2), String(base * height)],
-          1, // correct answer is at index 1
-          `Area of triangle = ½ × base × height\n= ½ × ${base} × ${height}\n= ½ × ${base * height}\n= ${area}cm²`,
-          5,
-          'medium'
-        );
-      }
-    }
-    
-    // Measurement (Topic 6)
-    if (topic.id === 6) {
-      if (difficulty === 'easy') {
-        // Time problems
-        const startHour = Math.floor(Math.random() * 12) + 1;
-        const startMin = Math.floor(Math.random() * 4) * 15;
-        const addHours = Math.floor(Math.random() * 3) + 1;
-        const addMins = Math.floor(Math.random() * 3) * 15;
-        
-        let endHour = startHour + addHours;
-        let endMin = startMin + addMins;
-        if (endMin >= 60) {
-          endHour += 1;
-          endMin -= 60;
+      if (yearLevel === 'junior') {
+        if (difficulty === 'easy') {
+          const redMarbles = Math.floor(Math.random() * 4) + 2;
+          const blueMarbles = Math.floor(Math.random() * 4) + 3;
+          const total = redMarbles + blueMarbles;
+          const probability = redMarbles / total;
+          
+          return createShuffledQuestion(
+            `A bag has ${redMarbles} red marbles and ${blueMarbles} blue marbles. What's the probability of drawing a red marble?`,
+            [`${redMarbles}/${total}`, `${redMarbles}/${blueMarbles}`, `${blueMarbles}/${total}`, `${total}/${redMarbles}`],
+            0,
+            `Total marbles = ${redMarbles} + ${blueMarbles} = ${total}\nRed marbles = ${redMarbles}\nProbability = ${redMarbles}/${total}`,
+            9,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const sides = Math.floor(Math.random() * 4) + 4; // 4, 5, 6, or 7 sides
+          const target = Math.floor(Math.random() * sides) + 1;
+          const probability = 1 / sides;
+          
+          return createShuffledQuestion(
+            `A ${sides}-sided die is rolled. What's the probability of rolling a ${target}?`,
+            [`1/${sides}`, `${target}/${sides}`, `1/${target}`, `${sides}/1`],
+            0,
+            `Total possible outcomes = ${sides}\nFavorable outcomes = 1 (rolling ${target})\nProbability = 1/${sides}`,
+            9,
+            'medium'
+          );
         }
-        if (endHour > 12) endHour -= 12;
-        
-        const startTime = `${startHour}:${startMin.toString().padStart(2, '0')}`;
-        const endTime = `${endHour}:${endMin.toString().padStart(2, '0')}`;
-        
-        return createShuffledQuestion(
-          `What time will it be ${addHours} hours and ${addMins} minutes after ${startTime}?`,
-          [`${endHour}:${(endMin - 15).toString().padStart(2, '0')}`, endTime, `${endHour}:${(endMin + 15).toString().padStart(2, '0')}`, `${startHour + addHours}:${startMin}`],
-          1, // correct answer is at index 1
-          `Starting at ${startTime}\n+ ${addHours} hours = ${startHour + addHours}:${startMin.toString().padStart(2, '0')}\n+ ${addMins} minutes = ${endTime}`,
-          6,
-          'easy'
-        );
+      } else {
+        if (difficulty === 'easy') {
+          const total = Math.floor(Math.random() * 20) + 10;
+          const favorable = Math.floor(Math.random() * (total - 5)) + 3;
+          const probability = favorable / total;
+          
+          return createShuffledQuestion(
+            `In a class of ${total} students, ${favorable} are wearing red shirts. What's the probability that a randomly chosen student is wearing red?`,
+            [`${favorable}/${total}`, `${total}/${favorable}`, `${favorable}/${total - favorable}`, `${total - favorable}/${total}`],
+            0,
+            `Total students = ${total}\nStudents wearing red = ${favorable}\nProbability = ${favorable}/${total}`,
+            9,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const red = Math.floor(Math.random() * 5) + 3;
+          const blue = Math.floor(Math.random() * 5) + 3;
+          const green = Math.floor(Math.random() * 5) + 2;
+          const total = red + blue + green;
+          const notRed = blue + green;
+          const probability = notRed / total;
+          
+          return createShuffledQuestion(
+            `A bag has ${red} red, ${blue} blue, and ${green} green marbles. What's the probability of NOT drawing a red marble?`,
+            [`${notRed}/${total}`, `${red}/${total}`, `${total}/${notRed}`, `${notRed}/${red}`],
+            0,
+            `Total marbles = ${red} + ${blue} + ${green} = ${total}\nNon-red marbles = ${blue} + ${green} = ${notRed}\nProbability = ${notRed}/${total}`,
+            9,
+            'medium'
+          );
+        }
       }
     }
     
-    // Patterns (Topic 7)
-    if (topic.id === 7) {
-      if (difficulty === 'easy') {
-        // Shape patterns
-        const shapes = ['🔴', '🔵', '🟡', '🟢'];
-        const pattern = shapes.slice(0, Math.floor(Math.random() * 3) + 2);
-        const sequence = [...pattern, ...pattern, ...pattern.slice(0, 2)];
-        const next = pattern[2] || pattern[0];
-        
-        return createShuffledQuestion(
-          `What comes next in this pattern?\n${sequence.join(' ')}`,
-          [pattern[pattern.length - 1], next, shapes[Math.floor(Math.random() * shapes.length)], pattern[0]],
-          1, // correct answer is at index 1
-          `The pattern repeats: ${pattern.join(' ')}\nAfter ${sequence.join(' ')}, the next shape is ${next}`,
-          7,
-          'easy'
-        );
-      } else if (difficulty === 'medium') {
-        // Number patterns with operations
-        const start = Math.floor(Math.random() * 10) + 1;
-        const multiplier = Math.floor(Math.random() * 3) + 2;
-        const sequence = [start, start * multiplier, start * multiplier * multiplier];
-        const next = start * multiplier * multiplier * multiplier;
-        
-        return createShuffledQuestion(
-          `Find the next number: ${sequence.join(', ')}`,
-          [String(next - multiplier), String(next), String(next + multiplier), String(start * multiplier * multiplier)],
-          1, // correct answer is at index 1
-          `Each number is multiplied by ${multiplier}:\n${start} × ${multiplier} = ${start * multiplier}\n${start * multiplier} × ${multiplier} = ${start * multiplier * multiplier}\n${start * multiplier * multiplier} × ${multiplier} = ${next}`,
-          7,
-          'medium'
-        );
-      }
-    }
-    
-    // Problem Solving (Topic 8)
-    if (topic.id === 8) {
-      if (difficulty === 'easy') {
-        // Logic problems
-        const num1 = Math.floor(Math.random() * 5) + 1;
-        const num2 = Math.floor(Math.random() * 5) + 1;
-        const sum = num1 + num2;
-        const product = num1 * num2;
-        
-        return createShuffledQuestion(
-          `Two numbers add to ${sum} and multiply to ${product}. What is the larger number?`,
-          [String(Math.max(num1, num2) - 1), String(Math.max(num1, num2)), String(Math.max(num1, num2) + 1), String(sum)],
-          1, // correct answer is at index 1
-          `The numbers are ${num1} and ${num2}.\n${num1} + ${num2} = ${sum} ✓\n${num1} × ${num2} = ${product} ✓\nThe larger number is ${Math.max(num1, num2)}.`,
-          8,
-          'easy'
-        );
-      } else if (difficulty === 'medium') {
-        // Multi-step word problems
-        const students = Math.floor(Math.random() * 20) + 10;
-        const groups = Math.floor(Math.random() * 4) + 2;
-        const studentsPerGroup = Math.floor(students / groups);
-        const remainder = students % groups;
-        
-        return createShuffledQuestion(
-          `There are ${students} students. They are divided into ${groups} equal groups. How many students are in each group?`,
-          [String(studentsPerGroup - 1), String(studentsPerGroup), String(studentsPerGroup + 1), String(Math.ceil(students / groups))],
-          1, // correct answer is at index 1
-          `${students} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
-          8,
-          'medium'
-        );
+    // Logic (Topic 10)
+    if (topic.id === 10) {
+      if (yearLevel === 'junior') {
+        if (difficulty === 'easy') {
+          const num1 = Math.floor(Math.random() * 5) + 1;
+          const num2 = Math.floor(Math.random() * 5) + 1;
+          const num3 = Math.floor(Math.random() * 5) + 1;
+          const sum = num1 + num2 + num3;
+          const avg = Math.round(sum / 3);
+          
+          return createShuffledQuestion(
+            `Three numbers are ${num1}, ${num2}, and ${num3}. What is their average?`,
+            [String(avg - 1), String(avg), String(avg + 1), String(sum)],
+            1,
+            `Average = Sum ÷ Count\n= (${num1} + ${num2} + ${num3}) ÷ 3\n= ${sum} ÷ 3\n= ${avg}`,
+            10,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const total = Math.floor(Math.random() * 30) + 20;
+          const first = Math.floor(Math.random() * 10) + 5;
+          const second = Math.floor(Math.random() * 10) + 5;
+          const third = total - first - second;
+          
+          return createShuffledQuestion(
+            `Three numbers add to ${total}. The first is ${first} and the second is ${second}. What is the third number?`,
+            [String(third - 1), String(third), String(third + 1), String(total)],
+            1,
+            `Total = First + Second + Third\n${total} = ${first} + ${second} + Third\nThird = ${total} - ${first} - ${second} = ${third}`,
+            10,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const a = Math.floor(Math.random() * 10) + 1;
+          const b = Math.floor(Math.random() * 10) + 1;
+          const c = Math.floor(Math.random() * 10) + 1;
+          const result = a + b * c;
+          
+          return createShuffledQuestion(
+            `What is ${a} + ${b} × ${c}?`,
+            [String(result - 1), String(result), String(result + 1), String((a + b) * c)],
+            1,
+            `Follow order of operations: multiplication first\n${b} × ${c} = ${b * c}\n${a} + ${b * c} = ${result}`,
+            10,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const x = Math.floor(Math.random() * 10) + 1;
+          const y = Math.floor(Math.random() * 10) + 1;
+          const equation = `${x} + ${y} = ${x + y}`;
+          const wrong1 = x + y + 1;
+          const wrong2 = x + y - 1;
+          const wrong3 = x * y;
+          
+          return createShuffledQuestion(
+            `If ${x} + ${y} = ${x + y}, what is ${x + y} + ${x}?`,
+            [String(wrong1), String((x + y) + x), String(wrong2), String(wrong3)],
+            1,
+            `We know ${x} + ${y} = ${x + y}\nSo ${x + y} + ${x} = ${x + y} + ${x} = ${(x + y) + x}`,
+            10,
+            'medium'
+          );
+        }
       }
     }
     
