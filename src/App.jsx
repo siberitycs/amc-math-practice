@@ -534,6 +534,25 @@ const App = () => {
     return solutions[problemType] || solutions.default;
   };
 
+  // Helper function to shuffle options and track correct answer
+  const createShuffledQuestion = (question, options, correctIndex, explanation, topic, difficulty) => {
+    // Shuffle options and track where correct answer moves
+    const shuffledOptions = options.map((option, index) => ({ option, originalIndex: index }));
+    shuffledOptions.sort(() => Math.random() - 0.5);
+    
+    // Find new index of correct answer
+    const newCorrectIndex = shuffledOptions.findIndex(item => item.originalIndex === correctIndex);
+    
+    return {
+      question,
+      options: shuffledOptions.map(item => item.option),
+      correct: newCorrectIndex,
+      explanation,
+      topic,
+      difficulty
+    };
+  };
+
   // Enhanced AMC-style question generation
   const generateAMCQuestion = (topic, difficulty, year) => {
     const rand = Math.random();
@@ -550,10 +569,21 @@ const App = () => {
         const wrong2 = next - pattern;
         const wrong3 = next + 1;
         
+        // Create options array with correct answer
+        const options = [String(wrong1), String(next), String(wrong2), String(wrong3)];
+        const correctIndex = 1; // Index of correct answer before shuffling
+        
+        // Shuffle options and track where correct answer moves
+        const shuffledOptions = options.map((option, index) => ({ option, originalIndex: index }));
+        shuffledOptions.sort(() => Math.random() - 0.5);
+        
+        // Find new index of correct answer
+        const newCorrectIndex = shuffledOptions.findIndex(item => item.originalIndex === correctIndex);
+        
         return {
           question: `Find the next number in this pattern: ${sequence.join(', ')}`,
-          options: [String(wrong1), String(next), String(wrong2), String(wrong3)].sort(() => Math.random() - 0.5),
-          correct: 1,
+          options: shuffledOptions.map(item => item.option),
+          correct: newCorrectIndex,
           explanation: `The pattern adds ${pattern} each time.\n${sequence.join(' → ')} → ${next}`,
           topic: 1,
           difficulty: 'easy'
@@ -566,10 +596,21 @@ const App = () => {
         const wrong2 = 44;
         const wrong3 = 46;
         
+        // Create options array with correct answer
+        const options = [String(wrong1), String(next), String(wrong2), String(wrong3)];
+        const correctIndex = 1; // Index of correct answer before shuffling
+        
+        // Shuffle options and track where correct answer moves
+        const shuffledOptions = options.map((option, index) => ({ option, originalIndex: index }));
+        shuffledOptions.sort(() => Math.random() - 0.5);
+        
+        // Find new index of correct answer
+        const newCorrectIndex = shuffledOptions.findIndex(item => item.originalIndex === correctIndex);
+        
         return {
           question: `What comes next: ${sequence.join(', ')} ?`,
-          options: [String(wrong1), String(next), String(wrong2), String(wrong3)].sort(() => Math.random() - 0.5),
-          correct: 1,
+          options: shuffledOptions.map(item => item.option),
+          correct: newCorrectIndex,
           explanation: `Pattern: +4, +6, +8, +10, +12\nEach difference increases by 2.\nSo 30 + 12 = 42`,
           topic: 1,
           difficulty: 'medium'
@@ -678,19 +719,14 @@ const App = () => {
         const money = total + Math.floor(Math.random() * 10) + 5;
         const change = money - total;
         
-        return {
-          question: `Sarah buys ${item1} pencils at $${price1} each and ${item2} notebooks at $${price2} each. She pays with $${money}. How much change does she get?`,
-          options: [
-            String(change - 2),
-            String(change),
-            String(change + 2),
-            String(total)
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `Total cost: ${item1} × $${price1} + ${item2} × $${price2} = $${item1 * price1} + $${item2 * price2} = $${total}\nChange: $${money} - $${total} = $${change}`,
-          topic: 2,
-          difficulty: 'easy'
-        };
+        return createShuffledQuestion(
+          `Sarah buys ${item1} pencils at $${price1} each and ${item2} notebooks at $${price2} each. She pays with $${money}. How much change does she get?`,
+          [String(change - 2), String(change), String(change + 2), String(total)],
+          1, // correct answer is at index 1
+          `Total cost: ${item1} × $${price1} + ${item2} × $${price2} = $${item1 * price1} + $${item2 * price2} = $${total}\nChange: $${money} - $${total} = $${change}`,
+          2,
+          'easy'
+        );
       } else if (difficulty === 'medium') {
         // Multi-step problems
         const start = Math.floor(Math.random() * 50) + 20;
@@ -699,19 +735,14 @@ const App = () => {
         const add2 = Math.floor(Math.random() * 12) + 4;
         const result = start + add1 - subtract + add2;
         
-        return {
-          question: `Tom starts with ${start} marbles. He wins ${add1} more, then loses ${subtract}, then wins ${add2} more. How many marbles does he have now?`,
-          options: [
-            String(result - 5),
-            String(result),
-            String(result + 5),
-            String(start + add1 + add2)
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `Step by step:\nStart: ${start}\n+ ${add1}: ${start + add1}\n- ${subtract}: ${start + add1 - subtract}\n+ ${add2}: ${result}`,
-          topic: 2,
-          difficulty: 'medium'
-        };
+        return createShuffledQuestion(
+          `Tom starts with ${start} marbles. He wins ${add1} more, then loses ${subtract}, then wins ${add2} more. How many marbles does he have now?`,
+          [String(result - 5), String(result), String(result + 5), String(start + add1 + add2)],
+          1, // correct answer is at index 1
+          `Step by step:\nStart: ${start}\n+ ${add1}: ${start + add1}\n- ${subtract}: ${start + add1 - subtract}\n+ ${add2}: ${result}`,
+          2,
+          'medium'
+        );
       }
     }
     
@@ -723,19 +754,14 @@ const App = () => {
         const cols = Math.floor(Math.random() * 4) + 2;
         const total = rows * cols;
         
-        return {
-          question: `How many dots are in this array?\n${'●'.repeat(cols)}\n`.repeat(rows).trim(),
-          options: [
-            String(total - 2),
-            String(total),
-            String(total + 2),
-            String(rows + cols)
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `The array has ${rows} rows and ${cols} columns.\n${rows} × ${cols} = ${total} dots`,
-          topic: 3,
-          difficulty: 'easy'
-        };
+        return createShuffledQuestion(
+          `How many dots are in this array?\n${'●'.repeat(cols)}\n`.repeat(rows).trim(),
+          [String(total - 2), String(total), String(total + 2), String(rows + cols)],
+          1, // correct answer is at index 1
+          `The array has ${rows} rows and ${cols} columns.\n${rows} × ${cols} = ${total} dots`,
+          3,
+          'easy'
+        );
       } else if (difficulty === 'medium') {
         // Division with remainders
         const total = Math.floor(Math.random() * 50) + 20;
@@ -743,19 +769,14 @@ const App = () => {
         const quotient = Math.floor(total / divisor);
         const remainder = total % divisor;
         
-        return {
-          question: `If ${total} students are divided into groups of ${divisor}, how many complete groups can be made?`,
-          options: [
-            String(quotient - 1),
-            String(quotient),
-            String(quotient + 1),
-            String(Math.ceil(total / divisor))
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `${total} ÷ ${divisor} = ${quotient} remainder ${remainder}\nSo ${quotient} complete groups can be made, with ${remainder} students left over.`,
-          topic: 3,
-          difficulty: 'medium'
-        };
+        return createShuffledQuestion(
+          `If ${total} students are divided into groups of ${divisor}, how many complete groups can be made?`,
+          [String(quotient - 1), String(quotient), String(quotient + 1), String(Math.ceil(total / divisor))],
+          1, // correct answer is at index 1
+          `${total} ÷ ${divisor} = ${quotient} remainder ${remainder}\nSo ${quotient} complete groups can be made, with ${remainder} students left over.`,
+          3,
+          'medium'
+        );
       }
     }
     
@@ -2054,7 +2075,6 @@ const App = () => {
               {currentQuestion < practiceSession.totalQuestions - 1 ? 'Next Question' : 'See Results'}
             </button>
           </>
-        )}
         )}
       </div>
     );
