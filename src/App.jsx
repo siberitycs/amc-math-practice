@@ -957,15 +957,9 @@ const App = () => {
       }
     }
     
-    // Default fallback question
-    return createShuffledQuestion(
-      `What is ${Math.floor(Math.random() * 10) + 1} + ${Math.floor(Math.random() * 10) + 1}?`,
-      ["10", "11", "12", "13"],
-      1,
-      "Basic addition question",
-      topic.id,
-      'easy'
-    );
+    // Multiplication & Division (Topic 3)
+    if (topic.id === 3) {
+      if (difficulty === 'easy') {
         // Arrays and groups
         const rows = Math.floor(Math.random() * 5) + 3;
         const cols = Math.floor(Math.random() * 4) + 2;
@@ -1167,7 +1161,15 @@ const App = () => {
       }
     }
     
-    return null;
+    // Default fallback question
+    return createShuffledQuestion(
+      `What is ${Math.floor(Math.random() * 10) + 1} + ${Math.floor(Math.random() * 10) + 1}?`,
+      ["10", "11", "12", "13"],
+      1,
+      "Basic addition question",
+      topic.id,
+      'easy'
+    );
   };
 
   // Legacy function for backward compatibility
