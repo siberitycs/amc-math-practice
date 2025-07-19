@@ -81,14 +81,40 @@ const App = () => {
       accuracy: 0, 
       streak: 0, 
       badges: [],
-      topicStats: {}
+      topicStats: {},
+      // Enhanced analytics
+      timePerQuestion: 0,
+      averageTime: 0,
+      totalTime: 0,
+      questionsToday: 0,
+      questionsThisWeek: 0,
+      accuracyByDifficulty: { easy: 0, medium: 0, hard: 0 },
+      questionsByDifficulty: { easy: 0, medium: 0, hard: 0 },
+      lastPracticeDate: null,
+      improvementRate: 0,
+      amcReadiness: 0,
+      mistakePatterns: [],
+      studyStreak: 0
     },
     Bella: { 
       totalQuestions: 0, 
       accuracy: 0, 
       streak: 0, 
       badges: [],
-      topicStats: {}
+      topicStats: {},
+      // Enhanced analytics
+      timePerQuestion: 0,
+      averageTime: 0,
+      totalTime: 0,
+      questionsToday: 0,
+      questionsThisWeek: 0,
+      accuracyByDifficulty: { easy: 0, medium: 0, hard: 0 },
+      questionsByDifficulty: { easy: 0, medium: 0, hard: 0 },
+      lastPracticeDate: null,
+      improvementRate: 0,
+      amcReadiness: 0,
+      mistakePatterns: [],
+      studyStreak: 0
     }
   });
 
@@ -677,6 +703,22 @@ const App = () => {
             1,
             'medium'
           );
+        } else if (difficulty === 'hard') {
+          // AMC-style number theory: Find smallest number with specific properties
+          const factor1 = Math.floor(Math.random() * 5) + 2;
+          const factor2 = Math.floor(Math.random() * 5) + 2;
+          const factor3 = Math.floor(Math.random() * 5) + 2;
+          const lcm = findLCM(findLCM(factor1, factor2), factor3);
+          const answer = lcm;
+          
+          return createShuffledQuestion(
+            `What is the smallest positive integer that is divisible by ${factor1}, ${factor2}, and ${factor3}?`,
+            [String(answer - lcm), String(answer), String(answer + lcm), String(factor1 * factor2 * factor3)],
+            1,
+            `We need the Least Common Multiple (LCM) of ${factor1}, ${factor2}, and ${factor3}.\nLCM(${factor1}, ${factor2}) = ${findLCM(factor1, factor2)}\nLCM(${findLCM(factor1, factor2)}, ${factor3}) = ${answer}\nThe smallest number divisible by all three is ${answer}.`,
+            1,
+            'hard'
+          );
         }
       } else {
         // Year 5-6: Advanced AMC-style number theory
@@ -707,6 +749,22 @@ const App = () => {
             `Let's solve this step by step:\nIf the numbers are x and y:\nx + y = ${sum}\nx - y = ${diff}\nAdding: 2x = ${sum + diff}\nx = ${(sum + diff) / 2}\nThe larger number is ${Math.max(num1, num2)}`,
             1,
             'medium'
+          );
+        } else if (difficulty === 'hard') {
+          // AMC-style advanced number theory: Sum of digits and divisibility
+          const baseNum = Math.floor(Math.random() * 900) + 100;
+          const digitSum = String(baseNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+          const nextNum = baseNum + 1;
+          const nextDigitSum = String(nextNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+          const answer = nextDigitSum;
+          
+          return createShuffledQuestion(
+            `The sum of the digits of ${baseNum} is ${digitSum}. What is the sum of the digits of ${nextNum}?`,
+            [String(answer - 1), String(answer), String(answer + 1), String(digitSum + 1)],
+            1,
+            `Let's find the sum of digits of ${nextNum}:\n${nextNum} = ${String(nextNum).split('').join(' + ')} = ${answer}\nThe sum of digits is ${answer}.`,
+            1,
+            'hard'
           );
         }
       }
@@ -743,6 +801,22 @@ const App = () => {
             2,
             'medium'
           );
+        } else if (difficulty === 'hard') {
+          // AMC-style multi-step word problem with multiple operations
+          const originalMoney = Math.floor(Math.random() * 200) + 100;
+          const spent1 = Math.floor(Math.random() * 50) + 20;
+          const earned = Math.floor(Math.random() * 80) + 40;
+          const spent2 = Math.floor(Math.random() * 60) + 30;
+          const finalMoney = originalMoney - spent1 + earned - spent2;
+          
+          return createShuffledQuestion(
+            `Tom had $${originalMoney}. He spent $${spent1}, then earned $${earned}, and finally spent $${spent2}. How much money does he have now?`,
+            [String(finalMoney - 5), String(finalMoney), String(finalMoney + 5), String(originalMoney + earned)],
+            1,
+            `Step 1: Start with $${originalMoney}\nStep 2: Spend $${spent1} → $${originalMoney - spent1}\nStep 3: Earn $${earned} → $${originalMoney - spent1 + earned}\nStep 4: Spend $${spent2} → $${finalMoney}\nTom now has $${finalMoney}.`,
+            2,
+            'hard'
+          );
         }
       } else {
         if (difficulty === 'easy') {
@@ -774,6 +848,26 @@ const App = () => {
             `Current students: ${students}\nNew students joining: ${newStudents}\nTotal: ${students} + ${newStudents} = ${newTotal}`,
             2,
             'medium'
+          );
+        } else if (difficulty === 'hard') {
+          // AMC-style complex word problem with multiple variables
+          const totalStudents = Math.floor(Math.random() * 100) + 50;
+          const boysRatio = Math.floor(Math.random() * 3) + 2;
+          const girlsRatio = Math.floor(Math.random() * 3) + 2;
+          const totalRatio = boysRatio + girlsRatio;
+          const boys = Math.round((totalStudents * boysRatio) / totalRatio);
+          const girls = totalStudents - boys;
+          const newBoys = Math.floor(Math.random() * 10) + 5;
+          const newGirls = Math.floor(Math.random() * 10) + 5;
+          const finalTotal = totalStudents + newBoys + newGirls;
+          
+          return createShuffledQuestion(
+            `A school has ${totalStudents} students in the ratio ${boysRatio}:${girlsRatio} (boys:girls). If ${newBoys} more boys and ${newGirls} more girls join, how many students will there be?`,
+            [String(finalTotal - 2), String(finalTotal), String(finalTotal + 2), String(totalStudents + newBoys)],
+            1,
+            `Current students: ${totalStudents}\nBoys: ${boys}, Girls: ${girls}\nNew students: ${newBoys} + ${newGirls} = ${newBoys + newGirls}\nTotal: ${totalStudents} + ${newBoys + newGirls} = ${finalTotal}`,
+            2,
+            'hard'
           );
         }
       }
@@ -809,6 +903,23 @@ const App = () => {
             3,
             'medium'
           );
+        } else if (difficulty === 'hard') {
+          // AMC-style multi-step division with remainders
+          const totalItems = Math.floor(Math.random() * 500) + 200;
+          const boxes = Math.floor(Math.random() * 15) + 8;
+          const itemsPerBox = Math.floor(totalItems / boxes);
+          const remainder = totalItems % boxes;
+          const extraBoxes = remainder > 0 ? 1 : 0;
+          const totalBoxes = boxes + extraBoxes;
+          
+          return createShuffledQuestion(
+            `A factory has ${totalItems} items to pack. Each box can hold ${itemsPerBox} items. How many boxes are needed to pack all items?`,
+            [String(totalBoxes - 1), String(totalBoxes), String(totalBoxes + 1), String(boxes)],
+            1,
+            `${totalItems} ÷ ${itemsPerBox} = ${Math.floor(totalItems / itemsPerBox)} remainder ${remainder}\nSince we need to pack all items, we need ${Math.floor(totalItems / itemsPerBox)} + ${extraBoxes} = ${totalBoxes} boxes.`,
+            3,
+            'hard'
+          );
         }
       } else {
         if (difficulty === 'easy') {
@@ -837,6 +948,26 @@ const App = () => {
             `${total} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
             3,
             'medium'
+          );
+        } else if (difficulty === 'hard') {
+          // AMC-style complex multiplication with multiple operations
+          const basePrice = Math.floor(Math.random() * 20) + 10;
+          const quantity = Math.floor(Math.random() * 15) + 8;
+          const discount = Math.floor(Math.random() * 3) + 1;
+          const tax = Math.floor(Math.random() * 2) + 1;
+          const subtotal = basePrice * quantity;
+          const discountAmount = Math.floor(subtotal * discount / 100);
+          const afterDiscount = subtotal - discountAmount;
+          const taxAmount = Math.floor(afterDiscount * tax / 100);
+          const finalTotal = afterDiscount + taxAmount;
+          
+          return createShuffledQuestion(
+            `A store sells items for $${basePrice} each. If you buy ${quantity} items with a ${discount}% discount and ${tax}% tax, what is the total cost?`,
+            [String(finalTotal - 2), String(finalTotal), String(finalTotal + 2), String(subtotal)],
+            1,
+            `Step 1: Subtotal = $${basePrice} × ${quantity} = $${subtotal}\nStep 2: Discount = $${subtotal} × ${discount}% = $${discountAmount}\nStep 3: After discount = $${subtotal} - $${discountAmount} = $${afterDiscount}\nStep 4: Tax = $${afterDiscount} × ${tax}% = $${taxAmount}\nStep 5: Total = $${afterDiscount} + $${taxAmount} = $${finalTotal}`,
+            3,
+            'hard'
           );
         }
       }
@@ -879,6 +1010,31 @@ const App = () => {
             `Find common denominator: ${den1} × ${den2} = ${lcm}\nConvert: ${num1}/${den1} = ${newNum1}/${lcm}, ${num2}/${den2} = ${newNum2}/${lcm}\nAdd: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${result}`,
             4,
             'medium'
+          );
+        } else if (difficulty === 'hard') {
+          // AMC-style fraction word problem with mixed numbers
+          const whole1 = Math.floor(Math.random() * 3) + 1;
+          const num1 = Math.floor(Math.random() * 3) + 1;
+          const den1 = Math.floor(Math.random() * 4) + 2;
+          const whole2 = Math.floor(Math.random() * 2) + 1;
+          const num2 = Math.floor(Math.random() * 2) + 1;
+          const den2 = Math.floor(Math.random() * 4) + 2;
+          
+          const improper1 = whole1 * den1 + num1;
+          const improper2 = whole2 * den2 + num2;
+          const lcm = findLCM(den1, den2);
+          const newNum1 = improper1 * (lcm / den1);
+          const newNum2 = improper2 * (lcm / den2);
+          const resultNum = newNum1 + newNum2;
+          const result = `${resultNum}/${lcm}`;
+          
+          return createShuffledQuestion(
+            `What is ${whole1} ${num1}/${den1} + ${whole2} ${num2}/${den2}?`,
+            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${improper1 + improper2}/${den1 + den2}`],
+            1,
+            `Convert to improper fractions:\n${whole1} ${num1}/${den1} = ${improper1}/${den1}\n${whole2} ${num2}/${den2} = ${improper2}/${den2}\nFind common denominator and add:\n${improper1}/${den1} + ${improper2}/${den2} = ${result}`,
+            4,
+            'hard'
           );
         }
       } else {
@@ -925,6 +1081,32 @@ const App = () => {
             `Find common denominator: LCM of ${den1}, ${den2}, ${den3} = ${lcm}\nConvert all fractions and add numerators:\n${num1}/${den1} + ${num2}/${den2} + ${num3}/${den3} = ${result}`,
             4,
             'medium'
+          );
+        } else if (difficulty === 'hard') {
+          // AMC-style complex fraction operations with mixed operations
+          const num1 = Math.floor(Math.random() * 5) + 1;
+          const den1 = Math.floor(Math.random() * 6) + 2;
+          const num2 = Math.floor(Math.random() * 4) + 1;
+          const den2 = Math.floor(Math.random() * 6) + 2;
+          const num3 = Math.floor(Math.random() * 3) + 1;
+          const den3 = Math.floor(Math.random() * 6) + 2;
+          
+          // (a/b + c/d) - e/f
+          const lcm12 = findLCM(den1, den2);
+          const lcm = findLCM(lcm12, den3);
+          const newNum1 = num1 * (lcm / den1);
+          const newNum2 = num2 * (lcm / den2);
+          const newNum3 = num3 * (lcm / den3);
+          const resultNum = newNum1 + newNum2 - newNum3;
+          const result = `${resultNum}/${lcm}`;
+          
+          return createShuffledQuestion(
+            `What is (${num1}/${den1} + ${num2}/${den2}) - ${num3}/${den3}?`,
+            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2 - num3}/${den1 + den2 + den3}`],
+            1,
+            `Step 1: Add ${num1}/${den1} + ${num2}/${den2}\nFind common denominator ${lcm}:\n${newNum1}/${lcm} + ${newNum2}/${lcm} = ${newNum1 + newNum2}/${lcm}\nStep 2: Subtract ${num3}/${den3}\n${newNum1 + newNum2}/${lcm} - ${newNum3}/${lcm} = ${result}`,
+            4,
+            'hard'
           );
         }
       }
@@ -2194,6 +2376,66 @@ const App = () => {
       newStats[currentUser].totalQuestions += 1;
       newStats[currentUser].accuracy = Math.round((newStats[currentUser].accuracy * (newStats[currentUser].totalQuestions - 1) + (isCorrect ? 100 : 0)) / newStats[currentUser].totalQuestions);
       
+      // Enhanced analytics tracking
+      const currentDifficulty = question.difficulty || 'medium';
+      const currentTime = Date.now();
+      
+      // Track difficulty-specific performance
+      if (!newStats[currentUser].accuracyByDifficulty[currentDifficulty]) {
+        newStats[currentUser].accuracyByDifficulty[currentDifficulty] = 0;
+      }
+      if (!newStats[currentUser].questionsByDifficulty[currentDifficulty]) {
+        newStats[currentUser].questionsByDifficulty[currentDifficulty] = 0;
+      }
+      
+      const difficultyStats = newStats[currentUser].questionsByDifficulty[currentDifficulty];
+      const currentAccuracy = newStats[currentUser].accuracyByDifficulty[currentDifficulty];
+      newStats[currentUser].questionsByDifficulty[currentDifficulty] += 1;
+      newStats[currentUser].accuracyByDifficulty[currentDifficulty] = Math.round(
+        (currentAccuracy * difficultyStats + (isCorrect ? 100 : 0)) / (difficultyStats + 1)
+      );
+      
+      // Track time analytics
+      const questionTime = timeElapsed - (newStats[currentUser].totalTime || 0);
+      newStats[currentUser].totalTime = timeElapsed;
+      newStats[currentUser].averageTime = Math.round(
+        ((newStats[currentUser].averageTime || 0) * (newStats[currentUser].totalQuestions - 1) + questionTime) / newStats[currentUser].totalQuestions
+      );
+      
+      // Track daily and weekly questions
+      const today = new Date().toDateString();
+      const lastPracticeDate = newStats[currentUser].lastPracticeDate;
+      if (lastPracticeDate !== today) {
+        newStats[currentUser].questionsToday = 1;
+        newStats[currentUser].lastPracticeDate = today;
+      } else {
+        newStats[currentUser].questionsToday += 1;
+      }
+      
+      // Track mistake patterns
+      if (!isCorrect) {
+        const mistake = {
+          topic: practiceSession.topic.id,
+          difficulty: currentDifficulty,
+          question: question.question,
+          userAnswer: question.options[selectedAnswer],
+          correctAnswer: question.options[question.correct],
+          timestamp: currentTime
+        };
+        newStats[currentUser].mistakePatterns = [
+          ...newStats[currentUser].mistakePatterns.slice(-9), // Keep last 10 mistakes
+          mistake
+        ];
+      }
+      
+      // Calculate AMC readiness score
+      const topicMastery = topics.map(t => getTopicPerformance(t.id)).filter(p => p >= 80).length;
+      const difficultyMastery = newStats[currentUser].accuracyByDifficulty.hard || 0;
+      const consistency = newStats[currentUser].streak || 0;
+      newStats[currentUser].amcReadiness = Math.round(
+        (topicMastery / topics.length * 40) + (difficultyMastery * 0.3) + (Math.min(consistency, 30) * 2)
+      );
+      
       const topicId = practiceSession.topic.id;
       if (!newStats[currentUser].topicStats[topicId]) {
         newStats[currentUser].topicStats[topicId] = { attempted: 0, correct: 0, lastPracticed: Date.now() };
@@ -2678,7 +2920,7 @@ const App = () => {
       <h2 className="text-2xl font-bold text-gray-900 mb-6">{currentUser}'s Progress</h2>
       
       {/* Summary Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white p-6 rounded-xl shadow-sm text-center">
           <div className="text-3xl font-bold text-blue-600">{userStats[currentUser].accuracy}%</div>
           <p className="text-gray-600 mt-1">Overall Accuracy</p>
@@ -2694,6 +2936,92 @@ const App = () => {
         <div className="bg-white p-6 rounded-xl shadow-sm text-center">
           <div className="text-3xl font-bold text-amber-600">{achievements.length}</div>
           <p className="text-gray-600 mt-1">Achievements</p>
+        </div>
+      </div>
+
+      {/* Enhanced Analytics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* Performance by Difficulty */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance by Difficulty</h3>
+          <div className="space-y-4">
+            {['easy', 'medium', 'hard'].map(difficulty => {
+              const stats = userStats[currentUser];
+              const accuracy = stats.accuracyByDifficulty[difficulty] || 0;
+              const questions = stats.questionsByDifficulty[difficulty] || 0;
+              const colors = {
+                easy: 'from-green-500 to-green-600',
+                medium: 'from-yellow-500 to-orange-500',
+                hard: 'from-red-500 to-red-600'
+              };
+              
+              return (
+                <div key={difficulty}>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium capitalize">{difficulty}</span>
+                    <span className="text-sm text-gray-600">{accuracy}% ({questions} questions)</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className={`h-2 rounded-full bg-gradient-to-r ${colors[difficulty]}`}
+                      style={{ width: `${accuracy}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Time Analytics */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Time Analytics</h3>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Average Time per Question</span>
+              <span className="font-semibold">{Math.round(userStats[currentUser].averageTime || 0)}s</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Total Study Time</span>
+              <span className="font-semibold">{formatTime(userStats[currentUser].totalTime || 0)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Questions Today</span>
+              <span className="font-semibold">{userStats[currentUser].questionsToday || 0}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Questions This Week</span>
+              <span className="font-semibold">{userStats[currentUser].questionsThisWeek || 0}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* AMC Readiness Score */}
+      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <Trophy className="w-5 h-5 mr-2 text-indigo-600" />
+          AMC Readiness Assessment
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-indigo-600 mb-2">
+              {Math.round(userStats[currentUser].amcReadiness || 0)}%
+            </div>
+            <p className="text-sm text-gray-600">Overall Readiness</p>
+          </div>
+          <div className="bg-white rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-green-600 mb-2">
+              {topics.filter(t => getTopicPerformance(t.id) >= 80).length}
+            </div>
+            <p className="text-sm text-gray-600">Topics Mastered</p>
+          </div>
+          <div className="bg-white rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-amber-600 mb-2">
+              {userStats[currentUser].studyStreak || 0}
+            </div>
+            <p className="text-sm text-gray-600">Study Streak</p>
+          </div>
         </div>
       </div>
 
