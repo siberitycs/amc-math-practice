@@ -788,19 +788,14 @@ const App = () => {
         const denominator = Math.floor(Math.random() * 4) + 2;
         const fraction = `${numerator}/${denominator}`;
         
-        return {
-          question: `What fraction of the circle is shaded?\n${'🔴'.repeat(numerator)}${'⚪'.repeat(denominator - numerator)}`,
-          options: [
-            `${numerator - 1}/${denominator}`,
-            fraction,
-            `${numerator + 1}/${denominator}`,
-            `${numerator}/${denominator + 1}`
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `There are ${numerator} red circles out of ${denominator} total circles.\nSo ${fraction} of the circle is shaded.`,
-          topic: 4,
-          difficulty: 'easy'
-        };
+        return createShuffledQuestion(
+          `What fraction of the circle is shaded?\n${'🔴'.repeat(numerator)}${'⚪'.repeat(denominator - numerator)}`,
+          [`${numerator - 1}/${denominator}`, fraction, `${numerator + 1}/${denominator}`, `${numerator}/${denominator + 1}`],
+          1, // correct answer is at index 1
+          `There are ${numerator} red circles out of ${denominator} total circles.\nSo ${fraction} of the circle is shaded.`,
+          4,
+          'easy'
+        );
       } else if (difficulty === 'medium') {
         // Fraction addition
         const num1 = Math.floor(Math.random() * 3) + 1;
@@ -810,19 +805,14 @@ const App = () => {
         const resultNum = num1 + num2;
         const result = `${resultNum}/${den1}`;
         
-        return {
-          question: `What is ${num1}/${den1} + ${num2}/${den1}?`,
-          options: [
-            `${resultNum - 1}/${den1}`,
-            result,
-            `${resultNum + 1}/${den1}`,
-            `${num1 + num2}/${den1 + den1}`
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `When denominators are the same, add the numerators:\n${num1}/${den1} + ${num2}/${den1} = ${resultNum}/${den1}`,
-          topic: 4,
-          difficulty: 'medium'
-        };
+        return createShuffledQuestion(
+          `What is ${num1}/${den1} + ${num2}/${den1}?`,
+          [`${resultNum - 1}/${den1}`, result, `${resultNum + 1}/${den1}`, `${num1 + num2}/${den1 + den1}`],
+          1, // correct answer is at index 1
+          `When denominators are the same, add the numerators:\n${num1}/${den1} + ${num2}/${den1} = ${resultNum}/${den1}`,
+          4,
+          'medium'
+        );
       }
     }
     
@@ -834,38 +824,28 @@ const App = () => {
         const width = Math.floor(Math.random() * 6) + 2;
         const perimeter = 2 * (length + width);
         
-        return {
-          question: `A rectangle has length ${length}cm and width ${width}cm. What is its perimeter?`,
-          options: [
-            String(perimeter - 4),
-            String(perimeter),
-            String(perimeter + 4),
-            String(length * width)
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `Perimeter = 2 × (length + width)\n= 2 × (${length} + ${width})\n= 2 × ${length + width}\n= ${perimeter}cm`,
-          topic: 5,
-          difficulty: 'easy'
-        };
+        return createShuffledQuestion(
+          `A rectangle has length ${length}cm and width ${width}cm. What is its perimeter?`,
+          [String(perimeter - 4), String(perimeter), String(perimeter + 4), String(length * width)],
+          1, // correct answer is at index 1
+          `Perimeter = 2 × (length + width)\n= 2 × (${length} + ${width})\n= 2 × ${length + width}\n= ${perimeter}cm`,
+          5,
+          'easy'
+        );
       } else if (difficulty === 'medium') {
         // Area problems
         const base = Math.floor(Math.random() * 8) + 4;
         const height = Math.floor(Math.random() * 6) + 3;
         const area = Math.floor((base * height) / 2);
         
-        return {
-          question: `A triangle has base ${base}cm and height ${height}cm. What is its area?`,
-          options: [
-            String(area - 2),
-            String(area),
-            String(area + 2),
-            String(base * height)
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `Area of triangle = ½ × base × height\n= ½ × ${base} × ${height}\n= ½ × ${base * height}\n= ${area}cm²`,
-          topic: 5,
-          difficulty: 'medium'
-        };
+        return createShuffledQuestion(
+          `A triangle has base ${base}cm and height ${height}cm. What is its area?`,
+          [String(area - 2), String(area), String(area + 2), String(base * height)],
+          1, // correct answer is at index 1
+          `Area of triangle = ½ × base × height\n= ½ × ${base} × ${height}\n= ½ × ${base * height}\n= ${area}cm²`,
+          5,
+          'medium'
+        );
       }
     }
     
@@ -889,19 +869,14 @@ const App = () => {
         const startTime = `${startHour}:${startMin.toString().padStart(2, '0')}`;
         const endTime = `${endHour}:${endMin.toString().padStart(2, '0')}`;
         
-        return {
-          question: `What time will it be ${addHours} hours and ${addMins} minutes after ${startTime}?`,
-          options: [
-            `${endHour}:${(endMin - 15).toString().padStart(2, '0')}`,
-            endTime,
-            `${endHour}:${(endMin + 15).toString().padStart(2, '0')}`,
-            `${startHour + addHours}:${startMin}`
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `Starting at ${startTime}\n+ ${addHours} hours = ${startHour + addHours}:${startMin.toString().padStart(2, '0')}\n+ ${addMins} minutes = ${endTime}`,
-          topic: 6,
-          difficulty: 'easy'
-        };
+        return createShuffledQuestion(
+          `What time will it be ${addHours} hours and ${addMins} minutes after ${startTime}?`,
+          [`${endHour}:${(endMin - 15).toString().padStart(2, '0')}`, endTime, `${endHour}:${(endMin + 15).toString().padStart(2, '0')}`, `${startHour + addHours}:${startMin}`],
+          1, // correct answer is at index 1
+          `Starting at ${startTime}\n+ ${addHours} hours = ${startHour + addHours}:${startMin.toString().padStart(2, '0')}\n+ ${addMins} minutes = ${endTime}`,
+          6,
+          'easy'
+        );
       }
     }
     
@@ -914,19 +889,14 @@ const App = () => {
         const sequence = [...pattern, ...pattern, ...pattern.slice(0, 2)];
         const next = pattern[2] || pattern[0];
         
-        return {
-          question: `What comes next in this pattern?\n${sequence.join(' ')}`,
-          options: [
-            pattern[pattern.length - 1],
-            next,
-            shapes[Math.floor(Math.random() * shapes.length)],
-            pattern[0]
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `The pattern repeats: ${pattern.join(' ')}\nAfter ${sequence.join(' ')}, the next shape is ${next}`,
-          topic: 7,
-          difficulty: 'easy'
-        };
+        return createShuffledQuestion(
+          `What comes next in this pattern?\n${sequence.join(' ')}`,
+          [pattern[pattern.length - 1], next, shapes[Math.floor(Math.random() * shapes.length)], pattern[0]],
+          1, // correct answer is at index 1
+          `The pattern repeats: ${pattern.join(' ')}\nAfter ${sequence.join(' ')}, the next shape is ${next}`,
+          7,
+          'easy'
+        );
       } else if (difficulty === 'medium') {
         // Number patterns with operations
         const start = Math.floor(Math.random() * 10) + 1;
@@ -934,19 +904,14 @@ const App = () => {
         const sequence = [start, start * multiplier, start * multiplier * multiplier];
         const next = start * multiplier * multiplier * multiplier;
         
-        return {
-          question: `Find the next number: ${sequence.join(', ')}`,
-          options: [
-            String(next - multiplier),
-            String(next),
-            String(next + multiplier),
-            String(start * multiplier * multiplier)
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `Each number is multiplied by ${multiplier}:\n${start} × ${multiplier} = ${start * multiplier}\n${start * multiplier} × ${multiplier} = ${start * multiplier * multiplier}\n${start * multiplier * multiplier} × ${multiplier} = ${next}`,
-          topic: 7,
-          difficulty: 'medium'
-        };
+        return createShuffledQuestion(
+          `Find the next number: ${sequence.join(', ')}`,
+          [String(next - multiplier), String(next), String(next + multiplier), String(start * multiplier * multiplier)],
+          1, // correct answer is at index 1
+          `Each number is multiplied by ${multiplier}:\n${start} × ${multiplier} = ${start * multiplier}\n${start * multiplier} × ${multiplier} = ${start * multiplier * multiplier}\n${start * multiplier * multiplier} × ${multiplier} = ${next}`,
+          7,
+          'medium'
+        );
       }
     }
     
@@ -959,19 +924,14 @@ const App = () => {
         const sum = num1 + num2;
         const product = num1 * num2;
         
-        return {
-          question: `Two numbers add to ${sum} and multiply to ${product}. What is the larger number?`,
-          options: [
-            String(Math.max(num1, num2) - 1),
-            String(Math.max(num1, num2)),
-            String(Math.max(num1, num2) + 1),
-            String(sum)
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `The numbers are ${num1} and ${num2}.\n${num1} + ${num2} = ${sum} ✓\n${num1} × ${num2} = ${product} ✓\nThe larger number is ${Math.max(num1, num2)}.`,
-          topic: 8,
-          difficulty: 'easy'
-        };
+        return createShuffledQuestion(
+          `Two numbers add to ${sum} and multiply to ${product}. What is the larger number?`,
+          [String(Math.max(num1, num2) - 1), String(Math.max(num1, num2)), String(Math.max(num1, num2) + 1), String(sum)],
+          1, // correct answer is at index 1
+          `The numbers are ${num1} and ${num2}.\n${num1} + ${num2} = ${sum} ✓\n${num1} × ${num2} = ${product} ✓\nThe larger number is ${Math.max(num1, num2)}.`,
+          8,
+          'easy'
+        );
       } else if (difficulty === 'medium') {
         // Multi-step word problems
         const students = Math.floor(Math.random() * 20) + 10;
@@ -979,19 +939,14 @@ const App = () => {
         const studentsPerGroup = Math.floor(students / groups);
         const remainder = students % groups;
         
-        return {
-          question: `There are ${students} students. They are divided into ${groups} equal groups. How many students are in each group?`,
-          options: [
-            String(studentsPerGroup - 1),
-            String(studentsPerGroup),
-            String(studentsPerGroup + 1),
-            String(Math.ceil(students / groups))
-          ].sort(() => Math.random() - 0.5),
-          correct: 1,
-          explanation: `${students} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
-          topic: 8,
-          difficulty: 'medium'
-        };
+        return createShuffledQuestion(
+          `There are ${students} students. They are divided into ${groups} equal groups. How many students are in each group?`,
+          [String(studentsPerGroup - 1), String(studentsPerGroup), String(studentsPerGroup + 1), String(Math.ceil(students / groups))],
+          1, // correct answer is at index 1
+          `${students} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
+          8,
+          'medium'
+        );
       }
     }
     
