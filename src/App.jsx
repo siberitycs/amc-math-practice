@@ -1308,7 +1308,8 @@ const App = () => {
                   key={topic.id}
                   data-topic-id={topic.id}
                   onClick={() => setSelectedTopic(topic)}
-                  className={`p-4 rounded-xl border-2 transition-all bg-gradient-to-br from-purple-50 to-indigo-50 hover:shadow-md ${
+                  onTouchStart={() => {}} // Prevent double-tap zoom
+                  className={`p-4 rounded-xl border-2 transition-all bg-gradient-to-br from-purple-50 to-indigo-50 hover:shadow-md touch-manipulation ${
                     selectedTopic?.id === topic.id ? 'border-purple-500 shadow-lg' : 'border-purple-200'
                   }`}
                 >
@@ -1754,8 +1755,9 @@ const App = () => {
             <button
               key={idx}
               onClick={() => !showFeedback && setSelectedAnswer(idx)}
+              onTouchStart={() => {}} // Prevent double-tap zoom
               disabled={showFeedback}
-              className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+              className={`w-full p-4 rounded-xl border-2 text-left transition-all touch-manipulation ${
                 showFeedback
                   ? idx === question.correct
                     ? 'border-green-500 bg-green-50'
@@ -1785,8 +1787,9 @@ const App = () => {
         {!showFeedback ? (
           <button
             onClick={handleAnswer}
+            onTouchStart={() => {}} // Prevent double-tap zoom
             disabled={selectedAnswer === null}
-            className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${
+            className={`w-full py-4 rounded-xl font-semibold text-lg transition-all touch-manipulation ${
               selectedAnswer !== null
                 ? 'bg-blue-600 text-white hover:bg-blue-700'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
