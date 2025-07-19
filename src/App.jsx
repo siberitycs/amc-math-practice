@@ -21,8 +21,19 @@ const App = () => {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [practiceMode, setPracticeMode] = useState('smart');
   const [selectedDifficulty, setSelectedDifficulty] = useState('Medium');
+  const [difficultyLevels] = useState([
+    { id: 'easy', name: 'Easy', color: 'bg-green-500', description: 'Foundation skills' },
+    { id: 'easy-plus', name: 'Easy+', color: 'bg-green-400', description: 'Building confidence' },
+    { id: 'medium-minus', name: 'Medium-', color: 'bg-yellow-500', description: 'Getting challenging' },
+    { id: 'medium', name: 'Medium', color: 'bg-yellow-400', description: 'AMC level' },
+    { id: 'medium-plus', name: 'Medium+', color: 'bg-orange-500', description: 'Advanced practice' },
+    { id: 'hard-minus', name: 'Hard-', color: 'bg-red-400', description: 'Competition prep' },
+    { id: 'hard', name: 'Hard', color: 'bg-red-500', description: 'Expert level' }
+  ]);
   const [questionCount, setQuestionCount] = useState(10);
   const [timeLimit, setTimeLimit] = useState(0);
+  const [showStepByStep, setShowStepByStep] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   const [userStats, setUserStats] = useState({
     Annie: { 
       totalQuestions: 127, 
@@ -100,7 +111,9 @@ const App = () => {
     { id: 5, name: 'Geometry', icon: '📐', difficulty: 'Medium', color: 'from-yellow-100 to-yellow-200' },
     { id: 6, name: 'Measurement', icon: '📏', difficulty: 'Easy', color: 'from-indigo-100 to-indigo-200' },
     { id: 7, name: 'Patterns', icon: '🔄', difficulty: 'Easy', color: 'from-orange-100 to-orange-200' },
-    { id: 8, name: 'Problem Solving', icon: '🧩', difficulty: 'Hard', color: 'from-red-100 to-red-200' }
+    { id: 8, name: 'Problem Solving', icon: '🧩', difficulty: 'Hard', color: 'from-red-100 to-red-200' },
+    { id: 9, name: 'Probability', icon: '🎲', difficulty: 'Medium', color: 'from-teal-100 to-teal-200' },
+    { id: 10, name: 'Logic', icon: '🧠', difficulty: 'Hard', color: 'from-emerald-100 to-emerald-200' }
   ];
 
   const sampleQuestions = {
@@ -447,6 +460,80 @@ const App = () => {
     return topicsWithScores.sort((a, b) => b.score - a.score).slice(0, 3);
   };
 
+  // Generate step-by-step solution
+  const generateStepByStepSolution = (question) => {
+    const solutions = {
+      'pattern': {
+        steps: [
+          "Step 1: Look at the numbers carefully",
+          "Step 2: Find what changes between each number",
+          "Step 3: Identify the pattern rule",
+          "Step 4: Apply the rule to find the next number",
+          "Step 5: Check your answer makes sense"
+        ],
+        strategy: "Pattern problems require careful observation. Look for arithmetic sequences, geometric sequences, or more complex patterns.",
+        commonMistakes: [
+          "Students often look for simple addition instead of more complex patterns",
+          "A common error is not checking if the pattern continues correctly"
+        ]
+      },
+      'logic': {
+        steps: [
+          "Step 1: Read the problem carefully",
+          "Step 2: List all the given information",
+          "Step 3: Look for relationships between the facts",
+          "Step 4: Use logical reasoning to find the answer",
+          "Step 5: Check that your answer fits all the given information"
+        ],
+        strategy: "Logic problems require systematic thinking. Organize the information and look for contradictions or eliminations.",
+        commonMistakes: [
+          "Students often jump to conclusions without checking all possibilities",
+          "A common error is not using all the given information"
+        ]
+      },
+      'probability': {
+        steps: [
+          "Step 1: Identify the total number of possible outcomes",
+          "Step 2: Count the favorable outcomes",
+          "Step 3: Calculate probability = favorable/total",
+          "Step 4: Simplify the fraction if possible",
+          "Step 5: Check that your probability is between 0 and 1"
+        ],
+        strategy: "Probability problems require careful counting. Make sure you count all possible outcomes correctly.",
+        commonMistakes: [
+          "Students often forget to count all possible outcomes",
+          "A common error is not simplifying fractions"
+        ]
+      },
+      'default': {
+        steps: [
+          "Step 1: Read the problem carefully",
+          "Step 2: Identify what you're looking for",
+          "Step 3: Choose the best strategy",
+          "Step 4: Solve step by step",
+          "Step 5: Check your answer"
+        ],
+        strategy: "Break complex problems into smaller, manageable steps.",
+        commonMistakes: [
+          "Students often rush to answer without understanding the problem",
+          "A common error is not checking if the answer makes sense"
+        ]
+      }
+    };
+    
+    // Determine problem type based on question content
+    let problemType = 'default';
+    if (question.question.includes('pattern') || question.question.includes('next')) {
+      problemType = 'pattern';
+    } else if (question.question.includes('probability') || question.question.includes('chance')) {
+      problemType = 'probability';
+    } else if (question.question.includes('if') || question.question.includes('then') || question.question.includes('friends')) {
+      problemType = 'logic';
+    }
+    
+    return solutions[problemType] || solutions.default;
+  };
+
   // Enhanced AMC-style question generation
   const generateAMCQuestion = (topic, difficulty, year) => {
     const rand = Math.random();
@@ -472,25 +559,109 @@ const App = () => {
           difficulty: 'easy'
         };
       } else if (difficulty === 'medium') {
-        // Place value problems
-        const hundreds = Math.floor(Math.random() * 9) + 1;
-        const tens = Math.floor(Math.random() * 10);
-        const ones = Math.floor(Math.random() * 10);
-        const number = hundreds * 100 + tens * 10 + ones;
-        const reversed = ones * 100 + tens * 10 + hundreds;
+        // Advanced pattern recognition
+        const sequence = [2, 6, 12, 20, 30];
+        const next = 42; // Pattern: +4, +6, +8, +10, +12
+        const wrong1 = 40;
+        const wrong2 = 44;
+        const wrong3 = 46;
         
         return {
-          question: `If I reverse the digits of ${number}, what number do I get?`,
-          options: [
-            String(reversed + 10),
-            String(reversed),
-            String(reversed - 10),
-            String(number)
-          ].sort(() => Math.random() - 0.5),
+          question: `What comes next: ${sequence.join(', ')} ?`,
+          options: [String(wrong1), String(next), String(wrong2), String(wrong3)].sort(() => Math.random() - 0.5),
           correct: 1,
-          explanation: `Reversing ${number} gives ${reversed}\n${hundreds}${tens}${ones} → ${ones}${tens}${hundreds}`,
+          explanation: `Pattern: +4, +6, +8, +10, +12\nEach difference increases by 2.\nSo 30 + 12 = 42`,
           topic: 1,
           difficulty: 'medium'
+        };
+      } else if (difficulty === 'hard') {
+        // Logic and reasoning problems
+        const questions = [
+          {
+            question: "Three friends - Alex, Bella, and Charlie - have different pets. Alex doesn't have a dog, Bella's pet is smaller than Charlie's, and Charlie has a cat. Who has the fish?",
+            options: ["Alex", "Bella", "Charlie", "Cannot determine"],
+            correct: 1,
+            explanation: "Step 1: Charlie has a cat\nStep 2: Bella's pet is smaller than Charlie's cat\nStep 3: So Bella must have the fish (smaller than cat)\nStep 4: Alex doesn't have a dog, so Alex has the dog\nAnswer: Bella has the fish"
+          },
+          {
+            question: "A number is multiplied by 3, then 5 is added, then divided by 2. The result is 13. What was the original number?",
+            options: ["6", "7", "8", "9"],
+            correct: 1,
+            explanation: "Work backwards:\nStep 1: 13 × 2 = 26\nStep 2: 26 - 5 = 21\nStep 3: 21 ÷ 3 = 7\nAnswer: 7"
+          }
+        ];
+        return questions[Math.floor(Math.random() * questions.length)];
+      }
+    }
+    
+    // Probability (Topic 9)
+    if (topic.id === 9) {
+      if (difficulty === 'easy') {
+        const redMarbles = Math.floor(Math.random() * 4) + 2;
+        const blueMarbles = Math.floor(Math.random() * 4) + 3;
+        const total = redMarbles + blueMarbles;
+        const probability = redMarbles / total;
+        
+        return {
+          question: `A bag has ${redMarbles} red marbles and ${blueMarbles} blue marbles. What's the probability of drawing a red marble?`,
+          options: [`${redMarbles}/${total}`, `${redMarbles}/${blueMarbles}`, `${blueMarbles}/${total}`, `${total}/${redMarbles}`],
+          correct: 0,
+          explanation: `Total marbles = ${redMarbles} + ${blueMarbles} = ${total}\nRed marbles = ${redMarbles}\nProbability = ${redMarbles}/${total}`,
+          topic: 9,
+          difficulty: 'easy'
+        };
+      } else if (difficulty === 'medium') {
+        return {
+          question: "If you flip a coin 3 times, what's the probability of getting exactly 2 heads?",
+          options: ["1/8", "3/8", "1/2", "3/4"],
+          correct: 1,
+          explanation: "Possible outcomes: HHH, HHT, HTH, THH, HTT, THT, TTH, TTT\nOutcomes with exactly 2 heads: HHT, HTH, THH\nProbability = 3/8",
+          topic: 9,
+          difficulty: 'medium'
+        };
+      } else if (difficulty === 'hard') {
+        return {
+          question: "A spinner has 4 equal sections: red, blue, green, yellow. If you spin it twice, what's the probability of getting the same color both times?",
+          options: ["1/4", "1/8", "1/16", "1/2"],
+          correct: 0,
+          explanation: "First spin: any color (probability 1)\nSecond spin: must match first color (probability 1/4)\nTotal probability = 1 × 1/4 = 1/4",
+          topic: 9,
+          difficulty: 'hard'
+        };
+      }
+    }
+    
+    // Logic (Topic 10)
+    if (topic.id === 10) {
+      if (difficulty === 'easy') {
+        const questions = [
+          {
+            question: "If all roses are flowers, and some flowers are red, then:",
+            options: ["All roses are red", "Some roses are red", "No roses are red", "Cannot determine"],
+            correct: 1,
+            explanation: "We know:\n- All roses are flowers\n- Some flowers are red\nBut we don't know if the red flowers include roses.\nSo some roses might be red, but not necessarily all."
+          },
+          {
+            question: "If today is Monday, what day was it 3 days ago?",
+            options: ["Thursday", "Friday", "Saturday", "Sunday"],
+            correct: 1,
+            explanation: "Working backwards:\nMonday → Sunday → Saturday → Friday\nSo 3 days ago was Friday"
+          }
+        ];
+        return questions[Math.floor(Math.random() * questions.length)];
+      } else if (difficulty === 'medium') {
+        return {
+          question: "Five friends sit in a circle. Alice sits next to Bob and Charlie. Bob sits next to Alice and David. Who sits next to Charlie?",
+          options: ["Alice and David", "Alice and Eve", "Bob and David", "David and Eve"],
+          correct: 0,
+          explanation: "From the information:\n- Alice is between Bob and Charlie\n- Bob is between Alice and David\nSo the arrangement is: Bob-Alice-Charlie-David-Eve\nCharlie sits next to Alice and David"
+        };
+      } else if (difficulty === 'hard') {
+        return {
+          question: "A number is multiplied by 3, then 5 is added, then divided by 2. The result is 13. What was the original number?",
+          options: ["6", "7", "8", "9"],
+          correct: 1,
+          explanation: "Work backwards:\nStep 1: 13 × 2 = 26\nStep 2: 26 - 5 = 21\nStep 3: 21 ÷ 3 = 7\nAnswer: 7"
         };
       }
     }
@@ -1493,24 +1664,30 @@ const App = () => {
                 
                 {practiceMode === 'custom' && (
                   <div className="mt-6 space-y-4">
-                    {/* Difficulty Selection - Simplified */}
+                    {/* Enhanced Difficulty Selection */}
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-2 block">Difficulty</label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {['Easy 😊', 'Medium 🤔', 'Hard 🧠'].map(diff => (
+                      <label className="text-sm font-medium text-gray-700 mb-2 block">Difficulty Level</label>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        {difficultyLevels.map(level => (
                           <button
-                            key={diff}
+                            key={level.id}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedDifficulty(diff.split(' ')[0]);
+                              setSelectedDifficulty(level.name);
                             }}
-                            className={`py-2 px-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                              selectedDifficulty === diff.split(' ')[0]
+                            className={`p-3 rounded-lg border-2 transition-all text-left ${
+                              selectedDifficulty === level.name
                                 ? 'border-purple-500 bg-purple-50 text-purple-600'
                                 : 'border-gray-200 hover:border-gray-300'
                             }`}
                           >
-                            {diff}
+                            <div className="flex items-center space-x-2">
+                              <div className={`w-3 h-3 rounded-full ${level.color}`}></div>
+                              <div>
+                                <div className="font-medium text-sm">{level.name}</div>
+                                <div className="text-xs text-gray-500">{level.description}</div>
+                              </div>
+                            </div>
                           </button>
                         ))}
                       </div>
@@ -1799,6 +1976,64 @@ const App = () => {
           </button>
         ) : (
           <>
+            {/* Step-by-Step Solution Button */}
+            <button
+              onClick={() => {
+                setShowStepByStep(!showStepByStep);
+                setCurrentStep(0);
+              }}
+              className="w-full py-3 mb-3 bg-purple-600 text-white rounded-xl font-semibold text-lg transition-all hover:bg-purple-700"
+            >
+              {showStepByStep ? 'Hide' : 'Show'} Step-by-Step Solution
+            </button>
+            
+            {/* Step-by-Step Solution */}
+            {showStepByStep && (
+              <div className="mb-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border-2 border-purple-200">
+                <h3 className="text-lg font-semibold text-purple-800 mb-3">Step-by-Step Solution</h3>
+                
+                {(() => {
+                  const solution = generateStepByStepSolution(question);
+                  return (
+                    <div>
+                      <div className="mb-4">
+                        <h4 className="font-medium text-purple-700 mb-2">Strategy:</h4>
+                        <p className="text-gray-700">{solution.strategy}</p>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <h4 className="font-medium text-purple-700 mb-2">Steps:</h4>
+                        <div className="space-y-2">
+                          {solution.steps.map((step, idx) => (
+                            <div key={idx} className="flex items-start space-x-3">
+                              <div className="bg-purple-100 text-purple-700 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                                {idx + 1}
+                              </div>
+                              <p className="text-gray-700">{step}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <h4 className="font-medium text-purple-700 mb-2">Common Mistakes:</h4>
+                        <ul className="list-disc list-inside space-y-1 text-gray-700">
+                          {solution.commonMistakes.map((mistake, idx) => (
+                            <li key={idx}>{mistake}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded">
+                        <h4 className="font-medium text-blue-800 mb-1">Answer:</h4>
+                        <p className="text-blue-700">{question.options[question.correct]}</p>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+            
             {/* Feedback */}
             <div className={`p-6 rounded-xl mb-4 ${
               selectedAnswer === question.correct ? 'bg-green-50' : 'bg-red-50'
@@ -1810,13 +2045,16 @@ const App = () => {
               </h4>
               <p className="text-gray-700 whitespace-pre-line">{question.explanation}</p>
             </div>
+            
+            {/* Next Question Button */}
             <button
               onClick={nextQuestion}
-              className="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors"
+              className="w-full py-4 bg-green-600 text-white rounded-xl font-semibold text-lg transition-all hover:bg-green-700"
             >
-              {currentQuestion < practiceSession.totalQuestions - 1 ? 'Next Question' : 'View Results'}
+              {currentQuestion < practiceSession.totalQuestions - 1 ? 'Next Question' : 'See Results'}
             </button>
           </>
+        )}
         )}
       </div>
     );
