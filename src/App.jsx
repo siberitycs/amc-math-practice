@@ -704,18 +704,19 @@ const App = () => {
             'medium'
           );
         } else if (difficulty === 'hard') {
-          // AMC-style number theory: Find smallest number with specific properties
-          const factor1 = Math.floor(Math.random() * 5) + 2;
-          const factor2 = Math.floor(Math.random() * 5) + 2;
-          const factor3 = Math.floor(Math.random() * 5) + 2;
-          const lcm = findLCM(findLCM(factor1, factor2), factor3);
-          const answer = lcm;
+          // EXPERT LEVEL: AMC-style advanced number theory with multiple concepts
+          const baseNum = Math.floor(Math.random() * 900) + 100;
+          const digitSum = String(baseNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+          const remainder = baseNum % 9;
+          const nextNum = baseNum + 9;
+          const nextDigitSum = String(nextNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+          const answer = nextDigitSum;
           
           return createShuffledQuestion(
-            `What is the smallest positive integer that is divisible by ${factor1}, ${factor2}, and ${factor3}?`,
-            [String(answer - lcm), String(answer), String(answer + lcm), String(factor1 * factor2 * factor3)],
+            `A number has a digit sum of ${digitSum} and leaves remainder ${remainder} when divided by 9. What is the digit sum of the next number that leaves remainder ${remainder} when divided by 9?`,
+            [String(answer - 1), String(answer), String(answer + 1), String(digitSum + 9)],
             1,
-            `We need the Least Common Multiple (LCM) of ${factor1}, ${factor2}, and ${factor3}.\nLCM(${factor1}, ${factor2}) = ${findLCM(factor1, factor2)}\nLCM(${findLCM(factor1, factor2)}, ${factor3}) = ${answer}\nThe smallest number divisible by all three is ${answer}.`,
+            `Since the number leaves remainder ${remainder} when divided by 9, the next such number is ${baseNum} + 9 = ${nextNum}.\nThe digit sum of ${nextNum} is ${String(nextNum).split('').join(' + ')} = ${answer}.\nNote: Numbers with the same remainder when divided by 9 differ by multiples of 9.`,
             1,
             'hard'
           );
@@ -751,18 +752,19 @@ const App = () => {
             'medium'
           );
         } else if (difficulty === 'hard') {
-          // AMC-style advanced number theory: Sum of digits and divisibility
-          const baseNum = Math.floor(Math.random() * 900) + 100;
+          // EXPERT LEVEL: AMC-style advanced number theory with divisibility rules
+          const baseNum = Math.floor(Math.random() * 800) + 200;
           const digitSum = String(baseNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
-          const nextNum = baseNum + 1;
+          const remainder = baseNum % 9;
+          const nextNum = baseNum + 9;
           const nextDigitSum = String(nextNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
           const answer = nextDigitSum;
           
           return createShuffledQuestion(
-            `The sum of the digits of ${baseNum} is ${digitSum}. What is the sum of the digits of ${nextNum}?`,
-            [String(answer - 1), String(answer), String(answer + 1), String(digitSum + 1)],
+            `A number has digit sum ${digitSum} and leaves remainder ${remainder} when divided by 9. What is the digit sum of the next number that leaves remainder ${remainder} when divided by 9?`,
+            [String(answer - 1), String(answer), String(answer + 1), String(digitSum + 9)],
             1,
-            `Let's find the sum of digits of ${nextNum}:\n${nextNum} = ${String(nextNum).split('').join(' + ')} = ${answer}\nThe sum of digits is ${answer}.`,
+            `Since the number leaves remainder ${remainder} when divided by 9, the next such number is ${baseNum} + 9 = ${nextNum}.\nThe digit sum of ${nextNum} is ${String(nextNum).split('').join(' + ')} = ${answer}.\nNote: Numbers with the same remainder when divided by 9 differ by multiples of 9.`,
             1,
             'hard'
           );
@@ -802,18 +804,19 @@ const App = () => {
             'medium'
           );
         } else if (difficulty === 'hard') {
-          // AMC-style multi-step word problem with multiple operations
-          const originalMoney = Math.floor(Math.random() * 200) + 100;
-          const spent1 = Math.floor(Math.random() * 50) + 20;
-          const earned = Math.floor(Math.random() * 80) + 40;
-          const spent2 = Math.floor(Math.random() * 60) + 30;
-          const finalMoney = originalMoney - spent1 + earned - spent2;
+          // EXPERT LEVEL: AMC-style complex multi-step problem with variables
+          const originalMoney = Math.floor(Math.random() * 500) + 200;
+          const spent1 = Math.floor(Math.random() * 100) + 50;
+          const earned = Math.floor(Math.random() * 150) + 100;
+          const spent2 = Math.floor(Math.random() * 120) + 80;
+          const spent3 = Math.floor(Math.random() * 80) + 40;
+          const finalMoney = originalMoney - spent1 + earned - spent2 - spent3;
           
           return createShuffledQuestion(
-            `Tom had $${originalMoney}. He spent $${spent1}, then earned $${earned}, and finally spent $${spent2}. How much money does he have now?`,
-            [String(finalMoney - 5), String(finalMoney), String(finalMoney + 5), String(originalMoney + earned)],
+            `Tom had $${originalMoney}. He spent $${spent1}, then earned $${earned}, then spent $${spent2}, and finally spent $${spent3}. How much money does he have now?`,
+            [String(finalMoney - 3), String(finalMoney), String(finalMoney + 3), String(originalMoney + earned - spent1)],
             1,
-            `Step 1: Start with $${originalMoney}\nStep 2: Spend $${spent1} → $${originalMoney - spent1}\nStep 3: Earn $${earned} → $${originalMoney - spent1 + earned}\nStep 4: Spend $${spent2} → $${finalMoney}\nTom now has $${finalMoney}.`,
+            `Step 1: Start with $${originalMoney}\nStep 2: Spend $${spent1} → $${originalMoney - spent1}\nStep 3: Earn $${earned} → $${originalMoney - spent1 + earned}\nStep 4: Spend $${spent2} → $${originalMoney - spent1 + earned - spent2}\nStep 5: Spend $${spent3} → $${finalMoney}\nTom now has $${finalMoney}.`,
             2,
             'hard'
           );
@@ -850,22 +853,23 @@ const App = () => {
             'medium'
           );
         } else if (difficulty === 'hard') {
-          // AMC-style complex word problem with multiple variables
-          const totalStudents = Math.floor(Math.random() * 100) + 50;
-          const boysRatio = Math.floor(Math.random() * 3) + 2;
-          const girlsRatio = Math.floor(Math.random() * 3) + 2;
+          // EXPERT LEVEL: AMC-style complex ratio problem with multiple changes
+          const totalStudents = Math.floor(Math.random() * 200) + 100;
+          const boysRatio = Math.floor(Math.random() * 4) + 2;
+          const girlsRatio = Math.floor(Math.random() * 4) + 2;
           const totalRatio = boysRatio + girlsRatio;
           const boys = Math.round((totalStudents * boysRatio) / totalRatio);
           const girls = totalStudents - boys;
-          const newBoys = Math.floor(Math.random() * 10) + 5;
-          const newGirls = Math.floor(Math.random() * 10) + 5;
-          const finalTotal = totalStudents + newBoys + newGirls;
+          const newBoys = Math.floor(Math.random() * 15) + 10;
+          const newGirls = Math.floor(Math.random() * 15) + 10;
+          const transferredBoys = Math.floor(Math.random() * 5) + 2;
+          const finalTotal = totalStudents + newBoys + newGirls - transferredBoys;
           
           return createShuffledQuestion(
-            `A school has ${totalStudents} students in the ratio ${boysRatio}:${girlsRatio} (boys:girls). If ${newBoys} more boys and ${newGirls} more girls join, how many students will there be?`,
-            [String(finalTotal - 2), String(finalTotal), String(finalTotal + 2), String(totalStudents + newBoys)],
+            `A school has ${totalStudents} students in the ratio ${boysRatio}:${girlsRatio} (boys:girls). If ${newBoys} more boys and ${newGirls} more girls join, but ${transferredBoys} boys transfer out, how many students will there be?`,
+            [String(finalTotal - 2), String(finalTotal), String(finalTotal + 2), String(totalStudents + newBoys + newGirls)],
             1,
-            `Current students: ${totalStudents}\nBoys: ${boys}, Girls: ${girls}\nNew students: ${newBoys} + ${newGirls} = ${newBoys + newGirls}\nTotal: ${totalStudents} + ${newBoys + newGirls} = ${finalTotal}`,
+            `Current students: ${totalStudents}\nBoys: ${boys}, Girls: ${girls}\nNew students: ${newBoys} + ${newGirls} = ${newBoys + newGirls}\nTransferred out: ${transferredBoys}\nTotal: ${totalStudents} + ${newBoys + newGirls} - ${transferredBoys} = ${finalTotal}`,
             2,
             'hard'
           );
@@ -950,22 +954,27 @@ const App = () => {
             'medium'
           );
         } else if (difficulty === 'hard') {
-          // AMC-style complex multiplication with multiple operations
-          const basePrice = Math.floor(Math.random() * 20) + 10;
-          const quantity = Math.floor(Math.random() * 15) + 8;
-          const discount = Math.floor(Math.random() * 3) + 1;
-          const tax = Math.floor(Math.random() * 2) + 1;
+          // EXPERT LEVEL: AMC-style complex multi-step business problem
+          const basePrice = Math.floor(Math.random() * 30) + 15;
+          const quantity = Math.floor(Math.random() * 20) + 10;
+          const discount1 = Math.floor(Math.random() * 5) + 3;
+          const discount2 = Math.floor(Math.random() * 3) + 2;
+          const tax = Math.floor(Math.random() * 3) + 1;
+          const shipping = Math.floor(Math.random() * 10) + 5;
+          
           const subtotal = basePrice * quantity;
-          const discountAmount = Math.floor(subtotal * discount / 100);
-          const afterDiscount = subtotal - discountAmount;
-          const taxAmount = Math.floor(afterDiscount * tax / 100);
-          const finalTotal = afterDiscount + taxAmount;
+          const discount1Amount = Math.floor(subtotal * discount1 / 100);
+          const afterDiscount1 = subtotal - discount1Amount;
+          const discount2Amount = Math.floor(afterDiscount1 * discount2 / 100);
+          const afterDiscount2 = afterDiscount1 - discount2Amount;
+          const taxAmount = Math.floor(afterDiscount2 * tax / 100);
+          const finalTotal = afterDiscount2 + taxAmount + shipping;
           
           return createShuffledQuestion(
-            `A store sells items for $${basePrice} each. If you buy ${quantity} items with a ${discount}% discount and ${tax}% tax, what is the total cost?`,
-            [String(finalTotal - 2), String(finalTotal), String(finalTotal + 2), String(subtotal)],
+            `A store sells items for $${basePrice} each. If you buy ${quantity} items with a ${discount1}% discount, then an additional ${discount2}% discount, plus ${tax}% tax and $${shipping} shipping, what is the total cost?`,
+            [String(finalTotal - 3), String(finalTotal), String(finalTotal + 3), String(subtotal + shipping)],
             1,
-            `Step 1: Subtotal = $${basePrice} × ${quantity} = $${subtotal}\nStep 2: Discount = $${subtotal} × ${discount}% = $${discountAmount}\nStep 3: After discount = $${subtotal} - $${discountAmount} = $${afterDiscount}\nStep 4: Tax = $${afterDiscount} × ${tax}% = $${taxAmount}\nStep 5: Total = $${afterDiscount} + $${taxAmount} = $${finalTotal}`,
+            `Step 1: Subtotal = $${basePrice} × ${quantity} = $${subtotal}\nStep 2: First discount = $${subtotal} × ${discount1}% = $${discount1Amount}\nStep 3: After first discount = $${subtotal} - $${discount1Amount} = $${afterDiscount1}\nStep 4: Second discount = $${afterDiscount1} × ${discount2}% = $${discount2Amount}\nStep 5: After second discount = $${afterDiscount1} - $${discount2Amount} = $${afterDiscount2}\nStep 6: Tax = $${afterDiscount2} × ${tax}% = $${taxAmount}\nStep 7: Total = $${afterDiscount2} + $${taxAmount} + $${shipping} = $${finalTotal}`,
             3,
             'hard'
           );
@@ -1012,27 +1021,34 @@ const App = () => {
             'medium'
           );
         } else if (difficulty === 'hard') {
-          // AMC-style fraction word problem with mixed numbers
-          const whole1 = Math.floor(Math.random() * 3) + 1;
-          const num1 = Math.floor(Math.random() * 3) + 1;
-          const den1 = Math.floor(Math.random() * 4) + 2;
-          const whole2 = Math.floor(Math.random() * 2) + 1;
-          const num2 = Math.floor(Math.random() * 2) + 1;
-          const den2 = Math.floor(Math.random() * 4) + 2;
+          // EXPERT LEVEL: AMC-style complex fraction operations with multiple mixed numbers
+          const whole1 = Math.floor(Math.random() * 4) + 2;
+          const num1 = Math.floor(Math.random() * 4) + 1;
+          const den1 = Math.floor(Math.random() * 5) + 2;
+          const whole2 = Math.floor(Math.random() * 3) + 1;
+          const num2 = Math.floor(Math.random() * 3) + 1;
+          const den2 = Math.floor(Math.random() * 5) + 2;
+          const whole3 = Math.floor(Math.random() * 2) + 1;
+          const num3 = Math.floor(Math.random() * 2) + 1;
+          const den3 = Math.floor(Math.random() * 5) + 2;
           
           const improper1 = whole1 * den1 + num1;
           const improper2 = whole2 * den2 + num2;
-          const lcm = findLCM(den1, den2);
+          const improper3 = whole3 * den3 + num3;
+          
+          const lcm12 = findLCM(den1, den2);
+          const lcm = findLCM(lcm12, den3);
           const newNum1 = improper1 * (lcm / den1);
           const newNum2 = improper2 * (lcm / den2);
-          const resultNum = newNum1 + newNum2;
+          const newNum3 = improper3 * (lcm / den3);
+          const resultNum = newNum1 + newNum2 - newNum3;
           const result = `${resultNum}/${lcm}`;
           
           return createShuffledQuestion(
-            `What is ${whole1} ${num1}/${den1} + ${whole2} ${num2}/${den2}?`,
-            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${improper1 + improper2}/${den1 + den2}`],
+            `What is (${whole1} ${num1}/${den1} + ${whole2} ${num2}/${den2}) - ${whole3} ${num3}/${den3}?`,
+            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${improper1 + improper2 - improper3}/${den1 + den2 + den3}`],
             1,
-            `Convert to improper fractions:\n${whole1} ${num1}/${den1} = ${improper1}/${den1}\n${whole2} ${num2}/${den2} = ${improper2}/${den2}\nFind common denominator and add:\n${improper1}/${den1} + ${improper2}/${den2} = ${result}`,
+            `Step 1: Convert to improper fractions:\n${whole1} ${num1}/${den1} = ${improper1}/${den1}\n${whole2} ${num2}/${den2} = ${improper2}/${den2}\n${whole3} ${num3}/${den3} = ${improper3}/${den3}\nStep 2: Find common denominator ${lcm}\nStep 3: Add first two: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${newNum1 + newNum2}/${lcm}\nStep 4: Subtract third: ${newNum1 + newNum2}/${lcm} - ${newNum3}/${lcm} = ${result}`,
             4,
             'hard'
           );
@@ -1083,28 +1099,34 @@ const App = () => {
             'medium'
           );
         } else if (difficulty === 'hard') {
-          // AMC-style complex fraction operations with mixed operations
-          const num1 = Math.floor(Math.random() * 5) + 1;
-          const den1 = Math.floor(Math.random() * 6) + 2;
-          const num2 = Math.floor(Math.random() * 4) + 1;
-          const den2 = Math.floor(Math.random() * 6) + 2;
-          const num3 = Math.floor(Math.random() * 3) + 1;
-          const den3 = Math.floor(Math.random() * 6) + 2;
+          // EXPERT LEVEL: AMC-style complex fraction operations with multiple steps and variables
+          const num1 = Math.floor(Math.random() * 6) + 1;
+          const den1 = Math.floor(Math.random() * 7) + 2;
+          const num2 = Math.floor(Math.random() * 5) + 1;
+          const den2 = Math.floor(Math.random() * 7) + 2;
+          const num3 = Math.floor(Math.random() * 4) + 1;
+          const den3 = Math.floor(Math.random() * 7) + 2;
+          const num4 = Math.floor(Math.random() * 3) + 1;
+          const den4 = Math.floor(Math.random() * 7) + 2;
           
-          // (a/b + c/d) - e/f
+          // (a/b + c/d) - (e/f + g/h)
           const lcm12 = findLCM(den1, den2);
-          const lcm = findLCM(lcm12, den3);
+          const lcm34 = findLCM(den3, den4);
+          const lcm = findLCM(lcm12, lcm34);
+          
           const newNum1 = num1 * (lcm / den1);
           const newNum2 = num2 * (lcm / den2);
           const newNum3 = num3 * (lcm / den3);
-          const resultNum = newNum1 + newNum2 - newNum3;
+          const newNum4 = num4 * (lcm / den4);
+          
+          const resultNum = (newNum1 + newNum2) - (newNum3 + newNum4);
           const result = `${resultNum}/${lcm}`;
           
           return createShuffledQuestion(
-            `What is (${num1}/${den1} + ${num2}/${den2}) - ${num3}/${den3}?`,
-            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2 - num3}/${den1 + den2 + den3}`],
+            `What is (${num1}/${den1} + ${num2}/${den2}) - (${num3}/${den3} + ${num4}/${den4})?`,
+            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2 - num3 - num4}/${den1 + den2 + den3 + den4}`],
             1,
-            `Step 1: Add ${num1}/${den1} + ${num2}/${den2}\nFind common denominator ${lcm}:\n${newNum1}/${lcm} + ${newNum2}/${lcm} = ${newNum1 + newNum2}/${lcm}\nStep 2: Subtract ${num3}/${den3}\n${newNum1 + newNum2}/${lcm} - ${newNum3}/${lcm} = ${result}`,
+            `Step 1: Add first group: ${num1}/${den1} + ${num2}/${den2}\nFind common denominator ${lcm}:\n${newNum1}/${lcm} + ${newNum2}/${lcm} = ${newNum1 + newNum2}/${lcm}\nStep 2: Add second group: ${num3}/${den3} + ${num4}/${den4}\n${newNum3}/${lcm} + ${newNum4}/${lcm} = ${newNum3 + newNum4}/${lcm}\nStep 3: Subtract: ${newNum1 + newNum2}/${lcm} - ${newNum3 + newNum4}/${lcm} = ${result}`,
             4,
             'hard'
           );
