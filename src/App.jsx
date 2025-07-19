@@ -627,6 +627,16 @@ const App = () => {
   };
 
   // Enhanced AMC-style question generation with year-appropriate content
+  // Helper function to find LCM
+  const findLCM = (a, b) => {
+    return (a * b) / findGCD(a, b);
+  };
+  
+  // Helper function to find GCD
+  const findGCD = (a, b) => {
+    return b === 0 ? a : findGCD(b, a % b);
+  };
+  
   const generateAMCQuestion = (topic, difficulty, year) => {
     const rand = Math.random();
     
@@ -856,9 +866,9 @@ const App = () => {
           const den1 = Math.floor(Math.random() * 6) + 2;
           const num2 = Math.floor(Math.random() * 4) + 1;
           const den2 = Math.floor(Math.random() * 6) + 2;
-          const lcm = den1 * den2;
-          const newNum1 = num1 * den2;
-          const newNum2 = num2 * den1;
+          const lcm = findLCM(den1, den2);
+          const newNum1 = num1 * (lcm / den1);
+          const newNum2 = num2 * (lcm / den2);
           const resultNum = newNum1 + newNum2;
           const result = `${resultNum}/${lcm}`;
           
@@ -877,9 +887,9 @@ const App = () => {
           const den1 = Math.floor(Math.random() * 8) + 2;
           const num2 = Math.floor(Math.random() * 5) + 1;
           const den2 = Math.floor(Math.random() * 8) + 2;
-          const lcm = den1 * den2;
-          const newNum1 = num1 * den2;
-          const newNum2 = num2 * den1;
+          const lcm = findLCM(den1, den2);
+          const newNum1 = num1 * (lcm / den1);
+          const newNum2 = num2 * (lcm / den2);
           const resultNum = newNum1 + newNum2;
           const result = `${resultNum}/${lcm}`;
           
@@ -899,11 +909,12 @@ const App = () => {
           const num3 = Math.floor(Math.random() * 5) + 1;
           const den3 = Math.floor(Math.random() * 9) + 2;
           
-          // Find LCM of all three denominators (simplified approach)
-          const lcm = den1 * den2 * den3;
-          const newNum1 = num1 * den2 * den3;
-          const newNum2 = num2 * den1 * den3;
-          const newNum3 = num3 * den1 * den2;
+          // Find LCM of all three denominators
+          const lcm12 = findLCM(den1, den2);
+          const lcm = findLCM(lcm12, den3);
+          const newNum1 = num1 * (lcm / den1);
+          const newNum2 = num2 * (lcm / den2);
+          const newNum3 = num3 * (lcm / den3);
           const resultNum = newNum1 + newNum2 + newNum3;
           const result = `${resultNum}/${lcm}`;
           
@@ -1316,7 +1327,7 @@ const App = () => {
             `If ${x} + ${y} = ${x + y}, what is ${x + y} + ${x}?`,
             [String(wrong1), String((x + y) + x), String(wrong2), String(wrong3)],
             1,
-            `We know ${x} + ${y} = ${x + y}\nSo ${x + y} + ${x} = ${x + y} + ${x} = ${(x + y) + x}`,
+            `We know ${x} + ${y} = ${x + y}\nSo ${x + y} + ${x} = ${(x + y) + x}`,
             10,
             'medium'
           );
