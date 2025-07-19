@@ -483,6 +483,26 @@ const App = () => {
 
   const getRecommendedTopics = () => {
     const stats = userStats[currentUser]?.topicStats || {};
+    const user = users[currentUser];
+    
+    // Personalized topic preferences based on user characteristics
+    const userPreferences = {
+      Annie: {
+        // Year 5 student who loves challenges - focus on advanced topics
+        preferredTopics: [8, 10, 3, 4, 9], // Problem Solving, Logic, Multiplication, Fractions, Probability
+        difficultyBonus: { 'Hard': 15, 'Medium': 10, 'Easy': 5 },
+        ageBonus: 10 // Older student bonus
+      },
+      Bella: {
+        // Year 3 student who enjoys learning - focus on foundational topics
+        preferredTopics: [1, 2, 7, 6, 5], // Number, Addition/Subtraction, Patterns, Measurement, Geometry
+        difficultyBonus: { 'Easy': 15, 'Medium': 10, 'Hard': 5 },
+        ageBonus: 0 // Younger student
+      }
+    };
+    
+    const preferences = userPreferences[currentUser] || userPreferences.Bella;
+    
     const topicsWithScores = topics.map(topic => {
       const performance = getTopicPerformance(topic.id);
       const daysSinceLastPractice = stats[topic.id] 
@@ -491,11 +511,15 @@ const App = () => {
       
       const performanceScore = 100 - performance;
       const timeScore = Math.min(daysSinceLastPractice * 3, 90);
-      const difficultyBonus = topic.difficulty === 'Hard' ? 10 : topic.difficulty === 'Medium' ? 5 : 0;
+      const difficultyBonus = preferences.difficultyBonus[topic.difficulty] || 5;
+      
+      // Personalization bonus based on user preferences
+      const preferenceBonus = preferences.preferredTopics.includes(topic.id) ? 20 : 0;
+      const ageBonus = preferences.ageBonus;
       
       return {
         ...topic,
-        score: performanceScore + timeScore + difficultyBonus,
+        score: performanceScore + timeScore + difficultyBonus + preferenceBonus + ageBonus,
         performance,
         daysSinceLastPractice
       };
@@ -1533,6 +1557,8 @@ const App = () => {
                       <p className="text-xs text-gray-500">
                         {topic.daysSinceLastPractice === 0 
                           ? 'Practiced today' 
+                          : topic.daysSinceLastPractice >= 30
+                          ? 'Never practiced'
                           : `${topic.daysSinceLastPractice}d ago`}
                       </p>
                     </div>
