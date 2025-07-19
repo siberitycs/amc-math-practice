@@ -33,19 +33,15 @@ const App = () => {
   
   // Load user stats from localStorage or initialize with clean data
   useEffect(() => {
-    const savedStats = localStorage.getItem('amc-math-stats');
-    if (savedStats) {
-      try {
-        const parsedStats = JSON.parse(savedStats);
-        setUserStats(parsedStats);
-      } catch (error) {
-        console.log('Error loading stats, using clean data');
-        localStorage.removeItem('amc-math-stats');
-      }
-    }
+    // Clear all old data to start fresh
+    localStorage.removeItem('amc-math-stats');
+    localStorage.removeItem('amc-math-achievements');
+    localStorage.removeItem('amc-math-mistakes');
     
     // Clear any stuck achievement popup on startup
     setShowAchievement(null);
+    
+    console.log('Fresh start - all localStorage cleared');
   }, []);
   
   // Keyboard shortcut to reset stuck achievements (Ctrl+Shift+R)
@@ -428,6 +424,12 @@ const App = () => {
   const checkAchievements = (newStats) => {
     const newAchievements = [];
     const currentBadges = userStats[currentUser].badges || [];
+    
+    // Safety check: Only allow achievements for realistic progress
+    if (newStats.totalQuestions > 1000) {
+      console.log('Suspicious question count detected, ignoring achievement check');
+      return;
+    }
     
     // Only trigger achievements if they haven't been awarded yet
     if (newStats.totalQuestions >= 100 && !currentBadges.includes('Century Club')) {
