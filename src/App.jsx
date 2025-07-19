@@ -1733,6 +1733,11 @@ const App = () => {
                   <Star key={i} className="w-4 h-4 fill-current" />
                 ))}
               </div>
+              <div className="mt-2 bg-white/20 rounded-lg p-2">
+                <p className="text-xs italic">
+                  💕 "You're amazing, {currentUser}! Keep shining bright!" 💕
+                </p>
+              </div>
             </div>
           </div>
           <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-yellow-300 animate-pulse" />
@@ -1785,6 +1790,11 @@ const App = () => {
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Welcome back, {currentUser}! 👋</h2>
               <p className="text-base md:text-lg text-gray-700 mb-3">Ready to practice some amazing math problems?</p>
+              <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mb-3">
+                <p className="text-sm text-gray-700 italic">
+                  💕 "Dear {currentUser}, you are capable of amazing things! Every problem you solve makes you stronger and smarter. I'm so proud of you!" 💕
+                </p>
+              </div>
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                 <span className="px-3 py-1 bg-white/80 backdrop-blur rounded-full text-sm font-medium shadow-sm">
                   🎓 Year {users[currentUser].year}
@@ -2696,6 +2706,16 @@ const App = () => {
                 {selectedAnswer === question.correct ? '🎉 Correct!' : '💡 Not quite right'}
               </h4>
               <p className="text-gray-700 whitespace-pre-line">{question.explanation}</p>
+              
+              {/* Love Message */}
+              <div className="mt-4 bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-3 rounded-lg">
+                <p className="text-sm text-gray-700 italic">
+                  {selectedAnswer === question.correct 
+                    ? `💕 "Wonderful job, ${currentUser}! You're getting so smart! I'm so proud of you!" 💕`
+                    : `💕 "Don't worry, ${currentUser}! Making mistakes is how we learn. You're doing great, and I believe in you!" 💕`
+                  }
+                </p>
+              </div>
             </div>
             
             {/* Next Question Button */}
@@ -2802,6 +2822,13 @@ const App = () => {
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Practice Complete! 🎉</h2>
           <p className={`text-xl ${performance.color} font-semibold`}>{performance.text}</p>
+          
+          {/* Love Message */}
+          <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mt-4 max-w-md mx-auto">
+            <p className="text-sm text-gray-700 italic">
+              💕 "Sweet {currentUser}, whether you got them all right or made some mistakes, I'm so proud of you for trying! Every step forward is a victory. You are amazing!" 💕
+            </p>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-6">
@@ -2940,6 +2967,13 @@ const App = () => {
   const ProgressScreen = () => (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">{currentUser}'s Progress</h2>
+      
+      {/* Love Message */}
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mb-6">
+        <p className="text-sm text-gray-700 italic">
+          💕 "Dear {currentUser}, look at how much you've grown! Every question you've answered, every challenge you've faced - you're becoming such a brilliant mathematician. I'm so proud of your dedication and hard work!" 💕
+        </p>
+      </div>
       
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -3226,6 +3260,13 @@ const App = () => {
   const HelpScreen = () => (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Help & Tips</h2>
+      
+      {/* Love Message */}
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mb-6">
+        <p className="text-sm text-gray-700 italic">
+          💕 "Dear {currentUser}, remember that learning is a journey, not a race. Take your time, ask questions, and know that I'm here cheering you on every step of the way. You've got this!" 💕
+        </p>
+      </div>
       
       <div className="space-y-6">
         <div className="bg-white rounded-xl shadow-sm p-6">
