@@ -400,26 +400,28 @@ const App = () => {
   // Check for new achievements
   const checkAchievements = (newStats) => {
     const newAchievements = [];
+    const currentBadges = userStats[currentUser].badges || [];
     
-    if (newStats.totalQuestions >= 100 && !achievements.includes('Century Club')) {
+    if (newStats.totalQuestions >= 100 && !currentBadges.includes('Century Club')) {
       newAchievements.push('Century Club');
       setShowAchievement({ name: 'Century Club', desc: '100 questions answered!', icon: '💯' });
     }
     
-    if (newStats.accuracy >= 90 && !achievements.includes('Accuracy Master')) {
+    if (newStats.accuracy >= 90 && !currentBadges.includes('Accuracy Master')) {
       newAchievements.push('Accuracy Master');
       setShowAchievement({ name: 'Accuracy Master', desc: '90% accuracy achieved!', icon: '🎯' });
     }
     
-    if (newStats.streak >= 7 && !achievements.includes('Week Warrior')) {
+    if (newStats.streak >= 7 && !currentBadges.includes('Week Warrior')) {
       newAchievements.push('Week Warrior');
       setShowAchievement({ name: 'Week Warrior', desc: '7 day streak!', icon: '🔥' });
     }
     
     if (newAchievements.length > 0) {
-      const updatedAchievements = [...achievements, ...newAchievements];
-      setAchievements(updatedAchievements);
-      localStorage.setItem('amc-math-achievements', JSON.stringify(updatedAchievements));
+      const updatedBadges = [...currentBadges, ...newAchievements];
+      const updatedStats = { ...userStats[currentUser], badges: updatedBadges };
+      setUserStats({ ...userStats, [currentUser]: updatedStats });
+      localStorage.setItem('amc-math-stats', JSON.stringify({ ...userStats, [currentUser]: updatedStats }));
     }
   };
 
@@ -1089,6 +1091,8 @@ const App = () => {
           setTimeout(() => setShowAchievement(null), 300);
         }, 3700);
         return () => clearTimeout(timer);
+      } else {
+        setIsVisible(false);
       }
     }, [showAchievement]);
 
@@ -1098,7 +1102,14 @@ const App = () => {
       <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
         isVisible ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-full opacity-0 scale-95'
       }`}>
-        <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-white px-8 py-6 rounded-2xl shadow-2xl">
+        <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-white px-8 py-6 rounded-2xl shadow-2xl relative">
+          <button
+            onClick={() => setShowAchievement(null)}
+            className="absolute top-2 right-2 text-white/70 hover:text-white transition-colors"
+            title="Close achievement"
+          >
+            <X className="w-5 h-5" />
+          </button>
           <div className="flex items-center space-x-4">
             <div className="text-5xl animate-pulse">{showAchievement.icon}</div>
             <div>
