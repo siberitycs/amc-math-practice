@@ -1735,7 +1735,10 @@ const App = () => {
               </div>
               <div className="mt-2 bg-white/20 rounded-lg p-2">
                 <p className="text-xs italic">
-                  💕 "You're amazing, {currentUser}! Keep shining bright!" 💕
+                  {currentUser === 'Bella' 
+                    ? '💕 "Bella, you sparkle with brilliance! Keep exploring and discovering!" 💕'
+                    : '💕 "Annie, you shine with intelligence! Keep solving and growing!" 💕'
+                  }
                 </p>
               </div>
             </div>
@@ -1792,7 +1795,10 @@ const App = () => {
               <p className="text-base md:text-lg text-gray-700 mb-3">Ready to practice some amazing math problems?</p>
               <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mb-3">
                 <p className="text-sm text-gray-700 italic">
-                  💕 "Dear {currentUser}, you are capable of amazing things! Every problem you solve makes you stronger and smarter. I'm so proud of you!" 💕
+                  {currentUser === 'Bella' 
+                    ? '💕 "Sweet Bella, my little math explorer! Your curiosity and determination light up every problem you solve. You make me so proud with your clever thinking!" 💕'
+                    : '💕 "Annie, my brilliant problem solver! Your sharp mind and attention to detail amaze me every day. You\'re becoming such a confident mathematician!" 💕'
+                  }
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
@@ -2711,8 +2717,14 @@ const App = () => {
               <div className="mt-4 bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-3 rounded-lg">
                 <p className="text-sm text-gray-700 italic">
                   {selectedAnswer === question.correct 
-                    ? `💕 "Wonderful job, ${currentUser}! You're getting so smart! I'm so proud of you!" 💕`
-                    : `💕 "Don't worry, ${currentUser}! Making mistakes is how we learn. You're doing great, and I believe in you!" 💕`
+                    ? (currentUser === 'Bella' 
+                        ? '💕 "Bella, you clever little star! Your thinking is getting sharper and sharper. I love watching your mind work its magic!" 💕'
+                        : '💕 "Annie, you brilliant problem solver! Your precision and logic are absolutely amazing. You make complex problems look easy!" 💕'
+                      )
+                    : (currentUser === 'Bella' 
+                        ? '💕 "Sweet Bella, don\'t worry about this one! Your adventurous spirit in trying new things is what makes you special. Let\'s learn together!" 💕'
+                        : '💕 "Annie, my focused learner! Every mistake is just a stepping stone to success. Your determination to understand is inspiring!" 💕'
+                      )
                   }
                 </p>
               </div>
@@ -2826,7 +2838,10 @@ const App = () => {
           {/* Love Message */}
           <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mt-4 max-w-md mx-auto">
             <p className="text-sm text-gray-700 italic">
-              💕 "Sweet {currentUser}, whether you got them all right or made some mistakes, I'm so proud of you for trying! Every step forward is a victory. You are amazing!" 💕
+              {currentUser === 'Bella' 
+                ? '💕 "Bella, my brave little learner! Whether you solved them all or found some tricky ones, your effort and courage make my heart burst with pride. You\'re growing so strong!" 💕'
+                : '💕 "Annie, my determined champion! Every question you tackle shows your incredible strength. Your persistence and intelligence shine through everything you do!" 💕'
+              }
             </p>
           </div>
         </div>
@@ -2971,7 +2986,10 @@ const App = () => {
       {/* Love Message */}
       <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mb-6">
         <p className="text-sm text-gray-700 italic">
-          💕 "Dear {currentUser}, look at how much you've grown! Every question you've answered, every challenge you've faced - you're becoming such a brilliant mathematician. I'm so proud of your dedication and hard work!" 💕
+          {currentUser === 'Bella' 
+            ? '💕 "Bella, my little math adventurer! Look at all the amazing progress you\'ve made! Your journey from simple counting to solving complex problems fills my heart with joy. You\'re becoming such a confident problem solver!" 💕'
+            : '💕 "Annie, my mathematical genius! Your growth from basic arithmetic to tackling advanced concepts is incredible. Your analytical mind and systematic approach make every challenge an opportunity to shine!" 💕'
+          }
         </p>
       </div>
       
@@ -3264,7 +3282,10 @@ const App = () => {
       {/* Love Message */}
       <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-400 p-4 rounded-lg mb-6">
         <p className="text-sm text-gray-700 italic">
-          💕 "Dear {currentUser}, remember that learning is a journey, not a race. Take your time, ask questions, and know that I'm here cheering you on every step of the way. You've got this!" 💕
+          {currentUser === 'Bella' 
+            ? '💕 "Bella, my curious explorer! Remember, every question is an adventure waiting to be discovered. Take your time to explore, ask lots of questions, and know that I\'m here to guide you through every mathematical journey!" 💕'
+            : '💕 "Annie, my thoughtful learner! Your methodical approach to problems is wonderful. Remember to trust your instincts, take your time to think things through, and know that I\'m here supporting your every step!" 💕'
+          }
         </p>
       </div>
       
