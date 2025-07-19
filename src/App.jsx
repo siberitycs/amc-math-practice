@@ -626,202 +626,346 @@ const App = () => {
     };
   };
 
-  // Enhanced AMC-style question generation
+  // Year-appropriate question generation based on user's grade level
   const generateAMCQuestion = (topic, difficulty, year) => {
     const rand = Math.random();
     
-    // Number and Place Value (Topic 1)
-    if (topic.id === 1) {
-      if (difficulty === 'easy') {
-        // Number sequences and patterns
-        const start = Math.floor(Math.random() * 20) + 1;
-        const pattern = Math.floor(Math.random() * 5) + 2;
-        const sequence = [start, start + pattern, start + pattern * 2, start + pattern * 3];
-        const next = start + pattern * 4;
-        const wrong1 = next + pattern;
-        const wrong2 = next - pattern;
-        const wrong3 = next + 1;
-        
-        // Create options array with correct answer
-        const options = [String(wrong1), String(next), String(wrong2), String(wrong3)];
-        const correctIndex = 1; // Index of correct answer before shuffling
-        
-        // Shuffle options and track where correct answer moves
-        const shuffledOptions = options.map((option, index) => ({ option, originalIndex: index }));
-        shuffledOptions.sort(() => Math.random() - 0.5);
-        
-        // Find new index of correct answer
-        const newCorrectIndex = shuffledOptions.findIndex(item => item.originalIndex === correctIndex);
-        
-        return {
-          question: `Find the next number in this pattern: ${sequence.join(', ')}`,
-          options: shuffledOptions.map(item => item.option),
-          correct: newCorrectIndex,
-          explanation: `The pattern adds ${pattern} each time.\n${sequence.join(' → ')} → ${next}`,
-          topic: 1,
-          difficulty: 'easy'
-        };
-      } else if (difficulty === 'medium') {
-        // Advanced pattern recognition
-        const sequence = [2, 6, 12, 20, 30];
-        const next = 42; // Pattern: +4, +6, +8, +10, +12
-        const wrong1 = 40;
-        const wrong2 = 44;
-        const wrong3 = 46;
-        
-        // Create options array with correct answer
-        const options = [String(wrong1), String(next), String(wrong2), String(wrong3)];
-        const correctIndex = 1; // Index of correct answer before shuffling
-        
-        // Shuffle options and track where correct answer moves
-        const shuffledOptions = options.map((option, index) => ({ option, originalIndex: index }));
-        shuffledOptions.sort(() => Math.random() - 0.5);
-        
-        // Find new index of correct answer
-        const newCorrectIndex = shuffledOptions.findIndex(item => item.originalIndex === correctIndex);
-        
-        return {
-          question: `What comes next: ${sequence.join(', ')} ?`,
-          options: shuffledOptions.map(item => item.option),
-          correct: newCorrectIndex,
-          explanation: `Pattern: +4, +6, +8, +10, +12\nEach difference increases by 2.\nSo 30 + 12 = 42`,
-          topic: 1,
-          difficulty: 'medium'
-        };
-      } else if (difficulty === 'hard') {
-        // Logic and reasoning problems
-        const questions = [
-          {
-            question: "Three friends - Alex, Bella, and Charlie - have different pets. Alex doesn't have a dog, Bella's pet is smaller than Charlie's, and Charlie has a cat. Who has the fish?",
-            options: ["Alex", "Bella", "Charlie", "Cannot determine"],
-            correct: 1,
-            explanation: "Step 1: Charlie has a cat\nStep 2: Bella's pet is smaller than Charlie's cat\nStep 3: So Bella must have the fish (smaller than cat)\nStep 4: Alex doesn't have a dog, so Alex has the dog\nAnswer: Bella has the fish"
-          },
-          {
-            question: "A number is multiplied by 3, then 5 is added, then divided by 2. The result is 13. What was the original number?",
-            options: ["6", "7", "8", "9"],
-            correct: 1,
-            explanation: "Work backwards:\nStep 1: 13 × 2 = 26\nStep 2: 26 - 5 = 21\nStep 3: 21 ÷ 3 = 7\nAnswer: 7"
-          }
-        ];
-        return questions[Math.floor(Math.random() * questions.length)];
+    // Determine appropriate year range for questions
+    const yearRange = year <= 4 ? 'year3-4' : 'year5-6';
+    
+    // Year 3-4 questions (for Bella)
+    if (yearRange === 'year3-4') {
+      // Number and Place Value (Topic 1) - Year 3-4 level
+      if (topic.id === 1) {
+        if (difficulty === 'easy') {
+          // Simple counting and number recognition
+          const num = Math.floor(Math.random() * 50) + 10;
+          const next = num + 1;
+          const wrong1 = num - 1;
+          const wrong2 = num + 2;
+          const wrong3 = num;
+          
+          return createShuffledQuestion(
+            `What number comes after ${num}?`,
+            [String(wrong1), String(next), String(wrong2), String(wrong3)],
+            1,
+            `When counting, we go: ${num}, ${next}... So ${next} comes after ${num}!`,
+            1,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          // Simple patterns for Year 3-4
+          const start = Math.floor(Math.random() * 10) + 1;
+          const pattern = Math.floor(Math.random() * 3) + 2;
+          const sequence = [start, start + pattern, start + pattern * 2];
+          const next = start + pattern * 3;
+          
+          return createShuffledQuestion(
+            `Find the next number: ${sequence.join(', ')}`,
+            [String(next - pattern), String(next), String(next + pattern), String(next + 1)],
+            1,
+            `The pattern adds ${pattern} each time.\n${sequence.join(' → ')} → ${next}`,
+            1,
+            'medium'
+          );
+        }
+      }
+      
+      // Addition & Subtraction (Topic 2) - Year 3-4 level
+      if (topic.id === 2) {
+        if (difficulty === 'easy') {
+          const a = Math.floor(Math.random() * 10) + 5;
+          const b = Math.floor(Math.random() * 8) + 3;
+          const answer = a + b;
+          
+          return createShuffledQuestion(
+            `What is ${a} + ${b}?`,
+            [String(answer - 1), String(answer), String(answer + 1), String(a + b + 2)],
+            1,
+            `${a} + ${b} = ${answer}\nYou can count: ${a}... ${a + 1}, ${a + 2}, ..., ${answer}!`,
+            2,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const total = Math.floor(Math.random() * 20) + 10;
+          const spent = Math.floor(Math.random() * 8) + 3;
+          const remaining = total - spent;
+          
+          return createShuffledQuestion(
+            `Tom has $${total}. He spends $${spent}. How much does he have left?`,
+            [String(remaining - 1), String(remaining), String(remaining + 1), String(total + spent)],
+            1,
+            `Tom starts with $${total}.\nHe spends $${spent}.\nRemaining: $${total} - $${spent} = $${remaining}`,
+            2,
+            'medium'
+          );
+        }
+      }
+      
+      // Multiplication & Division (Topic 3) - Year 3-4 level (basic)
+      if (topic.id === 3) {
+        if (difficulty === 'easy') {
+          const a = Math.floor(Math.random() * 5) + 2;
+          const b = Math.floor(Math.random() * 5) + 2;
+          const answer = a * b;
+          
+          return createShuffledQuestion(
+            `What is ${a} × ${b}?`,
+            [String(answer - 1), String(answer), String(answer + 1), String(a + b)],
+            1,
+            `${a} × ${b} = ${answer}\nThink of it as ${a} groups of ${b}: ${b} + ${b} + ${b}${a > 3 ? ' + ' + b : ''} = ${answer}`,
+            3,
+            'easy'
+          );
+        }
+      }
+      
+      // Patterns (Topic 7) - Year 3-4 level
+      if (topic.id === 7) {
+        if (difficulty === 'easy') {
+          const start = Math.floor(Math.random() * 5) + 1;
+          const sequence = [start, start + 2, start + 4, start + 6];
+          const next = start + 8;
+          
+          return createShuffledQuestion(
+            `What comes next: ${sequence.join(', ')}?`,
+            [String(next - 2), String(next), String(next + 2), String(next + 4)],
+            1,
+            `The pattern adds 2 each time.\n${sequence.join(' → ')} → ${next}`,
+            7,
+            'easy'
+          );
+        }
       }
     }
     
-    // Probability (Topic 9)
+    // Year 5-6 questions (for Annie)
+    if (yearRange === 'year5-6') {
+      // Number and Place Value (Topic 1) - Year 5-6 level
+      if (topic.id === 1) {
+        if (difficulty === 'easy') {
+          // Larger numbers and place value
+          const num = Math.floor(Math.random() * 900) + 100;
+          const next = num + 10;
+          
+          return createShuffledQuestion(
+            `What is ${num} + 10?`,
+            [String(next - 5), String(next), String(next + 5), String(num + 100)],
+            1,
+            `${num} + 10 = ${next}\nAdd 10 to the tens place: ${Math.floor(num/10)}0 → ${Math.floor(next/10)}0`,
+            1,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          // Advanced patterns for Year 5-6
+          const sequence = [2, 6, 12, 20, 30];
+          const next = 42; // Pattern: +4, +6, +8, +10, +12
+          
+          return createShuffledQuestion(
+            `What comes next: ${sequence.join(', ')}?`,
+            [String(40), String(next), String(44), String(46)],
+            1,
+            `Pattern: +4, +6, +8, +10, +12\nEach difference increases by 2.\nSo 30 + 12 = 42`,
+            1,
+            'medium'
+          );
+        } else if (difficulty === 'hard') {
+          // Logic problems for Year 5-6
+          const questions = [
+            {
+              question: "A number is multiplied by 3, then 5 is added, then divided by 2. The result is 13. What was the original number?",
+              options: ["6", "7", "8", "9"],
+              correct: 1,
+              explanation: "Work backwards:\nStep 1: 13 × 2 = 26\nStep 2: 26 - 5 = 21\nStep 3: 21 ÷ 3 = 7\nAnswer: 7"
+            }
+          ];
+          return questions[Math.floor(Math.random() * questions.length)];
+        }
+      }
+      
+      // Addition & Subtraction (Topic 2) - Year 5-6 level
+      if (topic.id === 2) {
+        if (difficulty === 'easy') {
+          const a = Math.floor(Math.random() * 50) + 20;
+          const b = Math.floor(Math.random() * 30) + 15;
+          const answer = a + b;
+          
+          return createShuffledQuestion(
+            `What is ${a} + ${b}?`,
+            [String(answer - 5), String(answer), String(answer + 5), String(a + b + 10)],
+            1,
+            `${a} + ${b} = ${answer}\nBreak it down: ${a} + ${b} = ${Math.floor(a/10)*10} + ${a%10} + ${Math.floor(b/10)*10} + ${b%10} = ${answer}`,
+            2,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          // Multi-step problems for Year 5-6
+          const start = Math.floor(Math.random() * 100) + 50;
+          const add1 = Math.floor(Math.random() * 25) + 10;
+          const subtract = Math.floor(Math.random() * 15) + 5;
+          const add2 = Math.floor(Math.random() * 20) + 8;
+          const result = start + add1 - subtract + add2;
+          
+          return createShuffledQuestion(
+            `Tom starts with ${start} marbles. He wins ${add1} more, then loses ${subtract}, then wins ${add2} more. How many marbles does he have now?`,
+            [String(result - 5), String(result), String(result + 5), String(start + add1 + add2)],
+            1,
+            `Step by step:\nStart: ${start}\n+ ${add1}: ${start + add1}\n- ${subtract}: ${start + add1 - subtract}\n+ ${add2}: ${result}`,
+            2,
+            'medium'
+          );
+        }
+      }
+      
+      // Multiplication & Division (Topic 3) - Year 5-6 level
+      if (topic.id === 3) {
+        if (difficulty === 'easy') {
+          const a = Math.floor(Math.random() * 12) + 6;
+          const b = Math.floor(Math.random() * 12) + 6;
+          const answer = a * b;
+          
+          return createShuffledQuestion(
+            `What is ${a} × ${b}?`,
+            [String(answer - 5), String(answer), String(answer + 5), String(a + b)],
+            1,
+            `${a} × ${b} = ${answer}\nUse the distributive property: ${a} × ${b} = ${a} × (${Math.floor(b/2)} + ${b%2 === 0 ? b/2 : Math.ceil(b/2)})`,
+            3,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const dividend = Math.floor(Math.random() * 100) + 50;
+          const divisor = Math.floor(Math.random() * 10) + 5;
+          const answer = Math.floor(dividend / divisor);
+          
+          return createShuffledQuestion(
+            `What is ${dividend} ÷ ${divisor}?`,
+            [String(answer - 1), String(answer), String(answer + 1), String(Math.ceil(dividend / divisor))],
+            1,
+            `${dividend} ÷ ${divisor} = ${answer}\nYou can think: ${divisor} × ${answer} = ${divisor * answer}`,
+            3,
+            'medium'
+          );
+        }
+      }
+      
+      // Fractions (Topic 4) - Year 5-6 level
+      if (topic.id === 4) {
+        if (difficulty === 'easy') {
+          const num = Math.floor(Math.random() * 8) + 2;
+          const den = num + Math.floor(Math.random() * 4) + 2;
+          
+          return createShuffledQuestion(
+            `What fraction of the circle is shaded if ${num} out of ${den} parts are colored?`,
+            [`${num}/${den}`, `${den}/${num}`, `${num}/${num}`, `${den}/${den}`],
+            0,
+            `If ${num} out of ${den} parts are shaded, the fraction is ${num}/${den}`,
+            4,
+            'easy'
+          );
+        }
+      }
+      
+      // Problem Solving (Topic 8) - Year 5-6 level
+      if (topic.id === 8) {
+        if (difficulty === 'medium') {
+          const items = Math.floor(Math.random() * 5) + 3;
+          const price = Math.floor(Math.random() * 8) + 3;
+          const total = items * price;
+          const discount = Math.floor(total * 0.2);
+          const finalPrice = total - discount;
+          
+          return createShuffledQuestion(
+            `${items} books cost $${price} each. If there's a 20% discount, how much do they cost in total?`,
+            [String(total), String(finalPrice), String(total + discount), String(discount)],
+            1,
+            `Original cost: ${items} × $${price} = $${total}\nDiscount: 20% of $${total} = $${discount}\nFinal price: $${total} - $${discount} = $${finalPrice}`,
+            8,
+            'medium'
+          );
+        }
+      }
+    }
+    
+    // Fallback: Generate generic questions for topics not covered above
+    // This ensures all topics have questions even if not year-specific yet
+    
+    // Probability (Topic 9) - Generic for both year levels
     if (topic.id === 9) {
       if (difficulty === 'easy') {
         const redMarbles = Math.floor(Math.random() * 4) + 2;
         const blueMarbles = Math.floor(Math.random() * 4) + 3;
         const total = redMarbles + blueMarbles;
-        const probability = redMarbles / total;
-        
-        return {
-          question: `A bag has ${redMarbles} red marbles and ${blueMarbles} blue marbles. What's the probability of drawing a red marble?`,
-          options: [`${redMarbles}/${total}`, `${redMarbles}/${blueMarbles}`, `${blueMarbles}/${total}`, `${total}/${redMarbles}`],
-          correct: 0,
-          explanation: `Total marbles = ${redMarbles} + ${blueMarbles} = ${total}\nRed marbles = ${redMarbles}\nProbability = ${redMarbles}/${total}`,
-          topic: 9,
-          difficulty: 'easy'
-        };
-      } else if (difficulty === 'medium') {
-        return {
-          question: "If you flip a coin 3 times, what's the probability of getting exactly 2 heads?",
-          options: ["1/8", "3/8", "1/2", "3/4"],
-          correct: 1,
-          explanation: "Possible outcomes: HHH, HHT, HTH, THH, HTT, THT, TTH, TTT\nOutcomes with exactly 2 heads: HHT, HTH, THH\nProbability = 3/8",
-          topic: 9,
-          difficulty: 'medium'
-        };
-      } else if (difficulty === 'hard') {
-        return {
-          question: "A spinner has 4 equal sections: red, blue, green, yellow. If you spin it twice, what's the probability of getting the same color both times?",
-          options: ["1/4", "1/8", "1/16", "1/2"],
-          correct: 0,
-          explanation: "First spin: any color (probability 1)\nSecond spin: must match first color (probability 1/4)\nTotal probability = 1 × 1/4 = 1/4",
-          topic: 9,
-          difficulty: 'hard'
-        };
-      }
-    }
-    
-    // Logic (Topic 10)
-    if (topic.id === 10) {
-      if (difficulty === 'easy') {
-        const questions = [
-          {
-            question: "If all roses are flowers, and some flowers are red, then:",
-            options: ["All roses are red", "Some roses are red", "No roses are red", "Cannot determine"],
-            correct: 1,
-            explanation: "We know:\n- All roses are flowers\n- Some flowers are red\nBut we don't know if the red flowers include roses.\nSo some roses might be red, but not necessarily all."
-          },
-          {
-            question: "If today is Monday, what day was it 3 days ago?",
-            options: ["Thursday", "Friday", "Saturday", "Sunday"],
-            correct: 1,
-            explanation: "Working backwards:\nMonday → Sunday → Saturday → Friday\nSo 3 days ago was Friday"
-          }
-        ];
-        return questions[Math.floor(Math.random() * questions.length)];
-      } else if (difficulty === 'medium') {
-        return {
-          question: "Five friends sit in a circle. Alice sits next to Bob and Charlie. Bob sits next to Alice and David. Who sits next to Charlie?",
-          options: ["Alice and David", "Alice and Eve", "Bob and David", "David and Eve"],
-          correct: 0,
-          explanation: "From the information:\n- Alice is between Bob and Charlie\n- Bob is between Alice and David\nSo the arrangement is: Bob-Alice-Charlie-David-Eve\nCharlie sits next to Alice and David"
-        };
-      } else if (difficulty === 'hard') {
-        return {
-          question: "A number is multiplied by 3, then 5 is added, then divided by 2. The result is 13. What was the original number?",
-          options: ["6", "7", "8", "9"],
-          correct: 1,
-          explanation: "Work backwards:\nStep 1: 13 × 2 = 26\nStep 2: 26 - 5 = 21\nStep 3: 21 ÷ 3 = 7\nAnswer: 7"
-        };
-      }
-    }
-    
-    // Addition & Subtraction (Topic 2)
-    if (topic.id === 2) {
-      if (difficulty === 'easy') {
-        // Money problems
-        const item1 = Math.floor(Math.random() * 5) + 1;
-        const item2 = Math.floor(Math.random() * 3) + 1;
-        const price1 = Math.floor(Math.random() * 8) + 2;
-        const price2 = Math.floor(Math.random() * 6) + 3;
-        const total = item1 * price1 + item2 * price2;
-        const money = total + Math.floor(Math.random() * 10) + 5;
-        const change = money - total;
         
         return createShuffledQuestion(
-          `Sarah buys ${item1} pencils at $${price1} each and ${item2} notebooks at $${price2} each. She pays with $${money}. How much change does she get?`,
-          [String(change - 2), String(change), String(change + 2), String(total)],
-          1, // correct answer is at index 1
-          `Total cost: ${item1} × $${price1} + ${item2} × $${price2} = $${item1 * price1} + $${item2 * price2} = $${total}\nChange: $${money} - $${total} = $${change}`,
-          2,
+          `A bag has ${redMarbles} red marbles and ${blueMarbles} blue marbles. What's the probability of drawing a red marble?`,
+          [`${redMarbles}/${total}`, `${redMarbles}/${blueMarbles}`, `${blueMarbles}/${total}`, `${total}/${redMarbles}`],
+          0,
+          `Total marbles = ${redMarbles} + ${blueMarbles} = ${total}\nRed marbles = ${redMarbles}\nProbability = ${redMarbles}/${total}`,
+          9,
           'easy'
         );
-      } else if (difficulty === 'medium') {
-        // Multi-step problems
-        const start = Math.floor(Math.random() * 50) + 20;
-        const add1 = Math.floor(Math.random() * 15) + 5;
-        const subtract = Math.floor(Math.random() * 10) + 3;
-        const add2 = Math.floor(Math.random() * 12) + 4;
-        const result = start + add1 - subtract + add2;
-        
+      }
+    }
+    
+    // Logic (Topic 10) - Generic for both year levels
+    if (topic.id === 10) {
+      if (difficulty === 'easy') {
         return createShuffledQuestion(
-          `Tom starts with ${start} marbles. He wins ${add1} more, then loses ${subtract}, then wins ${add2} more. How many marbles does he have now?`,
-          [String(result - 5), String(result), String(result + 5), String(start + add1 + add2)],
-          1, // correct answer is at index 1
-          `Step by step:\nStart: ${start}\n+ ${add1}: ${start + add1}\n- ${subtract}: ${start + add1 - subtract}\n+ ${add2}: ${result}`,
-          2,
-          'medium'
+          "If today is Monday, what day was it 3 days ago?",
+          ["Thursday", "Friday", "Saturday", "Sunday"],
+          1,
+          "Working backwards:\nMonday → Sunday → Saturday → Friday\nSo 3 days ago was Friday",
+          10,
+          'easy'
         );
       }
     }
     
-    // Multiplication & Division (Topic 3)
-    if (topic.id === 3) {
+    // Geometry (Topic 5) - Generic for both year levels
+    if (topic.id === 5) {
       if (difficulty === 'easy') {
+        const sides = Math.floor(Math.random() * 3) + 3; // 3, 4, or 5 sides
+        const shapeNames = { 3: 'triangle', 4: 'square', 5: 'pentagon' };
+        
+        return createShuffledQuestion(
+          `How many sides does a ${shapeNames[sides]} have?`,
+          [String(sides - 1), String(sides), String(sides + 1), String(sides + 2)],
+          1,
+          `A ${shapeNames[sides]} has ${sides} sides.`,
+          5,
+          'easy'
+        );
+      }
+    }
+    
+    // Measurement (Topic 6) - Generic for both year levels
+    if (topic.id === 6) {
+      if (difficulty === 'easy') {
+        const hours = Math.floor(Math.random() * 6) + 1;
+        const minutes = Math.floor(Math.random() * 30) + 15;
+        const time = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        const nextHour = `${hours + 1}:${minutes.toString().padStart(2, '0')}`;
+        
+        return createShuffledQuestion(
+          `What time will it be 1 hour after ${time}?`,
+          [`${hours}:${(minutes + 30).toString().padStart(2, '0')}`, nextHour, `${hours + 2}:${minutes.toString().padStart(2, '0')}`, `${hours}:${(minutes + 60).toString().padStart(2, '0')}`],
+          1,
+          `Starting at ${time}\n+1 hour = ${nextHour}`,
+          6,
+          'easy'
+        );
+      }
+    }
+    
+    // Default fallback question
+    return createShuffledQuestion(
+      `What is ${Math.floor(Math.random() * 10) + 1} + ${Math.floor(Math.random() * 10) + 1}?`,
+      ["10", "11", "12", "13"],
+      1,
+      "Basic addition question",
+      topic.id,
+      'easy'
+    );
         // Arrays and groups
         const rows = Math.floor(Math.random() * 5) + 3;
         const cols = Math.floor(Math.random() * 4) + 2;
