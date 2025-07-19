@@ -636,37 +636,41 @@ const App = () => {
     // Number and Place Value (Topic 1)
     if (topic.id === 1) {
       if (yearLevel === 'junior') {
-        // Year 3-4: Basic number sense and place value
+        // Year 3-4: AMC-style number sense and place value
         if (difficulty === 'easy') {
-          const num = Math.floor(Math.random() * 50) + 10;
-          const nextNum = num + 1;
-          const prevNum = num - 1;
+          const num = Math.floor(Math.random() * 900) + 100;
+          const digit = Math.floor(Math.random() * 10);
+          const position = Math.floor(Math.random() * 3) + 1; // 1=ones, 2=tens, 3=hundreds
+          const positions = ['ones', 'tens', 'hundreds'];
+          const multiplier = Math.pow(10, position - 1);
+          const answer = Math.floor(num / multiplier) % 10;
           
           return createShuffledQuestion(
-            `What number comes after ${num}?`,
-            [String(prevNum), String(nextNum), String(num + 2), String(num - 2)],
+            `What digit is in the ${positions[position-1]} place of ${num}?`,
+            [String((answer + 1) % 10), String(answer), String((answer + 9) % 10), String((answer + 2) % 10)],
             1,
-            `When counting, we go: ${prevNum}, ${num}, ${nextNum}, ${num + 2}...\nSo ${nextNum} comes after ${num}!`,
+            `To find the ${positions[position-1]} digit:\nDivide by ${multiplier} and find remainder when divided by 10\n${num} ÷ ${multiplier} = ${Math.floor(num / multiplier)}\n${Math.floor(num / multiplier)} ÷ 10 remainder = ${answer}`,
             1,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const tens = Math.floor(Math.random() * 9) + 1;
-          const ones = Math.floor(Math.random() * 9) + 1;
-          const num = tens * 10 + ones;
-          const reversed = ones * 10 + tens;
+          const a = Math.floor(Math.random() * 50) + 10;
+          const b = Math.floor(Math.random() * 50) + 10;
+          const c = Math.floor(Math.random() * 50) + 10;
+          const sum = a + b + c;
+          const avg = Math.round(sum / 3);
           
           return createShuffledQuestion(
-            `A two-digit number has ${tens} in the tens place and ${ones} in the ones place. What is the number?`,
-            [String(reversed), String(num), String(num + 10), String(num - 10)],
+            `Three numbers have an average of ${avg}. If two of the numbers are ${a} and ${b}, what is the third number?`,
+            [String(c - 1), String(c), String(c + 1), String(sum)],
             1,
-            `Tens place: ${tens} × 10 = ${tens * 10}\nOnes place: ${ones}\nTotal: ${tens * 10} + ${ones} = ${num}`,
+            `Average = Sum ÷ Count\n${avg} = Sum ÷ 3\nSum = ${avg} × 3 = ${avg * 3}\nThird number = ${avg * 3} - ${a} - ${b} = ${c}`,
             1,
             'medium'
           );
         }
       } else {
-        // Year 5-6: Advanced number sense and patterns
+        // Year 5-6: Advanced AMC-style number theory
         if (difficulty === 'easy') {
           const start = Math.floor(Math.random() * 20) + 1;
           const pattern = Math.floor(Math.random() * 5) + 2;
@@ -703,34 +707,6 @@ const App = () => {
     if (topic.id === 2) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 10) + 1;
-          const b = Math.floor(Math.random() * 10) + 1;
-          const sum = a + b;
-          
-          return createShuffledQuestion(
-            `What is ${a} + ${b}?`,
-            [String(sum - 1), String(sum), String(sum + 1), String(a + b + 2)],
-            1,
-            `${a} + ${b} = ${sum}\nYou can count: ${a}... ${a + 1}, ${a + 2}, ..., ${sum}!`,
-            2,
-            'easy'
-          );
-        } else if (difficulty === 'medium') {
-          const total = Math.floor(Math.random() * 20) + 10;
-          const spent = Math.floor(Math.random() * 8) + 3;
-          const remaining = total - spent;
-          
-          return createShuffledQuestion(
-            `Tom has $${total}. He spends $${spent} on lunch. How much money does he have left?`,
-            [String(remaining - 1), String(remaining), String(remaining + 1), String(total + spent)],
-            1,
-            `Starting amount: $${total}\nSpent: $${spent}\nRemaining: $${total} - $${spent} = $${remaining}`,
-            2,
-            'medium'
-          );
-        }
-      } else {
-        if (difficulty === 'easy') {
           const a = Math.floor(Math.random() * 50) + 20;
           const b = Math.floor(Math.random() * 30) + 15;
           const c = Math.floor(Math.random() * 20) + 10;
@@ -745,10 +721,41 @@ const App = () => {
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const students = Math.floor(Math.random() * 30) + 20;
-          const boys = Math.floor(Math.random() * (students - 10)) + 5;
+          const num1 = Math.floor(Math.random() * 100) + 50;
+          const num2 = Math.floor(Math.random() * 80) + 30;
+          const num3 = Math.floor(Math.random() * 60) + 20;
+          const result = num1 - num2 + num3;
+          
+          return createShuffledQuestion(
+            `What is ${num1} - ${num2} + ${num3}?`,
+            [String(result - 2), String(result), String(result + 2), String(num1 + num2 + num3)],
+            1,
+            `Step 1: ${num1} - ${num2} = ${num1 - num2}\nStep 2: ${num1 - num2} + ${num3} = ${result}`,
+            2,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const a = Math.floor(Math.random() * 100) + 50;
+          const b = Math.floor(Math.random() * 80) + 40;
+          const c = Math.floor(Math.random() * 60) + 30;
+          const d = Math.floor(Math.random() * 40) + 20;
+          const result = a + b - c + d;
+          
+          return createShuffledQuestion(
+            `What is ${a} + ${b} - ${c} + ${d}?`,
+            [String(result - 3), String(result), String(result + 3), String(a + b + c + d)],
+            1,
+            `Step 1: ${a} + ${b} = ${a + b}\nStep 2: ${a + b} - ${c} = ${a + b - c}\nStep 3: ${a + b - c} + ${d} = ${result}`,
+            2,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const students = Math.floor(Math.random() * 50) + 30;
+          const boys = Math.floor(Math.random() * (students - 15)) + 10;
           const girls = students - boys;
-          const newStudents = Math.floor(Math.random() * 10) + 5;
+          const newStudents = Math.floor(Math.random() * 20) + 10;
           const newTotal = students + newStudents;
           
           return createShuffledQuestion(
@@ -767,21 +774,21 @@ const App = () => {
     if (topic.id === 3) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const rows = Math.floor(Math.random() * 5) + 3;
-          const cols = Math.floor(Math.random() * 4) + 2;
-          const total = rows * cols;
+          const a = Math.floor(Math.random() * 15) + 5;
+          const b = Math.floor(Math.random() * 15) + 5;
+          const product = a * b;
           
           return createShuffledQuestion(
-            `How many dots are in this array?\n${'●'.repeat(cols)}\n`.repeat(rows).trim(),
-            [String(total - 2), String(total), String(total + 2), String(rows + cols)],
+            `What is ${a} × ${b}?`,
+            [String(product - a), String(product), String(product + a), String(a + b)],
             1,
-            `The array has ${rows} rows and ${cols} columns.\n${rows} × ${cols} = ${total} dots`,
+            `${a} × ${b} = ${product}\nThink of it as ${a} groups of ${b}: ${b} + ${b} + ... (${a} times) = ${product}`,
             3,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const total = Math.floor(Math.random() * 50) + 20;
-          const divisor = Math.floor(Math.random() * 8) + 3;
+          const total = Math.floor(Math.random() * 100) + 50;
+          const divisor = Math.floor(Math.random() * 12) + 4;
           const quotient = Math.floor(total / divisor);
           const remainder = total % divisor;
           
@@ -796,8 +803,8 @@ const App = () => {
         }
       } else {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 12) + 2;
-          const b = Math.floor(Math.random() * 12) + 2;
+          const a = Math.floor(Math.random() * 20) + 10;
+          const b = Math.floor(Math.random() * 20) + 10;
           const product = a * b;
           
           return createShuffledQuestion(
@@ -809,8 +816,8 @@ const App = () => {
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const total = Math.floor(Math.random() * 100) + 50;
-          const groups = Math.floor(Math.random() * 6) + 3;
+          const total = Math.floor(Math.random() * 200) + 100;
+          const groups = Math.floor(Math.random() * 8) + 4;
           const studentsPerGroup = Math.floor(total / groups);
           const remainder = total % groups;
           
@@ -830,22 +837,9 @@ const App = () => {
     if (topic.id === 4) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const numerator = Math.floor(Math.random() * 3) + 1;
-          const denominator = Math.floor(Math.random() * 4) + 2;
-          const fraction = `${numerator}/${denominator}`;
-          
-          return createShuffledQuestion(
-            `What fraction of the circle is shaded?\n${'🔴'.repeat(numerator)}${'⚪'.repeat(denominator - numerator)}`,
-            [`${numerator - 1}/${denominator}`, fraction, `${numerator + 1}/${denominator}`, `${numerator}/${denominator + 1}`],
-            1,
-            `There are ${numerator} red circles out of ${denominator} total circles.\nSo ${fraction} of the circle is shaded.`,
-            4,
-            'easy'
-          );
-        } else if (difficulty === 'medium') {
-          const num1 = Math.floor(Math.random() * 3) + 1;
-          const den1 = Math.floor(Math.random() * 4) + 2;
-          const num2 = Math.floor(Math.random() * 2) + 1;
+          const num1 = Math.floor(Math.random() * 4) + 1;
+          const den1 = Math.floor(Math.random() * 5) + 2;
+          const num2 = Math.floor(Math.random() * 3) + 1;
           const den2 = den1; // Same denominator for easier addition
           const resultNum = num1 + num2;
           const result = `${resultNum}/${den1}`;
@@ -855,22 +849,6 @@ const App = () => {
             [`${resultNum - 1}/${den1}`, result, `${resultNum + 1}/${den1}`, `${num1 + num2}/${den1 + den1}`],
             1,
             `When denominators are the same, add the numerators:\n${num1}/${den1} + ${num2}/${den1} = ${resultNum}/${den1}`,
-            4,
-            'medium'
-          );
-        }
-      } else {
-        if (difficulty === 'easy') {
-          const num = Math.floor(Math.random() * 8) + 2;
-          const den = Math.floor(Math.random() * 8) + 2;
-          const fraction = `${num}/${den}`;
-          const simplified = num % 2 === 0 && den % 2 === 0 ? `${num/2}/${den/2}` : fraction;
-          
-          return createShuffledQuestion(
-            `Simplify the fraction ${fraction}.`,
-            [fraction, simplified, `${num + 1}/${den}`, `${num}/${den + 1}`],
-            1,
-            `${fraction} can be simplified by dividing numerator and denominator by their greatest common factor.`,
             4,
             'easy'
           );
@@ -890,6 +868,52 @@ const App = () => {
             [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2}/${den1 + den2}`],
             1,
             `Find common denominator: ${den1} × ${den2} = ${lcm}\nConvert: ${num1}/${den1} = ${newNum1}/${lcm}, ${num2}/${den2} = ${newNum2}/${lcm}\nAdd: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${result}`,
+            4,
+            'medium'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          const num1 = Math.floor(Math.random() * 6) + 1;
+          const den1 = Math.floor(Math.random() * 8) + 2;
+          const num2 = Math.floor(Math.random() * 5) + 1;
+          const den2 = Math.floor(Math.random() * 8) + 2;
+          const lcm = den1 * den2;
+          const newNum1 = num1 * den2;
+          const newNum2 = num2 * den1;
+          const resultNum = newNum1 + newNum2;
+          const result = `${resultNum}/${lcm}`;
+          
+          return createShuffledQuestion(
+            `What is ${num1}/${den1} + ${num2}/${den2}?`,
+            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2}/${den1 + den2}`],
+            1,
+            `Find common denominator: ${den1} × ${den2} = ${lcm}\nConvert: ${num1}/${den1} = ${newNum1}/${lcm}, ${num2}/${den2} = ${newNum2}/${lcm}\nAdd: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${result}`,
+            4,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          const num1 = Math.floor(Math.random() * 7) + 1;
+          const den1 = Math.floor(Math.random() * 9) + 2;
+          const num2 = Math.floor(Math.random() * 6) + 1;
+          const den2 = Math.floor(Math.random() * 9) + 2;
+          const num3 = Math.floor(Math.random() * 5) + 1;
+          const den3 = Math.floor(Math.random() * 9) + 2;
+          
+          // Find LCM of all three denominators
+          const lcm12 = den1 * den2;
+          const lcm = lcm12 * den3;
+          const newNum1 = num1 * den2 * den3;
+          const newNum2 = num2 * den1 * den3;
+          const newNum3 = num3 * den1 * den2;
+          const resultNum = newNum1 + newNum2 + newNum3;
+          const result = `${resultNum}/${lcm}`;
+          
+          return createShuffledQuestion(
+            `What is ${num1}/${den1} + ${num2}/${den2} + ${num3}/${den3}?`,
+            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2 + num3}/${den1 + den2 + den3}`],
+            1,
+            `Find common denominator: LCM of ${den1}, ${den2}, ${den3} = ${lcm}\nConvert all fractions and add numerators:\n${num1}/${den1} + ${num2}/${den2} + ${num3}/${den3} = ${result}`,
             4,
             'medium'
           );
@@ -1102,8 +1126,8 @@ const App = () => {
     if (topic.id === 8) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const num1 = Math.floor(Math.random() * 5) + 1;
-          const num2 = Math.floor(Math.random() * 5) + 1;
+          const num1 = Math.floor(Math.random() * 10) + 5;
+          const num2 = Math.floor(Math.random() * 10) + 5;
           const sum = num1 + num2;
           const product = num1 * num2;
           
@@ -1116,24 +1140,25 @@ const App = () => {
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const students = Math.floor(Math.random() * 20) + 10;
-          const groups = Math.floor(Math.random() * 4) + 2;
-          const studentsPerGroup = Math.floor(students / groups);
-          const remainder = students % groups;
+          const total = Math.floor(Math.random() * 200) + 100;
+          const ratio1 = Math.floor(Math.random() * 4) + 2;
+          const ratio2 = Math.floor(Math.random() * 4) + 2;
+          const part1 = Math.floor((total * ratio1) / (ratio1 + ratio2));
+          const part2 = total - part1;
           
           return createShuffledQuestion(
-            `There are ${students} students. They are divided into ${groups} equal groups. How many students are in each group?`,
-            [String(studentsPerGroup - 1), String(studentsPerGroup), String(studentsPerGroup + 1), String(Math.ceil(students / groups))],
+            `A sum of $${total} is divided in the ratio ${ratio1}:${ratio2}. What is the larger part?`,
+            [String(part1 - 1), String(Math.max(part1, part2)), String(Math.max(part1, part2) + 1), String(total)],
             1,
-            `${students} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
+            `Total parts: ${ratio1} + ${ratio2} = ${ratio1 + ratio2}\nPart 1: ${total} × ${ratio1}/${ratio1 + ratio2} = $${part1}\nPart 2: ${total} × ${ratio2}/${ratio1 + ratio2} = $${part2}\nThe larger part is $${Math.max(part1, part2)}.`,
             8,
             'medium'
           );
         }
       } else {
         if (difficulty === 'easy') {
-          const age1 = Math.floor(Math.random() * 10) + 8;
-          const age2 = Math.floor(Math.random() * 10) + 8;
+          const age1 = Math.floor(Math.random() * 15) + 10;
+          const age2 = Math.floor(Math.random() * 15) + 10;
           const sum = age1 + age2;
           const diff = Math.abs(age1 - age2);
           
@@ -1146,17 +1171,20 @@ const App = () => {
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const total = Math.floor(Math.random() * 100) + 50;
-          const ratio1 = Math.floor(Math.random() * 3) + 2;
-          const ratio2 = Math.floor(Math.random() * 3) + 2;
-          const part1 = Math.floor((total * ratio1) / (ratio1 + ratio2));
-          const part2 = total - part1;
+          const total = Math.floor(Math.random() * 300) + 150;
+          const ratio1 = Math.floor(Math.random() * 5) + 2;
+          const ratio2 = Math.floor(Math.random() * 5) + 2;
+          const ratio3 = Math.floor(Math.random() * 4) + 1;
+          const totalRatio = ratio1 + ratio2 + ratio3;
+          const part1 = Math.floor((total * ratio1) / totalRatio);
+          const part2 = Math.floor((total * ratio2) / totalRatio);
+          const part3 = total - part1 - part2;
           
           return createShuffledQuestion(
-            `A sum of $${total} is divided in the ratio ${ratio1}:${ratio2}. What is the larger part?`,
-            [String(part1 - 1), String(Math.max(part1, part2)), String(Math.max(part1, part2) + 1), String(total)],
+            `A sum of $${total} is divided in the ratio ${ratio1}:${ratio2}:${ratio3}. What is the largest part?`,
+            [String(part1 - 1), String(Math.max(part1, part2, part3)), String(Math.max(part1, part2, part3) + 1), String(total)],
             1,
-            `Total parts: ${ratio1} + ${ratio2} = ${ratio1 + ratio2}\nPart 1: ${total} × ${ratio1}/${ratio1 + ratio2} = $${part1}\nPart 2: ${total} × ${ratio2}/${ratio1 + ratio2} = $${part2}\nThe larger part is $${Math.max(part1, part2)}.`,
+            `Total parts: ${ratio1} + ${ratio2} + ${ratio3} = ${totalRatio}\nPart 1: ${total} × ${ratio1}/${totalRatio} = $${part1}\nPart 2: ${total} × ${ratio2}/${totalRatio} = $${part2}\nPart 3: ${total} × ${ratio3}/${totalRatio} = $${part3}\nThe largest part is $${Math.max(part1, part2, part3)}.`,
             8,
             'medium'
           );
