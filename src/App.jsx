@@ -1297,15 +1297,19 @@ const App = () => {
       }
     }
     
-    // Default fallback question
-    return createShuffledQuestion(
-      `What is ${Math.floor(Math.random() * 10) + 1} + ${Math.floor(Math.random() * 10) + 1}?`,
-      ["10", "11", "12", "13"],
-      1,
-      "Basic addition question",
-      topic.id,
-      'easy'
-    );
+      // Default fallback question - ensure correct answer is properly set
+  const a = Math.floor(Math.random() * 10) + 1;
+  const b = Math.floor(Math.random() * 10) + 1;
+  const sum = a + b;
+  
+  return createShuffledQuestion(
+    `What is ${a} + ${b}?`,
+    [String(sum - 1), String(sum), String(sum + 1), String(sum + 2)],
+    1, // Correct answer is at index 1 (sum)
+    `Basic addition: ${a} + ${b} = ${sum}`,
+    topic.id,
+    'easy'
+  );
   };
 
   // Legacy function for backward compatibility
@@ -1365,11 +1369,7 @@ const App = () => {
       questions.push({...selected});
     }
     
-    return questions.map(q => {
-      const correctAnswer = q.options[q.correct];
-      const correctIndex = q.options.indexOf(correctAnswer);
-      return { ...q, correct: correctIndex };
-    });
+    return questions;
   };
 
   // Avatar Component
