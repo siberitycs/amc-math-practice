@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Home, BookOpen, TrendingUp, HelpCircle, School, User, Target, Clock, Award, ArrowRight, Check, X, Trophy, Star, Sparkles, Timer, Volume2, VolumeX, Brain, RefreshCw } from 'lucide-react';
+import { ChevronDown, Home, BookOpen, TrendingUp, HelpCircle, School, User, Target, Clock, Award, ArrowRight, Check, X, Trophy, Star, Sparkles, Timer, Brain, RefreshCw } from 'lucide-react';
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState('Annie');
@@ -9,7 +9,7 @@ const App = () => {
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
   const [achievements, setAchievements] = useState([]);
@@ -330,11 +330,7 @@ const App = () => {
     }
   };
 
-  // Sound effects
-  const playSound = (type) => {
-    if (!soundEnabled) return;
-    console.log(`Playing ${type} sound`);
-  };
+
 
   // Timer effect
   useEffect(() => {
@@ -915,13 +911,6 @@ const App = () => {
           </div>
         </div>
         <div className="flex items-center space-x-2 md:space-x-4">
-          <button
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            title={soundEnabled ? "Mute sounds" : "Enable sounds"}
-          >
-            {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 text-gray-400" />}
-          </button>
           <button 
             onClick={() => {
               setCurrentUser(currentUser === 'Annie' ? 'Bella' : 'Annie');
@@ -948,7 +937,6 @@ const App = () => {
     useEffect(() => {
       if (showAchievement) {
         setIsVisible(true);
-        playSound('achievement');
         const timer = setTimeout(() => {
           setIsVisible(false);
           setTimeout(() => setShowAchievement(null), 300);
@@ -1616,7 +1604,6 @@ const App = () => {
       if (selectedAnswer === null) return;
       
       const isCorrect = selectedAnswer === question.correct;
-      playSound(isCorrect ? 'correct' : 'incorrect');
       
       const newAnswers = [...answers, selectedAnswer];
       setAnswers(newAnswers);
