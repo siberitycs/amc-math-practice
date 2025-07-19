@@ -1100,16 +1100,6 @@ const App = () => {
           </div>
         </div>
         <div className="flex items-center space-x-2 md:space-x-4">
-          {/* Temporary debug button to clear stuck achievement */}
-          {showAchievement && (
-            <button 
-              onClick={clearStuckAchievement}
-              className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors"
-              title="Clear stuck achievement"
-            >
-              Clear Achievement
-            </button>
-          )}
           <button 
             onClick={() => {
               setCurrentUser(currentUser === 'Annie' ? 'Bella' : 'Annie');
@@ -1453,16 +1443,7 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div className="hidden lg:block">
-            <div className="bg-white/50 backdrop-blur rounded-lg p-4 shadow-sm">
-              <p className="text-sm font-medium text-gray-700 mb-2">Study Buddies</p>
-              <div className="flex space-x-2">
-                {['📐', '📏', '🧮', '📊', '🔢'].map((emoji, idx) => (
-                  <span key={idx} className="text-2xl">{emoji}</span>
-                ))}
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ An interactive math practice application designed for Australian primary school 
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Beautiful Animations**: Smooth transitions and hover effects
 - **Accessible Interface**: Easy navigation and clear visual hierarchy
-- **Study Buddies**: Collaborative learning environment
+
 
 ## 🚀 Getting Started
 
