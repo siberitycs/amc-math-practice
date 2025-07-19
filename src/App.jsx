@@ -14,6 +14,39 @@ const App = () => {
   const [timerActive, setTimerActive] = useState(false);
   const [achievements, setAchievements] = useState([]);
   const [showAchievement, setShowAchievement] = useState(null);
+  
+  // Emergency reset function for stuck achievements
+  const resetAchievement = () => {
+    setShowAchievement(null);
+    localStorage.removeItem('amc-math-achievements');
+    localStorage.removeItem('amc-math-stats');
+    // Force reload to clear any stuck state
+    window.location.reload();
+  };
+  
+  // Quick fix for stuck achievement
+  const clearStuckAchievement = () => {
+    setShowAchievement(null);
+    console.log('Achievement state cleared manually');
+  };
+  
+  // Clear any stuck achievement state on app load
+  useEffect(() => {
+    // Clear any stuck achievement popup on startup
+    setShowAchievement(null);
+  }, []);
+  
+  // Keyboard shortcut to reset stuck achievements (Ctrl+Shift+R)
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+        resetAchievement();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
   const [lastUsedTopic, setLastUsedTopic] = useState(null);
   const [showDifficultyChange, setShowDifficultyChange] = useState(null);
   const [adaptiveDifficulty, setAdaptiveDifficulty] = useState(null);
@@ -402,6 +435,7 @@ const App = () => {
     const newAchievements = [];
     const currentBadges = userStats[currentUser].badges || [];
     
+    // Only trigger achievements if they haven't been awarded yet
     if (newStats.totalQuestions >= 100 && !currentBadges.includes('Century Club')) {
       newAchievements.push('Century Club');
       setShowAchievement({ name: 'Century Club', desc: '100 questions answered!', icon: '💯' });
@@ -417,12 +451,24 @@ const App = () => {
       setShowAchievement({ name: 'Week Warrior', desc: '7 day streak!', icon: '🔥' });
     }
     
+    // Only update if there are actually new achievements
     if (newAchievements.length > 0) {
       const updatedBadges = [...currentBadges, ...newAchievements];
       const updatedStats = { ...userStats[currentUser], badges: updatedBadges };
       setUserStats({ ...userStats, [currentUser]: updatedStats });
       localStorage.setItem('amc-math-stats', JSON.stringify({ ...userStats, [currentUser]: updatedStats }));
     }
+    
+    // Debug: Log current state to help identify issues
+    console.log('Achievement check:', {
+      user: currentUser,
+      totalQuestions: newStats.totalQuestions,
+      accuracy: newStats.accuracy,
+      streak: newStats.streak,
+      currentBadges,
+      newAchievements,
+      showAchievement: showAchievement
+    });
   };
 
   // Format time display
@@ -1060,6 +1106,16 @@ const App = () => {
           </div>
         </div>
         <div className="flex items-center space-x-2 md:space-x-4">
+          {/* Temporary debug button to clear stuck achievement */}
+          {showAchievement && (
+            <button 
+              onClick={clearStuckAchievement}
+              className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors"
+              title="Clear stuck achievement"
+            >
+              Clear Achievement
+            </button>
+          )}
           <button 
             onClick={() => {
               setCurrentUser(currentUser === 'Annie' ? 'Bella' : 'Annie');
@@ -1088,11 +1144,28 @@ const App = () => {
         setIsVisible(true);
         const timer = setTimeout(() => {
           setIsVisible(false);
-          setTimeout(() => setShowAchievement(null), 300);
+          setTimeout(() => {
+            setShowAchievement(null);
+            console.log('Achievement popup auto-closed');
+          }, 300);
         }, 3700);
         return () => clearTimeout(timer);
       } else {
         setIsVisible(false);
+      }
+    }, [showAchievement]);
+    
+    // Force close if stuck for more than 10 seconds
+    useEffect(() => {
+      if (showAchievement) {
+        const forceCloseTimer = setTimeout(() => {
+          if (showAchievement) {
+            console.log('Force closing stuck achievement popup');
+            setShowAchievement(null);
+            setIsVisible(false);
+          }
+        }, 10000);
+        return () => clearTimeout(forceCloseTimer);
       }
     }, [showAchievement]);
 
