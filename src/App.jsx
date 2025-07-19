@@ -20,6 +20,7 @@ const App = () => {
     setShowAchievement(null);
     localStorage.removeItem('amc-math-achievements');
     localStorage.removeItem('amc-math-stats');
+    localStorage.removeItem('amc-math-mistakes');
     // Force reload to clear any stuck state
     window.location.reload();
   };
@@ -30,8 +31,19 @@ const App = () => {
     console.log('Achievement state cleared manually');
   };
   
-  // Clear any stuck achievement state on app load
+  // Load user stats from localStorage or initialize with clean data
   useEffect(() => {
+    const savedStats = localStorage.getItem('amc-math-stats');
+    if (savedStats) {
+      try {
+        const parsedStats = JSON.parse(savedStats);
+        setUserStats(parsedStats);
+      } catch (error) {
+        console.log('Error loading stats, using clean data');
+        localStorage.removeItem('amc-math-stats');
+      }
+    }
+    
     // Clear any stuck achievement popup on startup
     setShowAchievement(null);
   }, []);
@@ -69,36 +81,18 @@ const App = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [userStats, setUserStats] = useState({
     Annie: { 
-      totalQuestions: 127, 
-      accuracy: 85, 
-      streak: 5, 
-      badges: ['First Steps', 'Math Wizard'],
-      topicStats: {
-        1: { attempted: 20, correct: 18, lastPracticed: Date.now() - 86400000 },
-        2: { attempted: 15, correct: 13, lastPracticed: Date.now() - 172800000 },
-        3: { attempted: 10, correct: 7, lastPracticed: Date.now() - 259200000 },
-        4: { attempted: 8, correct: 5, lastPracticed: Date.now() - 345600000 },
-        5: { attempted: 12, correct: 10, lastPracticed: Date.now() - 432000000 },
-        6: { attempted: 18, correct: 16, lastPracticed: Date.now() - 518400000 },
-        7: { attempted: 22, correct: 20, lastPracticed: Date.now() - 604800000 },
-        8: { attempted: 5, correct: 3, lastPracticed: Date.now() - 691200000 }
-      }
+      totalQuestions: 0, 
+      accuracy: 0, 
+      streak: 0, 
+      badges: [],
+      topicStats: {}
     },
     Bella: { 
-      totalQuestions: 89, 
-      accuracy: 78, 
-      streak: 3, 
-      badges: ['First Steps'],
-      topicStats: {
-        1: { attempted: 15, correct: 13, lastPracticed: Date.now() - 86400000 },
-        2: { attempted: 20, correct: 17, lastPracticed: Date.now() - 172800000 },
-        3: { attempted: 8, correct: 5, lastPracticed: Date.now() - 259200000 },
-        4: { attempted: 5, correct: 2, lastPracticed: Date.now() - 345600000 },
-        5: { attempted: 7, correct: 4, lastPracticed: Date.now() - 432000000 },
-        6: { attempted: 12, correct: 9, lastPracticed: Date.now() - 518400000 },
-        7: { attempted: 15, correct: 12, lastPracticed: Date.now() - 604800000 },
-        8: { attempted: 3, correct: 1, lastPracticed: Date.now() - 691200000 }
-      }
+      totalQuestions: 0, 
+      accuracy: 0, 
+      streak: 0, 
+      badges: [],
+      topicStats: {}
     }
   });
 
@@ -125,14 +119,14 @@ const App = () => {
 
   const todayGoals = {
     Annie: [
-      { id: 1, title: 'Practice Session', desc: 'Complete 10 math problems', progress: 3, total: 10, color: 'bg-blue-500', icon: '📝' },
-      { id: 2, title: 'Accuracy Goal', desc: 'Achieve 80% accuracy', progress: 85, total: 100, color: 'bg-green-500', icon: '🎯' },
-      { id: 3, title: 'Study Time', desc: 'Practice for 30 minutes', progress: 12, total: 30, color: 'bg-purple-500', icon: '⏱️' }
+      { id: 1, title: 'Practice Session', desc: 'Complete 10 math problems', progress: 0, total: 10, color: 'bg-blue-500', icon: '📝' },
+      { id: 2, title: 'Accuracy Goal', desc: 'Achieve 80% accuracy', progress: 0, total: 100, color: 'bg-green-500', icon: '🎯' },
+      { id: 3, title: 'Study Time', desc: 'Practice for 30 minutes', progress: 0, total: 30, color: 'bg-purple-500', icon: '⏱️' }
     ],
     Bella: [
-      { id: 1, title: 'Practice Session', desc: 'Complete 10 math problems', progress: 5, total: 10, color: 'bg-blue-500', icon: '📝' },
-      { id: 2, title: 'Accuracy Goal', desc: 'Achieve 70% accuracy', progress: 75, total: 100, color: 'bg-green-500', icon: '🎯' },
-      { id: 3, title: 'Study Time', desc: 'Practice for 20 minutes', progress: 8, total: 20, color: 'bg-purple-500', icon: '⏱️' }
+      { id: 1, title: 'Practice Session', desc: 'Complete 10 math problems', progress: 0, total: 10, color: 'bg-blue-500', icon: '📝' },
+      { id: 2, title: 'Accuracy Goal', desc: 'Achieve 70% accuracy', progress: 0, total: 100, color: 'bg-green-500', icon: '🎯' },
+      { id: 3, title: 'Study Time', desc: 'Practice for 20 minutes', progress: 0, total: 20, color: 'bg-purple-500', icon: '⏱️' }
     ]
   };
 
