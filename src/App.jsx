@@ -639,7 +639,6 @@ const App = () => {
         // Year 3-4: AMC-style number sense and place value
         if (difficulty === 'easy') {
           const num = Math.floor(Math.random() * 900) + 100;
-          const digit = Math.floor(Math.random() * 10);
           const position = Math.floor(Math.random() * 3) + 1; // 1=ones, 2=tens, 3=hundreds
           const positions = ['ones', 'tens', 'hundreds'];
           const multiplier = Math.pow(10, position - 1);
@@ -900,9 +899,8 @@ const App = () => {
           const num3 = Math.floor(Math.random() * 5) + 1;
           const den3 = Math.floor(Math.random() * 9) + 2;
           
-          // Find LCM of all three denominators
-          const lcm12 = den1 * den2;
-          const lcm = lcm12 * den3;
+          // Find LCM of all three denominators (simplified approach)
+          const lcm = den1 * den2 * den3;
           const newNum1 = num1 * den2 * den3;
           const newNum2 = num2 * den1 * den3;
           const newNum3 = num3 * den1 * den2;
@@ -1143,14 +1141,15 @@ const App = () => {
           const total = Math.floor(Math.random() * 200) + 100;
           const ratio1 = Math.floor(Math.random() * 4) + 2;
           const ratio2 = Math.floor(Math.random() * 4) + 2;
-          const part1 = Math.floor((total * ratio1) / (ratio1 + ratio2));
+          const totalRatio = ratio1 + ratio2;
+          const part1 = Math.round((total * ratio1) / totalRatio);
           const part2 = total - part1;
           
           return createShuffledQuestion(
             `A sum of $${total} is divided in the ratio ${ratio1}:${ratio2}. What is the larger part?`,
             [String(part1 - 1), String(Math.max(part1, part2)), String(Math.max(part1, part2) + 1), String(total)],
             1,
-            `Total parts: ${ratio1} + ${ratio2} = ${ratio1 + ratio2}\nPart 1: ${total} × ${ratio1}/${ratio1 + ratio2} = $${part1}\nPart 2: ${total} × ${ratio2}/${ratio1 + ratio2} = $${part2}\nThe larger part is $${Math.max(part1, part2)}.`,
+            `Total parts: ${ratio1} + ${ratio2} = ${totalRatio}\nPart 1: ${total} × ${ratio1}/${totalRatio} = $${part1}\nPart 2: ${total} × ${ratio2}/${totalRatio} = $${part2}\nThe larger part is $${Math.max(part1, part2)}.`,
             8,
             'medium'
           );
@@ -1176,8 +1175,8 @@ const App = () => {
           const ratio2 = Math.floor(Math.random() * 5) + 2;
           const ratio3 = Math.floor(Math.random() * 4) + 1;
           const totalRatio = ratio1 + ratio2 + ratio3;
-          const part1 = Math.floor((total * ratio1) / totalRatio);
-          const part2 = Math.floor((total * ratio2) / totalRatio);
+          const part1 = Math.round((total * ratio1) / totalRatio);
+          const part2 = Math.round((total * ratio2) / totalRatio);
           const part3 = total - part1 - part2;
           
           return createShuffledQuestion(
