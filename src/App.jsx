@@ -732,6 +732,23 @@ const App = () => {
           const start = Math.floor(Math.random() * 20) + 10;
           const pattern1 = Math.floor(Math.random() * 5) + 2;
           const pattern2 = Math.floor(Math.random() * 3) + 1;
+          
+          // Ensure different patterns for complexity
+          if (pattern1 === pattern2) {
+            const adjustedPattern2 = pattern2 + 1;
+            const sequence = [start, start + pattern1, start + pattern1 + adjustedPattern2, start + pattern1 + adjustedPattern2 * 2];
+            const next = start + pattern1 + adjustedPattern2 * 3;
+            
+            return createShuffledQuestion(
+              `In the sequence ${sequence.join(', ')}, each term after the first increases by a pattern. What is the next term?`,
+              [String(next - adjustedPattern2), String(next), String(next + adjustedPattern2), String(start + pattern1 * 2)],
+              1,
+              `Pattern analysis:\n${start} + ${pattern1} = ${start + pattern1}\n${start + pattern1} + ${adjustedPattern2} = ${start + pattern1 + adjustedPattern2}\n${start + pattern1 + adjustedPattern2} + ${adjustedPattern2} = ${start + pattern1 + adjustedPattern2 * 2}\nNext: ${start + pattern1 + adjustedPattern2 * 2} + ${adjustedPattern2} = ${next}`,
+              1,
+              'easy'
+            );
+          }
+          
           const sequence = [start, start + pattern1, start + pattern1 + pattern2, start + pattern1 + pattern2 * 2];
           const next = start + pattern1 + pattern2 * 3;
           
@@ -812,6 +829,21 @@ const App = () => {
           const newGirls = Math.floor(Math.random() * 15) + 10;
           const transferredBoys = Math.floor(Math.random() * 5) + 2;
           const finalTotal = totalStudents + newBoys + newGirls - transferredBoys;
+          
+          // Ensure final total is always greater than original for educational value
+          if (finalTotal <= totalStudents) {
+            const adjustedNewBoys = newBoys + 5;
+            const adjustedFinalTotal = totalStudents + adjustedNewBoys + newGirls - transferredBoys;
+            
+            return createShuffledQuestion(
+              `A school has ${totalStudents} students in the ratio ${boysRatio}:${girlsRatio} (boys:girls). If ${adjustedNewBoys} more boys and ${newGirls} more girls join, but ${transferredBoys} boys transfer out, how many students will there be?`,
+              [String(adjustedFinalTotal - 2), String(adjustedFinalTotal), String(adjustedFinalTotal + 2), String(totalStudents + adjustedNewBoys + newGirls)],
+              1,
+              `Current students: ${totalStudents}\nBoys: ${boys}, Girls: ${girls}\nNew students: ${adjustedNewBoys} + ${newGirls} = ${adjustedNewBoys + newGirls}\nTransferred out: ${transferredBoys}\nTotal: ${totalStudents} + ${adjustedNewBoys + newGirls} - ${transferredBoys} = ${adjustedFinalTotal}`,
+              2,
+              'medium'
+            );
+          }
           
           return createShuffledQuestion(
             `A school has ${totalStudents} students in the ratio ${boysRatio}:${girlsRatio} (boys:girls). If ${newBoys} more boys and ${newGirls} more girls join, but ${transferredBoys} boys transfer out, how many students will there be?`,
@@ -930,6 +962,24 @@ const App = () => {
           const remainder = totalStudents % buses;
           const extraBus = remainder > 0 ? 1 : 0;
           const totalBuses = buses + extraBus;
+          
+          // Ensure we have a valid division scenario
+          if (studentsPerBus === 0) {
+            const adjustedBuses = Math.max(4, Math.floor(totalStudents / 20));
+            const adjustedStudentsPerBus = Math.floor(totalStudents / adjustedBuses);
+            const adjustedRemainder = totalStudents % adjustedBuses;
+            const adjustedExtraBus = adjustedRemainder > 0 ? 1 : 0;
+            const adjustedTotalBuses = adjustedBuses + adjustedExtraBus;
+            
+            return createShuffledQuestion(
+              `A school needs to transport ${totalStudents} students on a field trip. Each bus can hold ${adjustedStudentsPerBus} students. How many buses are needed?`,
+              [String(adjustedTotalBuses - 1), String(adjustedTotalBuses), String(adjustedTotalBuses + 1), String(adjustedBuses)],
+              1,
+              `${totalStudents} ÷ ${adjustedStudentsPerBus} = ${Math.floor(totalStudents / adjustedStudentsPerBus)} remainder ${adjustedRemainder}\nSince we need to transport all students, we need ${Math.floor(totalStudents / adjustedStudentsPerBus)} + ${adjustedExtraBus} = ${adjustedTotalBuses} buses.`,
+              3,
+              'medium'
+            );
+          }
           
           return createShuffledQuestion(
             `A school needs to transport ${totalStudents} students on a field trip. Each bus can hold ${studentsPerBus} students. How many buses are needed?`,
