@@ -669,43 +669,47 @@ const App = () => {
     // Year-appropriate difficulty mapping
     const yearLevel = year <= 4 ? 'junior' : 'senior';
     
-    // Number and Place Value (Topic 1)
+    // Number and Place Value (Topic 1) - AMC LEVEL
     if (topic.id === 1) {
       if (yearLevel === 'junior') {
-        // Year 3-4: AMC-style number sense and place value
+        // Year 3-4: AMC-style number theory and place value
         if (difficulty === 'easy') {
-          const num = Math.floor(Math.random() * 900) + 100;
-          const position = Math.floor(Math.random() * 3) + 1; // 1=ones, 2=tens, 3=hundreds
-          const positions = ['ones', 'tens', 'hundreds'];
-          const multiplier = Math.pow(10, position - 1);
-          const answer = Math.floor(num / multiplier) % 10;
+          // AMC-style multi-digit number operations
+          const baseNum = Math.floor(Math.random() * 800) + 200;
+          const digitSum = String(baseNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+          const reversedNum = parseInt(String(baseNum).split('').reverse().join(''));
+          const answer = Math.abs(baseNum - reversedNum);
           
           return createShuffledQuestion(
-            `What digit is in the ${positions[position-1]} place of ${num}?`,
-            [String((answer + 1) % 10), String(answer), String((answer + 9) % 10), String((answer + 2) % 10)],
+            `A ${String(baseNum).length}-digit number has a digit sum of ${digitSum}. If you reverse its digits, the difference between the original and reversed number is:`,
+            [String(answer - 10), String(answer), String(answer + 10), String(baseNum + reversedNum)],
             1,
-            `To find the ${positions[position-1]} digit:\nDivide by ${multiplier} and find remainder when divided by 10\n${num} ÷ ${multiplier} = ${Math.floor(num / multiplier)}\n${Math.floor(num / multiplier)} ÷ 10 remainder = ${answer}`,
+            `Original number: ${baseNum}\nReversed number: ${reversedNum}\nDifference: ${baseNum} - ${reversedNum} = ${answer}\nNote: The difference between a number and its reverse is always divisible by 9.`,
             1,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const a = Math.floor(Math.random() * 50) + 10;
-          const b = Math.floor(Math.random() * 50) + 10;
-          const c = Math.floor(Math.random() * 50) + 10;
+          // AMC-style number theory with divisibility
+          const a = Math.floor(Math.random() * 50) + 50;
+          const b = Math.floor(Math.random() * 50) + 50;
+          const c = Math.floor(Math.random() * 50) + 50;
           const sum = a + b + c;
           const avg = Math.round(sum / 3);
+          const remainder = sum % 3;
+          const nextMultiple = sum + (3 - remainder);
+          const answer = nextMultiple / 3;
           
           return createShuffledQuestion(
-            `Three numbers have an average of ${avg}. If two of the numbers are ${a} and ${b}, what is the third number?`,
-            [String(c - 1), String(c), String(c + 1), String(sum)],
+            `Three numbers have an average of ${avg} with remainder ${remainder} when their sum is divided by 3. What is the smallest possible average if we add one more number to make the sum divisible by 3?`,
+            [String(answer - 1), String(answer), String(answer + 1), String(sum / 3)],
             1,
-            `Average = Sum ÷ Count\n${avg} = Sum ÷ 3\nSum = ${avg} × 3 = ${avg * 3}\nThird number = ${avg * 3} - ${a} - ${b} = ${c}`,
+            `Current sum: ${sum} (remainder ${remainder} when divided by 3)\nTo make divisible by 3, add ${3 - remainder} to get ${nextMultiple}\nNew average: ${nextMultiple} ÷ 4 = ${answer}`,
             1,
             'medium'
           );
         } else if (difficulty === 'hard') {
           // EXPERT LEVEL: AMC-style advanced number theory with multiple concepts
-          const baseNum = Math.floor(Math.random() * 900) + 100;
+          const baseNum = Math.floor(Math.random() * 800) + 200;
           const digitSum = String(baseNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
           const remainder = baseNum % 9;
           const nextNum = baseNum + 9;
@@ -724,30 +728,35 @@ const App = () => {
       } else {
         // Year 5-6: Advanced AMC-style number theory
         if (difficulty === 'easy') {
-          const start = Math.floor(Math.random() * 20) + 1;
-          const pattern = Math.floor(Math.random() * 5) + 2;
-          const sequence = [start, start + pattern, start + pattern * 2, start + pattern * 3];
-          const next = start + pattern * 4;
+          // AMC-style sequence problems with multiple operations
+          const start = Math.floor(Math.random() * 20) + 10;
+          const pattern1 = Math.floor(Math.random() * 5) + 2;
+          const pattern2 = Math.floor(Math.random() * 3) + 1;
+          const sequence = [start, start + pattern1, start + pattern1 + pattern2, start + pattern1 + pattern2 * 2];
+          const next = start + pattern1 + pattern2 * 3;
           
           return createShuffledQuestion(
-            `Find the next number: ${sequence.join(', ')}`,
-            [String(next - pattern), String(next), String(next + pattern), String(start + pattern * 5)],
+            `In the sequence ${sequence.join(', ')}, each term after the first increases by a pattern. What is the next term?`,
+            [String(next - pattern2), String(next), String(next + pattern2), String(start + pattern1 * 2)],
             1,
-            `The pattern adds ${pattern} each time:\n${start} + ${pattern} = ${start + pattern}\n${start + pattern} + ${pattern} = ${start + pattern * 2}\n${start + pattern * 3} + ${pattern} = ${next}`,
+            `Pattern analysis:\n${start} + ${pattern1} = ${start + pattern1}\n${start + pattern1} + ${pattern2} = ${start + pattern1 + pattern2}\n${start + pattern1 + pattern2} + ${pattern2} = ${start + pattern1 + pattern2 * 2}\nNext: ${start + pattern1 + pattern2 * 2} + ${pattern2} = ${next}`,
             1,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const num1 = Math.floor(Math.random() * 50) + 20;
-          const num2 = Math.floor(Math.random() * 30) + 10;
+          // AMC-style number theory with variables and equations
+          const num1 = Math.floor(Math.random() * 50) + 30;
+          const num2 = Math.floor(Math.random() * 40) + 20;
           const sum = num1 + num2;
           const diff = Math.abs(num1 - num2);
+          const product = num1 * num2;
+          const answer = Math.max(num1, num2);
           
           return createShuffledQuestion(
-            `Two numbers have a sum of ${sum} and a difference of ${diff}. What is the larger number?`,
-            [String(Math.max(num1, num2) - 1), String(Math.max(num1, num2)), String(Math.max(num1, num2) + 1), String(sum)],
+            `Two positive integers have a sum of ${sum}, a difference of ${diff}, and a product of ${product}. What is the larger number?`,
+            [String(answer - 2), String(answer), String(answer + 2), String(sum)],
             1,
-            `Let's solve this step by step:\nIf the numbers are x and y:\nx + y = ${sum}\nx - y = ${diff}\nAdding: 2x = ${sum + diff}\nx = ${(sum + diff) / 2}\nThe larger number is ${Math.max(num1, num2)}`,
+            `Let's solve this step by step:\nIf the numbers are x and y:\nx + y = ${sum}\nx - y = ${diff}\nAdding: 2x = ${sum + diff}\nx = ${(sum + diff) / 2}\nThe larger number is ${answer}`,
             1,
             'medium'
           );
@@ -772,34 +781,43 @@ const App = () => {
       }
     }
     
-    // Addition & Subtraction (Topic 2)
+    // Addition & Subtraction (Topic 2) - AMC LEVEL
     if (topic.id === 2) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 50) + 20;
-          const b = Math.floor(Math.random() * 30) + 15;
-          const c = Math.floor(Math.random() * 20) + 10;
-          const result = a + b - c;
+          // AMC-style multi-step word problems
+          const originalMoney = Math.floor(Math.random() * 200) + 100;
+          const spent1 = Math.floor(Math.random() * 50) + 30;
+          const earned = Math.floor(Math.random() * 80) + 60;
+          const spent2 = Math.floor(Math.random() * 60) + 40;
+          const finalMoney = originalMoney - spent1 + earned - spent2;
           
           return createShuffledQuestion(
-            `What is ${a} + ${b} - ${c}?`,
-            [String(result - 1), String(result), String(result + 1), String(a + b + c)],
+            `Sarah had $${originalMoney}. She spent $${spent1} on books, then earned $${earned} from tutoring, and finally spent $${spent2} on supplies. How much money does she have now?`,
+            [String(finalMoney - 5), String(finalMoney), String(finalMoney + 5), String(originalMoney + earned)],
             1,
-            `Step 1: ${a} + ${b} = ${a + b}\nStep 2: ${a + b} - ${c} = ${result}`,
+            `Step 1: Start with $${originalMoney}\nStep 2: Spend $${spent1} → $${originalMoney - spent1}\nStep 3: Earn $${earned} → $${originalMoney - spent1 + earned}\nStep 4: Spend $${spent2} → $${finalMoney}\nSarah now has $${finalMoney}.`,
             2,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const num1 = Math.floor(Math.random() * 100) + 50;
-          const num2 = Math.floor(Math.random() * 80) + 30;
-          const num3 = Math.floor(Math.random() * 60) + 20;
-          const result = num1 - num2 + num3;
+          // AMC-style complex multi-step problem with variables
+          const totalStudents = Math.floor(Math.random() * 150) + 100;
+          const boysRatio = Math.floor(Math.random() * 4) + 2;
+          const girlsRatio = Math.floor(Math.random() * 4) + 2;
+          const totalRatio = boysRatio + girlsRatio;
+          const boys = Math.round((totalStudents * boysRatio) / totalRatio);
+          const girls = totalStudents - boys;
+          const newBoys = Math.floor(Math.random() * 15) + 10;
+          const newGirls = Math.floor(Math.random() * 15) + 10;
+          const transferredBoys = Math.floor(Math.random() * 5) + 2;
+          const finalTotal = totalStudents + newBoys + newGirls - transferredBoys;
           
           return createShuffledQuestion(
-            `What is ${num1} - ${num2} + ${num3}?`,
-            [String(result - 2), String(result), String(result + 2), String(num1 + num2 + num3)],
+            `A school has ${totalStudents} students in the ratio ${boysRatio}:${girlsRatio} (boys:girls). If ${newBoys} more boys and ${newGirls} more girls join, but ${transferredBoys} boys transfer out, how many students will there be?`,
+            [String(finalTotal - 2), String(finalTotal), String(finalTotal + 2), String(totalStudents + newBoys + newGirls)],
             1,
-            `Step 1: ${num1} - ${num2} = ${num1 - num2}\nStep 2: ${num1 - num2} + ${num3} = ${result}`,
+            `Current students: ${totalStudents}\nBoys: ${boys}, Girls: ${girls}\nNew students: ${newBoys} + ${newGirls} = ${newBoys + newGirls}\nTransferred out: ${transferredBoys}\nTotal: ${totalStudents} + ${newBoys + newGirls} - ${transferredBoys} = ${finalTotal}`,
             2,
             'medium'
           );
@@ -823,17 +841,24 @@ const App = () => {
         }
       } else {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 100) + 50;
-          const b = Math.floor(Math.random() * 80) + 40;
-          const c = Math.floor(Math.random() * 60) + 30;
-          const d = Math.floor(Math.random() * 40) + 20;
-          const result = a + b - c + d;
+          // AMC-style multi-step business problem
+          const basePrice = Math.floor(Math.random() * 50) + 30;
+          const quantity = Math.floor(Math.random() * 15) + 10;
+          const discount = Math.floor(Math.random() * 10) + 5;
+          const tax = Math.floor(Math.random() * 5) + 3;
+          const shipping = Math.floor(Math.random() * 15) + 10;
+          
+          const subtotal = basePrice * quantity;
+          const discountAmount = Math.floor(subtotal * discount / 100);
+          const afterDiscount = subtotal - discountAmount;
+          const taxAmount = Math.floor(afterDiscount * tax / 100);
+          const finalTotal = afterDiscount + taxAmount + shipping;
           
           return createShuffledQuestion(
-            `What is ${a} + ${b} - ${c} + ${d}?`,
-            [String(result - 3), String(result), String(result + 3), String(a + b + c + d)],
+            `A store sells items for $${basePrice} each. If you buy ${quantity} items with a ${discount}% discount, plus ${tax}% tax and $${shipping} shipping, what is the total cost?`,
+            [String(finalTotal - 5), String(finalTotal), String(finalTotal + 5), String(subtotal + shipping)],
             1,
-            `Step 1: ${a} + ${b} = ${a + b}\nStep 2: ${a + b} - ${c} = ${a + b - c}\nStep 3: ${a + b - c} + ${d} = ${result}`,
+            `Step 1: Subtotal = $${basePrice} × ${quantity} = $${subtotal}\nStep 2: Discount = $${subtotal} × ${discount}% = $${discountAmount}\nStep 3: After discount = $${subtotal} - $${discountAmount} = $${afterDiscount}\nStep 4: Tax = $${afterDiscount} × ${tax}% = $${taxAmount}\nStep 5: Total = $${afterDiscount} + $${taxAmount} + $${shipping} = $${finalTotal}`,
             2,
             'easy'
           );
@@ -877,90 +902,51 @@ const App = () => {
       }
     }
     
-    // Multiplication & Division (Topic 3)
+    // Multiplication & Division (Topic 3) - AMC LEVEL
     if (topic.id === 3) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 15) + 5;
-          const b = Math.floor(Math.random() * 15) + 5;
-          const product = a * b;
+          // AMC-style multi-step multiplication with real-world context
+          const rows = Math.floor(Math.random() * 15) + 10;
+          const cols = Math.floor(Math.random() * 15) + 10;
+          const seatsPerRow = Math.floor(Math.random() * 8) + 6;
+          const totalSeats = rows * cols * seatsPerRow;
+          const occupiedSeats = Math.floor(totalSeats * 0.8);
+          const emptySeats = totalSeats - occupiedSeats;
           
           return createShuffledQuestion(
-            `What is ${a} × ${b}?`,
-            [String(product - a), String(product), String(product + a), String(a + b)],
+            `A theater has ${rows} rows and ${cols} columns of seats, with ${seatsPerRow} seats in each row. If 80% of the seats are occupied, how many seats are empty?`,
+            [String(emptySeats - 5), String(emptySeats), String(emptySeats + 5), String(occupiedSeats)],
             1,
-            `${a} × ${b} = ${product}\nThink of it as ${a} groups of ${b}: ${b} + ${b} + ... (${a} times) = ${product}`,
+            `Total seats = ${rows} × ${cols} × ${seatsPerRow} = ${totalSeats}\nOccupied seats = ${totalSeats} × 80% = ${occupiedSeats}\nEmpty seats = ${totalSeats} - ${occupiedSeats} = ${emptySeats}`,
             3,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const total = Math.floor(Math.random() * 100) + 50;
-          const divisor = Math.floor(Math.random() * 12) + 4;
-          const quotient = Math.floor(total / divisor);
-          const remainder = total % divisor;
+          // AMC-style complex division with remainders and real-world application
+          const totalStudents = Math.floor(Math.random() * 200) + 100;
+          const buses = Math.floor(Math.random() * 8) + 4;
+          const studentsPerBus = Math.floor(totalStudents / buses);
+          const remainder = totalStudents % buses;
+          const extraBus = remainder > 0 ? 1 : 0;
+          const totalBuses = buses + extraBus;
           
           return createShuffledQuestion(
-            `If ${total} students are divided into groups of ${divisor}, how many complete groups can be made?`,
-            [String(quotient - 1), String(quotient), String(quotient + 1), String(Math.ceil(total / divisor))],
+            `A school needs to transport ${totalStudents} students on a field trip. Each bus can hold ${studentsPerBus} students. How many buses are needed?`,
+            [String(totalBuses - 1), String(totalBuses), String(totalBuses + 1), String(buses)],
             1,
-            `${total} ÷ ${divisor} = ${quotient} remainder ${remainder}\nSo ${quotient} complete groups can be made, with ${remainder} students left over.`,
-            3,
-            'medium'
-          );
-        } else if (difficulty === 'hard') {
-          // AMC-style multi-step division with remainders
-          const totalItems = Math.floor(Math.random() * 500) + 200;
-          const boxes = Math.floor(Math.random() * 15) + 8;
-          const itemsPerBox = Math.floor(totalItems / boxes);
-          const remainder = totalItems % boxes;
-          const extraBoxes = remainder > 0 ? 1 : 0;
-          const totalBoxes = boxes + extraBoxes;
-          
-          return createShuffledQuestion(
-            `A factory has ${totalItems} items to pack. Each box can hold ${itemsPerBox} items. How many boxes are needed to pack all items?`,
-            [String(totalBoxes - 1), String(totalBoxes), String(totalBoxes + 1), String(boxes)],
-            1,
-            `${totalItems} ÷ ${itemsPerBox} = ${Math.floor(totalItems / itemsPerBox)} remainder ${remainder}\nSince we need to pack all items, we need ${Math.floor(totalItems / itemsPerBox)} + ${extraBoxes} = ${totalBoxes} boxes.`,
-            3,
-            'hard'
-          );
-        }
-      } else {
-        if (difficulty === 'easy') {
-          const a = Math.floor(Math.random() * 20) + 10;
-          const b = Math.floor(Math.random() * 20) + 10;
-          const product = a * b;
-          
-          return createShuffledQuestion(
-            `What is ${a} × ${b}?`,
-            [String(product - a), String(product), String(product + a), String(a + b)],
-            1,
-            `${a} × ${b} = ${product}\nThink of it as ${a} groups of ${b}: ${b} + ${b} + ... (${a} times) = ${product}`,
-            3,
-            'easy'
-          );
-        } else if (difficulty === 'medium') {
-          const total = Math.floor(Math.random() * 200) + 100;
-          const groups = Math.floor(Math.random() * 8) + 4;
-          const studentsPerGroup = Math.floor(total / groups);
-          const remainder = total % groups;
-          
-          return createShuffledQuestion(
-            `There are ${total} students. They are divided into ${groups} equal groups. How many students are in each group?`,
-            [String(studentsPerGroup - 1), String(studentsPerGroup), String(studentsPerGroup + 1), String(Math.ceil(total / groups))],
-            1,
-            `${total} ÷ ${groups} = ${studentsPerGroup} remainder ${remainder}\nEach group has ${studentsPerGroup} students${remainder > 0 ? `, with ${remainder} students left over` : ''}.`,
+            `${totalStudents} ÷ ${studentsPerBus} = ${Math.floor(totalStudents / studentsPerBus)} remainder ${remainder}\nSince we need to transport all students, we need ${Math.floor(totalStudents / studentsPerBus)} + ${extraBus} = ${totalBuses} buses.`,
             3,
             'medium'
           );
         } else if (difficulty === 'hard') {
           // EXPERT LEVEL: AMC-style complex multi-step business problem
-          const basePrice = Math.floor(Math.random() * 30) + 15;
-          const quantity = Math.floor(Math.random() * 20) + 10;
-          const discount1 = Math.floor(Math.random() * 5) + 3;
-          const discount2 = Math.floor(Math.random() * 3) + 2;
-          const tax = Math.floor(Math.random() * 3) + 1;
-          const shipping = Math.floor(Math.random() * 10) + 5;
+          const basePrice = Math.floor(Math.random() * 50) + 30;
+          const quantity = Math.floor(Math.random() * 25) + 15;
+          const discount1 = Math.floor(Math.random() * 8) + 5;
+          const discount2 = Math.floor(Math.random() * 5) + 3;
+          const tax = Math.floor(Math.random() * 4) + 2;
+          const shipping = Math.floor(Math.random() * 15) + 10;
           
           const subtotal = basePrice * quantity;
           const discount1Amount = Math.floor(subtotal * discount1 / 100);
@@ -972,7 +958,70 @@ const App = () => {
           
           return createShuffledQuestion(
             `A store sells items for $${basePrice} each. If you buy ${quantity} items with a ${discount1}% discount, then an additional ${discount2}% discount, plus ${tax}% tax and $${shipping} shipping, what is the total cost?`,
-            [String(finalTotal - 3), String(finalTotal), String(finalTotal + 3), String(subtotal + shipping)],
+            [String(finalTotal - 5), String(finalTotal), String(finalTotal + 5), String(subtotal + shipping)],
+            1,
+            `Step 1: Subtotal = $${basePrice} × ${quantity} = $${subtotal}\nStep 2: First discount = $${subtotal} × ${discount1}% = $${discount1Amount}\nStep 3: After first discount = $${subtotal} - $${discount1Amount} = $${afterDiscount1}\nStep 4: Second discount = $${afterDiscount1} × ${discount2}% = $${discount2Amount}\nStep 5: After second discount = $${afterDiscount1} - $${discount2Amount} = $${afterDiscount2}\nStep 6: Tax = $${afterDiscount2} × ${tax}% = $${taxAmount}\nStep 7: Total = $${afterDiscount2} + $${taxAmount} + $${shipping} = $${finalTotal}`,
+            3,
+            'hard'
+          );
+        }
+      } else {
+        if (difficulty === 'easy') {
+          // AMC-style multi-step multiplication with geometry
+          const length = Math.floor(Math.random() * 20) + 15;
+          const width = Math.floor(Math.random() * 20) + 15;
+          const height = Math.floor(Math.random() * 10) + 8;
+          const volume = length * width * height;
+          const surfaceArea = 2 * (length * width + length * height + width * height);
+          const answer = surfaceArea;
+          
+          return createShuffledQuestion(
+            `A rectangular box has dimensions ${length} cm × ${width} cm × ${height} cm. What is its surface area in square centimeters?`,
+            [String(answer - 20), String(answer), String(answer + 20), String(volume)],
+            1,
+            `Surface area = 2 × (length × width + length × height + width × height)\n= 2 × (${length} × ${width} + ${length} × ${height} + ${width} × ${height})\n= 2 × (${length * width} + ${length * height} + ${width * height})\n= 2 × ${length * width + length * height + width * height} = ${answer}`,
+            3,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          // AMC-style complex division with ratios
+          const totalMoney = Math.floor(Math.random() * 300) + 200;
+          const ratio1 = Math.floor(Math.random() * 5) + 2;
+          const ratio2 = Math.floor(Math.random() * 5) + 2;
+          const ratio3 = Math.floor(Math.random() * 4) + 1;
+          const totalRatio = ratio1 + ratio2 + ratio3;
+          const part1 = Math.round((totalMoney * ratio1) / totalRatio);
+          const part2 = Math.round((totalMoney * ratio2) / totalRatio);
+          const part3 = totalMoney - part1 - part2;
+          
+          return createShuffledQuestion(
+            `A sum of $${totalMoney} is divided in the ratio ${ratio1}:${ratio2}:${ratio3}. What is the largest part?`,
+            [String(Math.max(part1, part2, part3) - 5), String(Math.max(part1, part2, part3)), String(Math.max(part1, part2, part3) + 5), String(totalMoney)],
+            1,
+            `Total parts: ${ratio1} + ${ratio2} + ${ratio3} = ${totalRatio}\nPart 1: ${totalMoney} × ${ratio1}/${totalRatio} = $${part1}\nPart 2: ${totalMoney} × ${ratio2}/${totalRatio} = $${part2}\nPart 3: ${totalMoney} × ${ratio3}/${totalRatio} = $${part3}\nThe largest part is $${Math.max(part1, part2, part3)}.`,
+            3,
+            'medium'
+          );
+        } else if (difficulty === 'hard') {
+          // EXPERT LEVEL: AMC-style complex multi-step business problem
+          const basePrice = Math.floor(Math.random() * 40) + 25;
+          const quantity = Math.floor(Math.random() * 30) + 20;
+          const discount1 = Math.floor(Math.random() * 10) + 5;
+          const discount2 = Math.floor(Math.random() * 6) + 3;
+          const tax = Math.floor(Math.random() * 5) + 2;
+          const shipping = Math.floor(Math.random() * 20) + 15;
+          
+          const subtotal = basePrice * quantity;
+          const discount1Amount = Math.floor(subtotal * discount1 / 100);
+          const afterDiscount1 = subtotal - discount1Amount;
+          const discount2Amount = Math.floor(afterDiscount1 * discount2 / 100);
+          const afterDiscount2 = afterDiscount1 - discount2Amount;
+          const taxAmount = Math.floor(afterDiscount2 * tax / 100);
+          const finalTotal = afterDiscount2 + taxAmount + shipping;
+          
+          return createShuffledQuestion(
+            `A store sells items for $${basePrice} each. If you buy ${quantity} items with a ${discount1}% discount, then an additional ${discount2}% discount, plus ${tax}% tax and $${shipping} shipping, what is the total cost?`,
+            [String(finalTotal - 5), String(finalTotal), String(finalTotal + 5), String(subtotal + shipping)],
             1,
             `Step 1: Subtotal = $${basePrice} × ${quantity} = $${subtotal}\nStep 2: First discount = $${subtotal} × ${discount1}% = $${discount1Amount}\nStep 3: After first discount = $${subtotal} - $${discount1Amount} = $${afterDiscount1}\nStep 4: Second discount = $${afterDiscount1} × ${discount2}% = $${discount2Amount}\nStep 5: After second discount = $${afterDiscount1} - $${discount2Amount} = $${afterDiscount2}\nStep 6: Tax = $${afterDiscount2} × ${tax}% = $${taxAmount}\nStep 7: Total = $${afterDiscount2} + $${taxAmount} + $${shipping} = $${finalTotal}`,
             3,
@@ -982,41 +1031,49 @@ const App = () => {
       }
     }
     
-    // Fractions (Topic 4)
+    // Fractions (Topic 4) - AMC LEVEL
     if (topic.id === 4) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const num1 = Math.floor(Math.random() * 4) + 1;
-          const den1 = Math.floor(Math.random() * 5) + 2;
-          const num2 = Math.floor(Math.random() * 3) + 1;
-          const den2 = den1; // Same denominator for easier addition
-          const resultNum = num1 + num2;
-          const result = `${resultNum}/${den1}`;
+          // AMC-style fraction word problems with real-world context
+          const totalStudents = Math.floor(Math.random() * 60) + 40;
+          const boysFraction = Math.floor(Math.random() * 3) + 2;
+          const girlsFraction = Math.floor(Math.random() * 3) + 2;
+          const totalFraction = boysFraction + girlsFraction;
+          const boys = Math.round((totalStudents * boysFraction) / totalFraction);
+          const girls = totalStudents - boys;
+          const answer = boys;
           
           return createShuffledQuestion(
-            `What is ${num1}/${den1} + ${num2}/${den1}?`,
-            [`${resultNum - 1}/${den1}`, result, `${resultNum + 1}/${den1}`, `${num1 + num2}/${den1 + den1}`],
+            `A class has ${totalStudents} students. ${boysFraction}/${totalFraction} of the students are boys. How many boys are in the class?`,
+            [String(answer - 2), String(answer), String(answer + 2), String(girls)],
             1,
-            `When denominators are the same, add the numerators:\n${num1}/${den1} + ${num2}/${den1} = ${resultNum}/${den1}`,
+            `Total students = ${totalStudents}\nFraction of boys = ${boysFraction}/${totalFraction}\nNumber of boys = ${totalStudents} × ${boysFraction}/${totalFraction} = ${answer}`,
             4,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const num1 = Math.floor(Math.random() * 5) + 1;
+          // AMC-style complex fraction operations with mixed numbers
+          const whole1 = Math.floor(Math.random() * 3) + 2;
+          const num1 = Math.floor(Math.random() * 4) + 1;
           const den1 = Math.floor(Math.random() * 6) + 2;
-          const num2 = Math.floor(Math.random() * 4) + 1;
+          const whole2 = Math.floor(Math.random() * 2) + 1;
+          const num2 = Math.floor(Math.random() * 3) + 1;
           const den2 = Math.floor(Math.random() * 6) + 2;
+          
+          const improper1 = whole1 * den1 + num1;
+          const improper2 = whole2 * den2 + num2;
           const lcm = findLCM(den1, den2);
-          const newNum1 = num1 * (lcm / den1);
-          const newNum2 = num2 * (lcm / den2);
+          const newNum1 = improper1 * (lcm / den1);
+          const newNum2 = improper2 * (lcm / den2);
           const resultNum = newNum1 + newNum2;
           const result = `${resultNum}/${lcm}`;
           
           return createShuffledQuestion(
-            `What is ${num1}/${den1} + ${num2}/${den2}?`,
-            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2}/${den1 + den2}`],
+            `What is ${whole1} ${num1}/${den1} + ${whole2} ${num2}/${den2}?`,
+            [`${resultNum - 5}/${lcm}`, result, `${resultNum + 5}/${lcm}`, `${improper1 + improper2}/${den1 + den2}`],
             1,
-            `Find common denominator: ${den1} × ${den2} = ${lcm}\nConvert: ${num1}/${den1} = ${newNum1}/${lcm}, ${num2}/${den2} = ${newNum2}/${lcm}\nAdd: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${result}`,
+            `Step 1: Convert to improper fractions:\n${whole1} ${num1}/${den1} = ${improper1}/${den1}\n${whole2} ${num2}/${den2} = ${improper2}/${den2}\nStep 2: Find common denominator ${lcm}\nStep 3: Add: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${result}`,
             4,
             'medium'
           );
@@ -1046,7 +1103,7 @@ const App = () => {
           
           return createShuffledQuestion(
             `What is (${whole1} ${num1}/${den1} + ${whole2} ${num2}/${den2}) - ${whole3} ${num3}/${den3}?`,
-            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${improper1 + improper2 - improper3}/${den1 + den2 + den3}`],
+            [`${resultNum - 5}/${lcm}`, result, `${resultNum + 5}/${lcm}`, `${improper1 + improper2 - improper3}/${den1 + den2 + den3}`],
             1,
             `Step 1: Convert to improper fractions:\n${whole1} ${num1}/${den1} = ${improper1}/${den1}\n${whole2} ${num2}/${den2} = ${improper2}/${den2}\n${whole3} ${num3}/${den3} = ${improper3}/${den3}\nStep 2: Find common denominator ${lcm}\nStep 3: Add first two: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${newNum1 + newNum2}/${lcm}\nStep 4: Subtract third: ${newNum1 + newNum2}/${lcm} - ${newNum3}/${lcm} = ${result}`,
             4,
@@ -1055,31 +1112,31 @@ const App = () => {
         }
       } else {
         if (difficulty === 'easy') {
-          const num1 = Math.floor(Math.random() * 6) + 1;
-          const den1 = Math.floor(Math.random() * 8) + 2;
-          const num2 = Math.floor(Math.random() * 5) + 1;
-          const den2 = Math.floor(Math.random() * 8) + 2;
-          const lcm = findLCM(den1, den2);
-          const newNum1 = num1 * (lcm / den1);
-          const newNum2 = num2 * (lcm / den2);
-          const resultNum = newNum1 + newNum2;
-          const result = `${resultNum}/${lcm}`;
+          // AMC-style fraction word problems with ratios
+          const totalMoney = Math.floor(Math.random() * 200) + 100;
+          const spentFraction = Math.floor(Math.random() * 3) + 2;
+          const savedFraction = Math.floor(Math.random() * 3) + 1;
+          const totalFraction = spentFraction + savedFraction;
+          const spent = Math.round((totalMoney * spentFraction) / totalFraction);
+          const saved = totalMoney - spent;
+          const answer = saved;
           
           return createShuffledQuestion(
-            `What is ${num1}/${den1} + ${num2}/${den2}?`,
-            [`${resultNum - 1}/${lcm}`, result, `${resultNum + 1}/${lcm}`, `${num1 + num2}/${den1 + den2}`],
+            `Emma has $${totalMoney}. She spends ${spentFraction}/${totalFraction} of her money and saves the rest. How much money does she save?`,
+            [String(answer - 5), String(answer), String(answer + 5), String(spent)],
             1,
-            `Find common denominator: ${den1} × ${den2} = ${lcm}\nConvert: ${num1}/${den1} = ${newNum1}/${lcm}, ${num2}/${den2} = ${newNum2}/${lcm}\nAdd: ${newNum1}/${lcm} + ${newNum2}/${lcm} = ${result}`,
+            `Total money = $${totalMoney}\nFraction spent = ${spentFraction}/${totalFraction}\nMoney spent = $${totalMoney} × ${spentFraction}/${totalFraction} = $${spent}\nMoney saved = $${totalMoney} - $${spent} = $${answer}`,
             4,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const num1 = Math.floor(Math.random() * 7) + 1;
-          const den1 = Math.floor(Math.random() * 9) + 2;
-          const num2 = Math.floor(Math.random() * 6) + 1;
-          const den2 = Math.floor(Math.random() * 9) + 2;
-          const num3 = Math.floor(Math.random() * 5) + 1;
-          const den3 = Math.floor(Math.random() * 9) + 2;
+          // AMC-style complex fraction operations with multiple denominators
+          const num1 = Math.floor(Math.random() * 8) + 1;
+          const den1 = Math.floor(Math.random() * 10) + 2;
+          const num2 = Math.floor(Math.random() * 7) + 1;
+          const den2 = Math.floor(Math.random() * 10) + 2;
+          const num3 = Math.floor(Math.random() * 6) + 1;
+          const den3 = Math.floor(Math.random() * 10) + 2;
           
           // Find LCM of all three denominators
           const lcm12 = findLCM(den1, den2);
@@ -1271,72 +1328,80 @@ const App = () => {
       }
     }
     
-    // Patterns (Topic 7)
+    // Patterns (Topic 7) - AMC LEVEL
     if (topic.id === 7) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const shapes = ['🔴', '🔵', '🟡', '🟢'];
-          const pattern = shapes.slice(0, Math.floor(Math.random() * 3) + 2);
-          const sequence = [...pattern, ...pattern, ...pattern.slice(0, 2)];
-          const next = pattern[2] || pattern[0];
-          
-          // Generate unique options
-          const availableShapes = shapes.filter(shape => shape !== next && shape !== pattern[0]);
-          const randomShape = availableShapes[Math.floor(Math.random() * availableShapes.length)];
-          const options = [pattern[pattern.length - 1], next, randomShape, pattern[0]];
-          
-          // Ensure uniqueness
-          const uniqueOptions = [...new Set(options)];
-          while (uniqueOptions.length < 4) {
-            const extraShape = shapes[Math.floor(Math.random() * shapes.length)];
-            if (!uniqueOptions.includes(extraShape)) {
-              uniqueOptions.push(extraShape);
-            }
-          }
-          
-          return createShuffledQuestion(
-            `What comes next in this pattern?\n${sequence.join(' ')}`,
-            uniqueOptions,
-            1,
-            `The pattern repeats: ${pattern.join(' ')}\nAfter ${sequence.join(' ')}, the next shape is ${next}`,
-            7,
-            'easy'
-          );
-        } else if (difficulty === 'medium') {
-          const start = Math.floor(Math.random() * 10) + 1;
-          const addend = Math.floor(Math.random() * 5) + 2;
-          const sequence = [start, start + addend, start + addend * 2, start + addend * 3];
-          const next = start + addend * 4;
+          // AMC-style complex number patterns with multiple operations
+          const start = Math.floor(Math.random() * 20) + 10;
+          const pattern1 = Math.floor(Math.random() * 5) + 2;
+          const pattern2 = Math.floor(Math.random() * 3) + 1;
+          const sequence = [start, start + pattern1, start + pattern1 + pattern2, start + pattern1 + pattern2 * 2];
+          const next = start + pattern1 + pattern2 * 3;
           
           // Generate unique options
           const options = [
-            String(next - addend), 
+            String(next - pattern2), 
             String(next), 
-            String(next + addend), 
-            String(start + addend * 5)
+            String(next + pattern2), 
+            String(start + pattern1 * 2)
           ];
           
           // Ensure uniqueness
           const uniqueOptions = [...new Set(options)];
           while (uniqueOptions.length < 4) {
-            const extraOption = String(next + addend * 2);
+            const extraOption = String(next + pattern2 * 2);
             if (!uniqueOptions.includes(extraOption)) {
               uniqueOptions.push(extraOption);
             }
           }
           
           return createShuffledQuestion(
-            `Find the next number: ${sequence.join(', ')}`,
+            `In the sequence ${sequence.join(', ')}, each term after the first increases by a pattern. What is the next term?`,
             uniqueOptions,
             1,
-            `Each number adds ${addend}:\n${start} + ${addend} = ${start + addend}\n${start + addend} + ${addend} = ${start + addend * 2}\n${start + addend * 3} + ${addend} = ${next}`,
+            `Pattern analysis:\n${start} + ${pattern1} = ${start + pattern1}\n${start + pattern1} + ${pattern2} = ${start + pattern1 + pattern2}\n${start + pattern1 + pattern2} + ${pattern2} = ${start + pattern1 + pattern2 * 2}\nNext: ${start + pattern1 + pattern2 * 2} + ${pattern2} = ${next}`,
+            7,
+            'easy'
+          );
+        } else if (difficulty === 'medium') {
+          // AMC-style complex alternating patterns
+          const start = Math.floor(Math.random() * 15) + 10;
+          const evenStep = Math.floor(Math.random() * 4) + 2;
+          const oddStep = Math.floor(Math.random() * 3) + 1;
+          const sequence = [start, start + evenStep, start + evenStep + oddStep, start + evenStep + oddStep + evenStep];
+          const next = start + evenStep + oddStep + evenStep + oddStep;
+          
+          // Generate unique options
+          const options = [
+            String(next - oddStep), 
+            String(next), 
+            String(next + oddStep), 
+            String(start + evenStep * 3)
+          ];
+          
+          // Ensure uniqueness
+          const uniqueOptions = [...new Set(options)];
+          while (uniqueOptions.length < 4) {
+            const extraOption = String(next + evenStep);
+            if (!uniqueOptions.includes(extraOption)) {
+              uniqueOptions.push(extraOption);
+            }
+          }
+          
+          return createShuffledQuestion(
+            `In the sequence ${sequence.join(', ')}, the pattern alternates between two different steps. What is the next term?`,
+            uniqueOptions,
+            1,
+            `Alternating pattern:\n${start} + ${evenStep} = ${start + evenStep}\n${start + evenStep} + ${oddStep} = ${start + evenStep + oddStep}\n${start + evenStep + oddStep} + ${evenStep} = ${start + evenStep + oddStep + evenStep}\nNext: ${start + evenStep + oddStep + evenStep} + ${oddStep} = ${next}`,
             7,
             'medium'
           );
         }
       } else {
         if (difficulty === 'easy') {
-          const start = Math.floor(Math.random() * 10) + 1;
+          // AMC-style geometric sequences with real-world context
+          const start = Math.floor(Math.random() * 15) + 10;
           const multiplier = Math.floor(Math.random() * 3) + 2;
           const sequence = [start, start * multiplier, start * multiplier * multiplier];
           const next = start * multiplier * multiplier * multiplier;
@@ -1359,15 +1424,16 @@ const App = () => {
           }
           
           return createShuffledQuestion(
-            `Find the next number: ${sequence.join(', ')}`,
+            `A population grows by a factor of ${multiplier} each year. Starting with ${start} people, what will the population be after 3 years?`,
             uniqueOptions,
             1,
-            `Each number is multiplied by ${multiplier}:\n${start} × ${multiplier} = ${start * multiplier}\n${start * multiplier} × ${multiplier} = ${start * multiplier * multiplier}\n${start * multiplier * multiplier} × ${multiplier} = ${next}`,
+            `Year 1: ${start} × ${multiplier} = ${start * multiplier}\nYear 2: ${start * multiplier} × ${multiplier} = ${start * multiplier * multiplier}\nYear 3: ${start * multiplier * multiplier} × ${multiplier} = ${next}`,
             7,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const start = Math.floor(Math.random() * 5) + 1;
+          // AMC-style complex recursive patterns
+          const start = Math.floor(Math.random() * 10) + 5;
           const sequence = [start, start * 2, start * 2 + 1, (start * 2 + 1) * 2];
           const next = (start * 2 + 1) * 2 + 1;
           
@@ -1389,7 +1455,7 @@ const App = () => {
           }
           
           return createShuffledQuestion(
-            `Find the next number: ${sequence.join(', ')}`,
+            `In the sequence ${sequence.join(', ')}, each term is found by multiplying the previous term by 2, then adding 1. What is the next term?`,
             uniqueOptions,
             1,
             `Pattern: multiply by 2, then add 1, repeat\n${start} × 2 = ${start * 2}\n${start * 2} + 1 = ${start * 2 + 1}\n${start * 2 + 1} × 2 = ${(start * 2 + 1) * 2}\n${(start * 2 + 1) * 2} + 1 = ${next}`,
@@ -1471,81 +1537,80 @@ const App = () => {
       }
     }
     
-    // Probability (Topic 9)
+    // Probability (Topic 9) - AMC LEVEL
     if (topic.id === 9) {
       if (yearLevel === 'junior') {
         if (difficulty === 'easy') {
-          const redMarbles = Math.floor(Math.random() * 4) + 2;
-          const blueMarbles = Math.floor(Math.random() * 4) + 3;
-          const total = redMarbles + blueMarbles;
-          const probability = redMarbles / total;
-          
-          // Generate unique options
-          const options = [
-            `${redMarbles}/${total}`, 
-            `${redMarbles}/${blueMarbles}`, 
-            `${blueMarbles}/${total}`, 
-            `${total}/${redMarbles}`
-          ];
-          
-          // Ensure uniqueness
-          const uniqueOptions = [...new Set(options)];
-          while (uniqueOptions.length < 4) {
-            const extraOption = `${blueMarbles}/${redMarbles}`;
-            if (!uniqueOptions.includes(extraOption)) {
-              uniqueOptions.push(extraOption);
-            }
-          }
+          // AMC-style probability with real-world context and larger numbers
+          const totalStudents = Math.floor(Math.random() * 80) + 40;
+          const boys = Math.floor(Math.random() * (totalStudents - 20)) + 15;
+          const girls = totalStudents - boys;
+          const boysWithGlasses = Math.floor(boys * 0.3);
+          const girlsWithGlasses = Math.floor(girls * 0.4);
+          const totalWithGlasses = boysWithGlasses + girlsWithGlasses;
+          const answer = totalWithGlasses;
           
           return createShuffledQuestion(
-            `A bag has ${redMarbles} red marbles and ${blueMarbles} blue marbles. What's the probability of drawing a red marble?`,
-            uniqueOptions,
-            0,
-            `Total marbles = ${redMarbles} + ${blueMarbles} = ${total}\nRed marbles = ${redMarbles}\nProbability = ${redMarbles}/${total}`,
+            `In a school of ${totalStudents} students, ${boys} are boys and ${girls} are girls. 30% of boys and 40% of girls wear glasses. How many students wear glasses?`,
+            [String(answer - 3), String(answer), String(answer + 3), String(totalStudents - answer)],
+            1,
+            `Boys with glasses = ${boys} × 30% = ${boysWithGlasses}\nGirls with glasses = ${girls} × 40% = ${girlsWithGlasses}\nTotal with glasses = ${boysWithGlasses} + ${girlsWithGlasses} = ${answer}`,
             9,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const sides = Math.floor(Math.random() * 4) + 4; // 4, 5, 6, or 7 sides
-          const target = Math.floor(Math.random() * sides) + 1;
-          const probability = 1 / sides;
+          // AMC-style complex probability with multiple events
+          const totalCards = Math.floor(Math.random() * 40) + 30;
+          const redCards = Math.floor(totalCards * 0.4);
+          const blueCards = Math.floor(totalCards * 0.3);
+          const greenCards = totalCards - redCards - blueCards;
+          const redSpades = Math.floor(redCards * 0.25);
+          const blueSpades = Math.floor(blueCards * 0.2);
+          const totalSpades = redSpades + blueSpades;
+          const answer = totalSpades;
           
           return createShuffledQuestion(
-            `A ${sides}-sided die is rolled. What's the probability of rolling a ${target}?`,
-            [`1/${sides}`, `${target}/${sides}`, `1/${target}`, `${sides}/1`],
-            0,
-            `Total possible outcomes = ${sides}\nFavorable outcomes = 1 (rolling ${target})\nProbability = 1/${sides}`,
+            `A deck has ${totalCards} cards: ${redCards} red, ${blueCards} blue, and ${greenCards} green. 25% of red cards and 20% of blue cards are spades. How many spades are in the deck?`,
+            [String(answer - 2), String(answer), String(answer + 2), String(totalCards - answer)],
+            1,
+            `Red spades = ${redCards} × 25% = ${redSpades}\nBlue spades = ${blueCards} × 20% = ${blueSpades}\nTotal spades = ${redSpades} + ${blueSpades} = ${answer}`,
             9,
             'medium'
           );
         }
       } else {
         if (difficulty === 'easy') {
-          const total = Math.floor(Math.random() * 20) + 10;
-          const favorable = Math.floor(Math.random() * (total - 5)) + 3;
-          const probability = favorable / total;
+          // AMC-style probability with conditional events
+          const totalStudents = Math.floor(Math.random() * 100) + 60;
+          const mathStudents = Math.floor(totalStudents * 0.6);
+          const scienceStudents = Math.floor(totalStudents * 0.5);
+          const bothSubjects = Math.floor(totalStudents * 0.3);
+          const mathOnly = mathStudents - bothSubjects;
+          const answer = mathOnly;
           
           return createShuffledQuestion(
-            `In a class of ${total} students, ${favorable} are wearing red shirts. What's the probability that a randomly chosen student is wearing red?`,
-            [`${favorable}/${total}`, `${total}/${favorable}`, `${favorable}/${total - favorable}`, `${total - favorable}/${total}`],
-            0,
-            `Total students = ${total}\nStudents wearing red = ${favorable}\nProbability = ${favorable}/${total}`,
+            `In a school of ${totalStudents} students, ${mathStudents} study math and ${scienceStudents} study science. ${bothSubjects} study both subjects. How many students study only math?`,
+            [String(answer - 3), String(answer), String(answer + 3), String(mathStudents)],
+            1,
+            `Students studying both = ${bothSubjects}\nStudents studying only math = ${mathStudents} - ${bothSubjects} = ${answer}`,
             9,
             'easy'
           );
         } else if (difficulty === 'medium') {
-          const red = Math.floor(Math.random() * 5) + 3;
-          const blue = Math.floor(Math.random() * 5) + 3;
-          const green = Math.floor(Math.random() * 5) + 2;
-          const total = red + blue + green;
-          const notRed = blue + green;
-          const probability = notRed / total;
+          // AMC-style complex probability with multiple conditions
+          const totalPeople = Math.floor(Math.random() * 120) + 80;
+          const adults = Math.floor(totalPeople * 0.7);
+          const children = totalPeople - adults;
+          const adultDrivers = Math.floor(adults * 0.8);
+          const childDrivers = Math.floor(children * 0.1);
+          const totalDrivers = adultDrivers + childDrivers;
+          const answer = totalDrivers;
           
           return createShuffledQuestion(
-            `A bag has ${red} red, ${blue} blue, and ${green} green marbles. What's the probability of NOT drawing a red marble?`,
-            [`${notRed}/${total}`, `${red}/${total}`, `${total}/${notRed}`, `${notRed}/${red}`],
-            0,
-            `Total marbles = ${red} + ${blue} + ${green} = ${total}\nNon-red marbles = ${blue} + ${green} = ${notRed}\nProbability = ${notRed}/${total}`,
+            `In a town of ${totalPeople} people, ${adults} are adults and ${children} are children. 80% of adults and 10% of children have driver's licenses. How many people have driver's licenses?`,
+            [String(answer - 5), String(answer), String(answer + 5), String(totalPeople - answer)],
+            1,
+            `Adult drivers = ${adults} × 80% = ${adultDrivers}\nChild drivers = ${children} × 10% = ${childDrivers}\nTotal drivers = ${adultDrivers} + ${childDrivers} = ${answer}`,
             9,
             'medium'
           );
