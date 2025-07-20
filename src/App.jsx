@@ -733,17 +733,18 @@ const App = () => {
           const pattern1 = Math.floor(Math.random() * 5) + 2;
           const pattern2 = Math.floor(Math.random() * 3) + 1;
           
-          // Ensure different patterns for complexity
-          if (pattern1 === pattern2) {
+          // Ensure different patterns for complexity and proper number ranges
+          if (pattern1 === pattern2 || start < 10 || start > 30) {
             const adjustedPattern2 = pattern2 + 1;
-            const sequence = [start, start + pattern1, start + pattern1 + adjustedPattern2, start + pattern1 + adjustedPattern2 * 2];
-            const next = start + pattern1 + adjustedPattern2 * 3;
+            const adjustedStart = Math.max(10, Math.min(30, start));
+            const sequence = [adjustedStart, adjustedStart + pattern1, adjustedStart + pattern1 + adjustedPattern2, adjustedStart + pattern1 + adjustedPattern2 * 2];
+            const next = adjustedStart + pattern1 + adjustedPattern2 * 3;
             
             return createShuffledQuestion(
               `In the sequence ${sequence.join(', ')}, each term after the first increases by a pattern. What is the next term?`,
-              [String(next - adjustedPattern2), String(next), String(next + adjustedPattern2), String(start + pattern1 * 2)],
+              [String(next - adjustedPattern2), String(next), String(next + adjustedPattern2), String(adjustedStart + pattern1 * 2)],
               1,
-              `Pattern analysis:\n${start} + ${pattern1} = ${start + pattern1}\n${start + pattern1} + ${adjustedPattern2} = ${start + pattern1 + adjustedPattern2}\n${start + pattern1 + adjustedPattern2} + ${adjustedPattern2} = ${start + pattern1 + adjustedPattern2 * 2}\nNext: ${start + pattern1 + adjustedPattern2 * 2} + ${adjustedPattern2} = ${next}`,
+              `Pattern analysis:\n${adjustedStart} + ${pattern1} = ${adjustedStart + pattern1}\n${adjustedStart + pattern1} + ${adjustedPattern2} = ${adjustedStart + pattern1 + adjustedPattern2}\n${adjustedStart + pattern1 + adjustedPattern2} + ${adjustedPattern2} = ${adjustedStart + pattern1 + adjustedPattern2 * 2}\nNext: ${adjustedStart + pattern1 + adjustedPattern2 * 2} + ${adjustedPattern2} = ${next}`,
               1,
               'easy'
             );
@@ -963,8 +964,8 @@ const App = () => {
           const extraBus = remainder > 0 ? 1 : 0;
           const totalBuses = buses + extraBus;
           
-          // Ensure we have a valid division scenario
-          if (studentsPerBus === 0) {
+          // Ensure we have a valid division scenario with proper validation
+          if (studentsPerBus === 0 || totalBuses < 4) {
             const adjustedBuses = Math.max(4, Math.floor(totalStudents / 20));
             const adjustedStudentsPerBus = Math.floor(totalStudents / adjustedBuses);
             const adjustedRemainder = totalStudents % adjustedBuses;
@@ -1736,10 +1737,66 @@ const App = () => {
       }
     }
     
-      // Default fallback question - ensure correct answer is properly set
-  const a = Math.floor(Math.random() * 10) + 1;
-  const b = Math.floor(Math.random() * 10) + 1;
-  const sum = a + b;
+    // NEW QUESTION VARIATIONS - Advanced AMC Level
+    // Add these variations for enhanced question diversity
+    
+    // Variation 1: Advanced Number Theory with Digit Manipulation
+    if (Math.random() < 0.15) { // 15% chance for advanced questions
+      const baseNum = Math.floor(Math.random() * 900) + 100;
+      const digitSum = String(baseNum).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+      const reversedNum = parseInt(String(baseNum).split('').reverse().join(''));
+      const difference = Math.abs(baseNum - reversedNum);
+      
+      return createShuffledQuestion(
+        `A ${String(baseNum).length}-digit number has a digit sum of ${digitSum}. If you reverse its digits, the difference between the original and reversed number is:`,
+        [String(difference - 10), String(difference), String(difference + 10), String(baseNum + reversedNum)],
+        1,
+        `Original number: ${baseNum}\nReversed number: ${reversedNum}\nDifference: ${difference}\nNote: The difference between a number and its reverse is always divisible by 9.`,
+        topic.id,
+        'hard'
+      );
+    }
+    
+    // Variation 2: Advanced Geometry with Surface Area
+    if (Math.random() < 0.12) { // 12% chance for geometry questions
+      const length = Math.floor(Math.random() * 25) + 15;
+      const width = Math.floor(Math.random() * 25) + 15;
+      const height = Math.floor(Math.random() * 15) + 10;
+      const surfaceArea = 2 * (length * width + length * height + width * height);
+      
+      return createShuffledQuestion(
+        `A rectangular box has dimensions ${length} cm × ${width} cm × ${height} cm. What is its surface area in square centimeters?`,
+        [String(surfaceArea - 50), String(surfaceArea), String(surfaceArea + 50), String(length * width * height)],
+        1,
+        `Surface area = 2 × (length × width + length × height + width × height)\n= 2 × (${length} × ${width} + ${length} × ${height} + ${width} × ${height})\n= 2 × (${length * width} + ${length * height} + ${width * height})\n= 2 × ${length * width + length * height + width * height} = ${surfaceArea}`,
+        topic.id,
+        'medium'
+      );
+    }
+    
+    // Variation 3: Advanced Probability with Multiple Categories
+    if (Math.random() < 0.10) { // 10% chance for probability questions
+      const totalStudents = Math.floor(Math.random() * 100) + 50;
+      const boys = Math.floor(Math.random() * (totalStudents - 20)) + 20;
+      const girls = totalStudents - boys;
+      const boysWithGlasses = Math.floor(boys * 0.35);
+      const girlsWithGlasses = Math.floor(girls * 0.45);
+      const totalWithGlasses = boysWithGlasses + girlsWithGlasses;
+      
+      return createShuffledQuestion(
+        `In a school of ${totalStudents} students, ${boys} are boys and ${girls} are girls. 35% of boys and 45% of girls wear glasses. How many students wear glasses?`,
+        [String(totalWithGlasses - 3), String(totalWithGlasses), String(totalWithGlasses + 3), String(totalStudents - totalWithGlasses)],
+        1,
+        `Boys with glasses: ${boys} × 35% = ${boysWithGlasses}\nGirls with glasses: ${girls} × 45% = ${girlsWithGlasses}\nTotal with glasses: ${boysWithGlasses} + ${girlsWithGlasses} = ${totalWithGlasses}`,
+        topic.id,
+        'medium'
+      );
+    }
+    
+    // Default fallback question - ensure correct answer is properly set
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    const sum = a + b;
   
   return createShuffledQuestion(
     `What is ${a} + ${b}?`,
