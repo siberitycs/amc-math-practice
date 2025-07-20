@@ -1280,9 +1280,23 @@ const App = () => {
           const sequence = [...pattern, ...pattern, ...pattern.slice(0, 2)];
           const next = pattern[2] || pattern[0];
           
+          // Generate unique options
+          const availableShapes = shapes.filter(shape => shape !== next && shape !== pattern[0]);
+          const randomShape = availableShapes[Math.floor(Math.random() * availableShapes.length)];
+          const options = [pattern[pattern.length - 1], next, randomShape, pattern[0]];
+          
+          // Ensure uniqueness
+          const uniqueOptions = [...new Set(options)];
+          while (uniqueOptions.length < 4) {
+            const extraShape = shapes[Math.floor(Math.random() * shapes.length)];
+            if (!uniqueOptions.includes(extraShape)) {
+              uniqueOptions.push(extraShape);
+            }
+          }
+          
           return createShuffledQuestion(
             `What comes next in this pattern?\n${sequence.join(' ')}`,
-            [pattern[pattern.length - 1], next, shapes[Math.floor(Math.random() * shapes.length)], pattern[0]],
+            uniqueOptions,
             1,
             `The pattern repeats: ${pattern.join(' ')}\nAfter ${sequence.join(' ')}, the next shape is ${next}`,
             7,
@@ -1294,9 +1308,26 @@ const App = () => {
           const sequence = [start, start + addend, start + addend * 2, start + addend * 3];
           const next = start + addend * 4;
           
+          // Generate unique options
+          const options = [
+            String(next - addend), 
+            String(next), 
+            String(next + addend), 
+            String(start + addend * 5)
+          ];
+          
+          // Ensure uniqueness
+          const uniqueOptions = [...new Set(options)];
+          while (uniqueOptions.length < 4) {
+            const extraOption = String(next + addend * 2);
+            if (!uniqueOptions.includes(extraOption)) {
+              uniqueOptions.push(extraOption);
+            }
+          }
+          
           return createShuffledQuestion(
             `Find the next number: ${sequence.join(', ')}`,
-            [String(next - addend), String(next), String(next + addend), String(start + addend * 5)],
+            uniqueOptions,
             1,
             `Each number adds ${addend}:\n${start} + ${addend} = ${start + addend}\n${start + addend} + ${addend} = ${start + addend * 2}\n${start + addend * 3} + ${addend} = ${next}`,
             7,
@@ -1310,9 +1341,26 @@ const App = () => {
           const sequence = [start, start * multiplier, start * multiplier * multiplier];
           const next = start * multiplier * multiplier * multiplier;
           
+          // Generate unique options
+          const options = [
+            String(next - multiplier), 
+            String(next), 
+            String(next + multiplier), 
+            String(start * multiplier * multiplier)
+          ];
+          
+          // Ensure uniqueness
+          const uniqueOptions = [...new Set(options)];
+          while (uniqueOptions.length < 4) {
+            const extraOption = String(next + multiplier * 2);
+            if (!uniqueOptions.includes(extraOption)) {
+              uniqueOptions.push(extraOption);
+            }
+          }
+          
           return createShuffledQuestion(
             `Find the next number: ${sequence.join(', ')}`,
-            [String(next - multiplier), String(next), String(next + multiplier), String(start * multiplier * multiplier)],
+            uniqueOptions,
             1,
             `Each number is multiplied by ${multiplier}:\n${start} × ${multiplier} = ${start * multiplier}\n${start * multiplier} × ${multiplier} = ${start * multiplier * multiplier}\n${start * multiplier * multiplier} × ${multiplier} = ${next}`,
             7,
@@ -1323,9 +1371,26 @@ const App = () => {
           const sequence = [start, start * 2, start * 2 + 1, (start * 2 + 1) * 2];
           const next = (start * 2 + 1) * 2 + 1;
           
+          // Generate unique options
+          const options = [
+            String(next - 1), 
+            String(next), 
+            String(next + 1), 
+            String(next * 2)
+          ];
+          
+          // Ensure uniqueness
+          const uniqueOptions = [...new Set(options)];
+          while (uniqueOptions.length < 4) {
+            const extraOption = String(next + 2);
+            if (!uniqueOptions.includes(extraOption)) {
+              uniqueOptions.push(extraOption);
+            }
+          }
+          
           return createShuffledQuestion(
             `Find the next number: ${sequence.join(', ')}`,
-            [String(next - 1), String(next), String(next + 1), String(next * 2)],
+            uniqueOptions,
             1,
             `Pattern: multiply by 2, then add 1, repeat\n${start} × 2 = ${start * 2}\n${start * 2} + 1 = ${start * 2 + 1}\n${start * 2 + 1} × 2 = ${(start * 2 + 1) * 2}\n${(start * 2 + 1) * 2} + 1 = ${next}`,
             7,
@@ -1415,9 +1480,26 @@ const App = () => {
           const total = redMarbles + blueMarbles;
           const probability = redMarbles / total;
           
+          // Generate unique options
+          const options = [
+            `${redMarbles}/${total}`, 
+            `${redMarbles}/${blueMarbles}`, 
+            `${blueMarbles}/${total}`, 
+            `${total}/${redMarbles}`
+          ];
+          
+          // Ensure uniqueness
+          const uniqueOptions = [...new Set(options)];
+          while (uniqueOptions.length < 4) {
+            const extraOption = `${blueMarbles}/${redMarbles}`;
+            if (!uniqueOptions.includes(extraOption)) {
+              uniqueOptions.push(extraOption);
+            }
+          }
+          
           return createShuffledQuestion(
             `A bag has ${redMarbles} red marbles and ${blueMarbles} blue marbles. What's the probability of drawing a red marble?`,
-            [`${redMarbles}/${total}`, `${redMarbles}/${blueMarbles}`, `${blueMarbles}/${total}`, `${total}/${redMarbles}`],
+            uniqueOptions,
             0,
             `Total marbles = ${redMarbles} + ${blueMarbles} = ${total}\nRed marbles = ${redMarbles}\nProbability = ${redMarbles}/${total}`,
             9,
